@@ -27,6 +27,7 @@ BuildRequires:	libmpeg3-devel
 BuildRequires:	libstdc++-devel
 BuildRequires:	libvorbis-devel
 BuildRequires:	libxml2-devel
+BuildRequires:	perl-base
 BuildRequires:	pkgconfig
 BuildRequires:	xvid-devel >= 1:1.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
