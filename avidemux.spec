@@ -2,7 +2,7 @@ Summary:	A small audio/video editing software for Linux
 Summary(pl):	Ma³y edytor audio/wideo dla Linuksa
 Name:		avidemux
 Version:	2.0.18
-Release:	1
+Release:	2
 License:	GPL
 Group:		X11/Applications/Multimedia
 Source0:	http://fixounet.free.fr/%{name}/%{name}-%{version}.tar.gz
