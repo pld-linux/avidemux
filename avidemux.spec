@@ -6,6 +6,7 @@ Release:	1
 License:	GPL
 Group:		X11/Applications/Multimedia
 Source0:	http://fixounet.free.fr/%{name}/%{name}-%{version}.tgz
+# Source0-md5:	ccadde58eb5f00473d7c2ee5d04bca51
 URL:		http://fixounet.free.fr/%{name}/
 Patch0:		%{name}-lameh.patch
 BuildRequires:	a52dec-libs-devel
