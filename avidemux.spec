@@ -20,7 +20,7 @@ BuildRequires:	faad2-devel
 BuildRequires:	ffmpeg-devel
 BuildRequires:	freetype-devel >= 2.0.0
 BuildRequires:	gettext-devel
-BuildRequires:	gtk+2-devel >= 2.0.0
+BuildRequires:	gtk+2-devel >= 1:2.0.0
 BuildRequires:	lame-libs-devel
 BuildRequires:	libmad-devel
 BuildRequires:	libmpeg3-devel
