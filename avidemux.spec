@@ -1,14 +1,16 @@
 Summary:	A small audio/video editing software for Linux
 Summary(pl):	Ma³y edytor audio/wideo dla Linuksa
 Name:		avidemux
-Version:	2.0.26
+Version:	2.0.28
 Release:	1
 License:	GPL
 Group:		X11/Applications/Multimedia
-Source0:	http://fixounet.free.fr/%{name}/%{name}-%{version}.tar.gz
-# Source0-md5:	d4697e3289b7db4b684a0cef6884db2f
+Source0:	http://download.berlios.de/avidemux/%{name}-%{version}.tar.gz
+# Source0-md5:	a6c3dfb1452820ae9b75d6ee822f7b65
+Source1:	%{name}.desktop
 Patch0:		%{name}-autoconf.patch
 URL:		http://fixounet.free.fr/avidemux/
+BuildRequires:	SDL-devel
 BuildRequires:	a52dec-libs-devel
 BuildRequires:	alsa-lib-devel
 BuildRequires:	artsc-devel
@@ -47,19 +49,19 @@ Ma³y edytor audio/wideo dla Linuksa.
 %{__perl} -pi -e 's/charset=Unicode/charset=UTF-8/' po/ru.po
 
 %build
-
 cp /usr/share/automake/config.sub admin
-
 %configure
 %{__make} \
 	OPTFLAGS="%{rpmcflags}"
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT
+install -d $RPM_BUILD_ROOT%{_desktopdir}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
+
+install %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}
 
 %find_lang %{name}
 
@@ -70,3 +72,4 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc README AUTHORS TODO
 %attr(755,root,root) %{_bindir}/*
+%{_desktopdir}/*.desktop
