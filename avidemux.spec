@@ -1,7 +1,7 @@
 Summary:	A small audio/video editing software for Linux
 Summary(pl):	Ma³y edytor audio/video dla Linuksa
 Name:		avidemux
-Version:	0.9pre8
+Version:	0.9pre26
 Release:	1
 License:	GPL
 Group:		X11/Applications/Multimedia
@@ -9,7 +9,7 @@ Source0:	http://fixounet.free.fr/%{name}/%{name}-%{version}.tgz
 URL:		http://fixounet.free.fr/%{name}/
 Patch0:		%{name}-lameh.patch
 BuildRequires:	a52dec-libs-devel
-BuildRequires:	divx4linux-devel
+#BuildRequires:	divx4linux-devel
 BuildRequires:	esound-devel
 BuildRequires:	gtk+-devel
 BuildRequires:	lame-libs-devel
@@ -28,16 +28,16 @@ A small audio/video editing software for Linux.
 Ma³y edytor audio/video dla Linuksa.
 
 %prep
-%setup -q -n %{name}%{version}
-%patch0 -p1
+%setup -q
+#%patch0 -p1
 
 %build
-CPPFLAGS="-I/usr/include/divx -I/usr/include/libmpeg3"
+#CPPFLAGS="-I/usr/include/divx -I/usr/include/libmpeg3"
 
 # dirty hack, so we are avoiding ac/am madness
 echo timestamp > stamp-h.in
 
-%configure2_13
+%configure
 %{__make}
 
 %install
