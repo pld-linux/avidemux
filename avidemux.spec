@@ -20,6 +20,7 @@ BuildRequires:	gtk+2-devel >= 2.0.0
 BuildRequires:	lame-libs-devel
 BuildRequires:	libmad-devel
 BuildRequires:	libmpeg3-devel
+BuildRequires:	libstdc++-devel
 BuildRequires:	libvorbis-devel
 BuildRequires:	libxml2-devel
 BuildRequires:	pkgconfig
