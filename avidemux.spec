@@ -7,7 +7,7 @@ License:	GPL
 Group:		X11/Applications/Multimedia
 Source0:	http://fixounet.free.fr/%{name}/%{name}-%{version}.tgz
 # Source0-md5:	ccadde58eb5f00473d7c2ee5d04bca51
-URL:		http://fixounet.free.fr/%{name}/
+URL:		http://fixounet.free.fr/avidemux/
 Patch0:		%{name}-lameh.patch
 BuildRequires:	a52dec-libs-devel
 #BuildRequires:	divx4linux-devel
@@ -18,7 +18,6 @@ BuildRequires:	libmpeg3-devel
 BuildRequires:	libvorbis-devel
 BuildRequires:	mad-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
-
 
 %description
 A small audio/video editing software for Linux.
