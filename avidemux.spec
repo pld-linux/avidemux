@@ -1,5 +1,5 @@
 Summary:	A small audio/video editing software for Linux
-Summary(pl):	Ma造 audio/video edytor dla Linuxa
+Summary(pl):	Ma造 edytor audio/video dla Linuksa
 Name:		avidemux
 Version:	0.9pre6
 Release:	1
@@ -22,10 +22,10 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_mandir		%{_prefix}/man
 
 %description
-A small audio/video editing software for Linux
+A small audio/video editing software for Linux.
 
 %description -l pl
-Ma造 audio/video edytor dla Linuxa.
+Ma造 edytor audio/video dla Linuksa.
 
 %prep
 %setup -q
