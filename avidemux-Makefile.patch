@@ -1,0 +1,11 @@
+--- avidemux-2.0.22/adm_lavcodec/Makefile-oryg	2004-02-27 20:59:44.000000000 +0100
++++ avidemux-2.0.22/adm_lavcodec/Makefile	2004-03-07 00:00:39.135384784 +0100
+@@ -71,7 +71,7 @@
+ tests: apiexample cpuid_test $(TESTS)
+ 
+ libpostproc/libpostproc.a:
+-	cd libpostproc && gmake && cd ..
++	cd libpostproc && make && cd ..
+ 
+ $(LIB): $(OBJS)
+ 	rm -f $@

@@ -1,0 +1,37 @@
+--- avidemux-2.0.22/admin/detect-autoconf.sh-oryg	2004-01-30 20:29:34.000000000 +0100
++++ avidemux-2.0.22/admin/detect-autoconf.sh	2004-03-06 23:56:20.897642888 +0100
+@@ -19,16 +19,16 @@
+     AUTOCONF="`$WHICH autoconf-2.53`"
+   elif test -x "`$WHICH autoconf-2.52`" ; then
+     AUTOCONF="`$WHICH autoconf-2.52`"
+-  elif test -x "`$WHICH autoconf2.50`" ; then
+-    AUTOCONF="`$WHICH autoconf2.50`"
++  elif test -x "`$WHICH autoconf`" ; then
++    AUTOCONF="`$WHICH autoconf`"
+   fi
+ }
+ 
+ checkAutoheader()
+ {
+-  if test -x "`$WHICH autoheader-2.5x`" ; then
+-    AUTOHEADER="`$WHICH autoheader-2.5x`"
+-    AUTOM4TE="`$WHICH autom4te-2.5x`"
++  if test -x "`$WHICH autoheader`" ; then
++    AUTOHEADER="`$WHICH autoheader`"
++    AUTOM4TE="`$WHICH autom4te`"
+   elif test -x "`$WHICH autoheader-2.53`" ; then
+     AUTOHEADER="`$WHICH autoheader-2.53`"
+     AUTOM4TE="`$WHICH autom4te-2.53`"
+@@ -42,9 +42,9 @@
+ checkAutomakeAclocal ()
+ {
+   if test -z "$UNSERMAKE"; then
+-    if test -x "`$WHICH automake-1.5`" ; then
+-      AUTOMAKE="`$WHICH automake-1.5`"
+-      ACLOCAL="`$WHICH aclocal-1.5`"
++    if test -x "`$WHICH automake`" ; then
++      AUTOMAKE="`$WHICH automake`"
++      ACLOCAL="`$WHICH aclocal`"
+     elif test -x "`$WHICH automake-1.6`" ; then
+       AUTOMAKE="`$WHICH automake-1.6`"
+       ACLOCAL="`$WHICH aclocal-1.6`"
