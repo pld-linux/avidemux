@@ -9,19 +9,19 @@ Source0:	http://fixounet.free.fr/%{name}/%{name}-%{version}.tar.gz
 # Source0-md5:	5236a00d4a56b25df2c5f28fa8a40ce8
 URL:		http://fixounet.free.fr/avidemux/
 BuildRequires:	a52dec-libs-devel
-BuildRequires:	esound-devel
-BuildRequires:	gtk+2-devel
-BuildRequires:	pkgconfig
-BuildRequires:	freetype-devel >= 2.0.0
-BuildRequires:	libxml2-devel
-BuildRequires:	xvid-devel
 BuildRequires:	alsa-lib-devel
-BuildRequires:	libmad-devel
+BuildRequires:	artsc-devel
+BuildRequires:	esound-devel
 BuildRequires:	ffmpeg-devel
+BuildRequires:	freetype-devel >= 2.0.0
+BuildRequires:	gtk+2-devel >= 2.0.0
 BuildRequires:	lame-libs-devel
+BuildRequires:	libmad-devel
 BuildRequires:	libmpeg3-devel
 BuildRequires:	libvorbis-devel
-BuildRequires:	mad-devel
+BuildRequires:	libxml2-devel
+BuildRequires:	pkgconfig
+BuildRequires:	xvid-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
