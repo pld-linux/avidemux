@@ -1,18 +1,25 @@
 Summary:	A small audio/video editing software for Linux
 Summary(pl):	Ma³y edytor audio/video dla Linuksa
 Name:		avidemux
-Version:	0.9
-Release:	1
+Version:	2.0.16
+Release:	0.1
 License:	GPL
 Group:		X11/Applications/Multimedia
-Source0:	http://fixounet.free.fr/%{name}/%{name}-%{version}.tgz
-# Source0-md5:	ccadde58eb5f00473d7c2ee5d04bca51
+Source0:	http://fixounet.free.fr/%{name}/%{name}-%{version}.tar.gz
+# Source0-md5:	89e4ac8f832328e8761a7c3035d4d4bc
 URL:		http://fixounet.free.fr/avidemux/
 Patch0:		%{name}-lameh.patch
 BuildRequires:	a52dec-libs-devel
 #BuildRequires:	divx4linux-devel
 BuildRequires:	esound-devel
-BuildRequires:	gtk+-devel
+BuildRequires:	gtk+2-devel
+BuildRequires:	pkgconfig
+BuildRequires:	freetype-devel >= 2.0.0
+BuildRequires:	libxml2-devel
+BuildRequires:	xvid-devel
+BuildRequires:	alsa-lib-devel
+BuildRequires:	libmad-devel
+BuildRequires:	ffmpeg-devel
 BuildRequires:	lame-libs-devel
 BuildRequires:	libmpeg3-devel
 BuildRequires:	libvorbis-devel
