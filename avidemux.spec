@@ -12,6 +12,7 @@ URL:		http://fixounet.free.fr/avidemux/
 BuildRequires:	a52dec-libs-devel
 BuildRequires:	alsa-lib-devel
 BuildRequires:	artsc-devel
+BuildRequires:	automake
 BuildRequires:	esound-devel
 BuildRequires:	ffmpeg-devel
 BuildRequires:	freetype-devel >= 2.0.0
@@ -45,6 +46,9 @@ Ma³y edytor audio/wideo dla Linuksa.
 %{__perl} -pi -e 's/charset=Unicode/charset=UTF-8/' po/ru.po
 
 %build
+
+cp /usr/share/automake/config.sub admin
+
 %configure
 %{__make} \
 	OPTFLAGS="%{rpmcflags}"
