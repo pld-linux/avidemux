@@ -19,6 +19,7 @@ BuildRequires:	artsc-devel
 BuildRequires:	esound-devel
 BuildRequires:	ffmpeg-devel
 BuildRequires:	freetype-devel >= 2.0.0
+BuildRequires:	gettext-devel
 BuildRequires:	gtk+2-devel >= 2.0.0
 BuildRequires:	lame-libs-devel
 BuildRequires:	libmad-devel
@@ -27,7 +28,7 @@ BuildRequires:	libstdc++-devel
 BuildRequires:	libvorbis-devel
 BuildRequires:	libxml2-devel
 BuildRequires:	pkgconfig
-BuildRequires:	xvid-devel
+BuildRequires:	xvid-devel >= 1:1.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -40,9 +41,17 @@ Ma³y edytor audio/wideo dla Linuksa.
 %setup -q
 %patch0 -p1
 
+# hack to not rebuild ac/am (buggy)
+%{__perl} -pi -e 's/(subdirs:)$/$1 README/' Makefile.in
+%{__perl} -pi -e 's/(configure\.in:).*$/$1 README/' Makefile.in
+
+%{__perl} -pi -e 's/-g|-O2//g' adm_lavcodec/Makefile
+%{__perl} -pi -e 's/charset=Unicode/charset=UTF-8/' po/ru.po
+
 %build
 %configure
-%{__make}
+%{__make} \
+	OPTFLAGS="%{rpmcflags}"
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -51,13 +60,12 @@ install -d $RPM_BUILD_ROOT
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-##%find_lang %{name}
+%find_lang %{name}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-##%files -f %{name}.lang
-%files
+%files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc README AUTHORS TODO
 %attr(755,root,root) %{_bindir}/*
