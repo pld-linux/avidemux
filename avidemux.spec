@@ -2,17 +2,17 @@ Summary:	A small audio/video editing software for Linux
 Summary(pl):	Ma³y edytor audio/wideo dla Linuksa
 Name:		avidemux
 Version:	2.0.40
-Release:	0.2
+Release:	1
 License:	GPL v2
 Group:		X11/Applications/Multimedia
 Source0:	http://download.berlios.de/avidemux/%{name}-%{version}.tar.gz
 # Source0-md5:	eed30487a2ae62f927c8a84dbc889e6d
 Source1:	%{name}.desktop
+Source2:	%{name}.png
 Patch0:		%{name}-autoconf.patch
 URL:		http://fixounet.free.fr/avidemux/
 BuildRequires:	SDL-devel
 BuildRequires:	a52dec-libs-devel
-BuildRequires:	alsa-lib-devel
 BuildRequires:	artsc-devel
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -28,8 +28,8 @@ BuildRequires:	libmpeg3-devel
 BuildRequires:	libstdc++-devel
 BuildRequires:	libvorbis-devel
 BuildRequires:	libxml2-devel
-BuildRequires:	perl-base
 BuildRequires:	pkgconfig
+BuildRequires:	sed >= 4.0
 BuildRequires:	xvid-devel >= 1:1.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -43,8 +43,8 @@ Ma³y edytor audio/wideo dla Linuksa.
 %setup -q
 %patch0 -p1
 
-%{__perl} -pi -e 's/charset=Unicode/charset=UTF-8/' po/ru.po
-%{__perl} -pi -e 's/klingon//' po/LINGUAS
+%{__sed} -i 's/charset=Unicode/charset=UTF-8/' po/ru.po
+%{__sed} -i 's/klingon//' po/LINGUAS
 
 %build
 cp /usr/share/automake/config.sub admin
@@ -53,17 +53,22 @@ cp /usr/share/automake/config.sub admin
 %{__autoheader}
 %{__automake}
 %{__autoconf}
-%configure
+%configure \
+%ifarch ppc
+	--enable-altivec \
+%endif
+	--disable-static
 %{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_desktopdir}
+install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir}}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}
+install %{SOURCE2} $RPM_BUILD_ROOT%{_pixmapsdir}
 
 %find_lang %{name}
 
@@ -71,8 +76,8 @@ install %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}
 rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
-#%files
 %defattr(644,root,root,755)
 %doc AUTHORS History
 %attr(755,root,root) %{_bindir}/*
 %{_desktopdir}/*.desktop
+%{_pixmapsdir}/*.png
