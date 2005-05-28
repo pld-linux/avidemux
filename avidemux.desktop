@@ -3,6 +3,7 @@ Name=avidemux
 Comment=Audio/video editing software
 Comment[pl]=Edytor audio/wideo
 Exec=avidemux2
+Icon=avidemux.png
 Terminal=false
 Type=Application
 Encoding=UTF-8
