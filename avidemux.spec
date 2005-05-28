@@ -13,6 +13,7 @@ Patch0:		%{name}-autoconf.patch
 URL:		http://fixounet.free.fr/avidemux/
 BuildRequires:	SDL-devel
 BuildRequires:	a52dec-libs-devel
+BuildRequires:	alsa-lib-devel >= 1.0
 BuildRequires:	artsc-devel
 BuildRequires:	autoconf
 BuildRequires:	automake
