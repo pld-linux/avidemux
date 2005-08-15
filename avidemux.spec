@@ -1,12 +1,12 @@
 Summary:	A small audio/video editing software for Linux
 Summary(pl):	Ma³y edytor audio/wideo dla Linuksa
 Name:		avidemux
-Version:	2.0.40
+Version:	2.0.42
 Release:	1
 License:	GPL v2
 Group:		X11/Applications/Multimedia
 Source0:	http://download.berlios.de/avidemux/%{name}-%{version}.tar.gz
-# Source0-md5:	eed30487a2ae62f927c8a84dbc889e6d
+# Source0-md5:	d30f1bb981767bca793d78067bcfe084
 Source1:	%{name}.desktop
 Source2:	%{name}.png
 Patch0:		%{name}-autoconf.patch
