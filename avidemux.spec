@@ -1,3 +1,9 @@
+# TODO
+# - buold errors on ppc:
+#postprocess_template.c: In function `vertX1Filter_altivec_template':
+#postprocess_template.c:516: error: can't convert between vector values of different size
+#make[3]: *** [postprocess.o] Error 1
+#
 Summary:	A small audio/video editing software for Linux
 Summary(pl):	Ma³y edytor audio/wideo dla Linuksa
 Name:		avidemux
