@@ -7,12 +7,12 @@
 Summary:	A small audio/video editing software for Linux
 Summary(pl):	Ma³y edytor audio/wideo dla Linuksa
 Name:		avidemux
-Version:	2.0.42
+Version:	2.1.0_step2
 Release:	1
 License:	GPL v2
 Group:		X11/Applications/Multimedia
-Source0:	http://download.berlios.de/avidemux/%{name}-%{version}.tar.gz
-# Source0-md5:	d30f1bb981767bca793d78067bcfe084
+Source0:	http://download.berlios.de/avidemux/%{name}_%{version}.tar.gz
+# Source0-md5:	aa79fb945718a622de35b8f481761d5e
 Source1:	%{name}.desktop
 Source2:	%{name}.png
 Patch0:		%{name}-autoconf.patch
@@ -28,7 +28,8 @@ BuildRequires:	faad2-devel
 BuildRequires:	ffmpeg-devel
 BuildRequires:	freetype-devel >= 2.0.0
 BuildRequires:	gettext-devel
-BuildRequires:	gtk+2-devel >= 1:2.0.0
+BuildRequires:	gtk+2-devel >= 1:2.6.0
+BuildRequires:	js-devel
 BuildRequires:	lame-libs-devel
 BuildRequires:	libmad-devel
 BuildRequires:	libmpeg3-devel
@@ -47,7 +48,7 @@ A small audio/video editing software for Linux.
 Ma³y edytor audio/wideo dla Linuksa.
 
 %prep
-%setup -q
+%setup -q -n %{name}_%{version}
 %patch0 -p1
 
 %{__sed} -i 's/charset=Unicode/charset=UTF-8/' po/ru.po
@@ -61,6 +62,7 @@ cp /usr/share/automake/config.sub admin
 %{__automake}
 %{__autoconf}
 %configure \
+	--with-jsapi-include=%{_includedir}/js \
 %ifarch ppc
 	--enable-altivec \
 %endif
