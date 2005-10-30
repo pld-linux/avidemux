@@ -1,15 +1,14 @@
-%define		_rc	step2
+%define		_rc	step3
 Summary:	A small audio/video editing software for Linux
 Summary(pl):	Ma³y edytor audio/wideo dla Linuksa
 Name:		avidemux
-Version:	2.1.0
+Version:	2.1
 Release:	0.%{_rc}.1
 License:	GPL v2
 Group:		X11/Applications/Multimedia
 Source0:	http://download.berlios.de/avidemux/%{name}_%{version}_%{_rc}.tar.gz
-# Source0-md5:	aa79fb945718a622de35b8f481761d5e
+# Source0-md5:	f4d90fd1a94002471dbb768d203846d2
 Source1:	%{name}.desktop
-Source2:	%{name}.png
 Patch0:		%{name}-autoconf.patch
 URL:		http://fixounet.free.fr/avidemux/
 BuildRequires:	SDL-devel
@@ -47,7 +46,7 @@ Ma³y edytor audio/wideo dla Linuksa.
 %patch0 -p1
 
 %{__sed} -i 's/charset=Unicode/charset=UTF-8/' po/ru.po
-%{__sed} -i 's/klingon//' po/LINGUAS
+%{__sed} -i 's/klingon/de\npt_BR/' po/LINGUAS
 
 %build
 cp /usr/share/automake/config.sub admin
@@ -72,7 +71,7 @@ install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir}}
 	DESTDIR=$RPM_BUILD_ROOT
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}
-install %{SOURCE2} $RPM_BUILD_ROOT%{_pixmapsdir}
+install avidemux_icon.png $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
 
 %find_lang %{name}
 
