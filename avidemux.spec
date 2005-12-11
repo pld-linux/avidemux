@@ -1,20 +1,13 @@
-# TODO
-# - buold errors on ppc:
-#postprocess_template.c: In function `vertX1Filter_altivec_template':
-#postprocess_template.c:516: error: can't convert between vector values of different size
-#make[3]: *** [postprocess.o] Error 1
-#
 Summary:	A small audio/video editing software for Linux
 Summary(pl):	Ma³y edytor audio/wideo dla Linuksa
 Name:		avidemux
-Version:	2.1.0_step2
+Version:	2.1.0
 Release:	1
 License:	GPL v2
 Group:		X11/Applications/Multimedia
-Source0:	http://download.berlios.de/avidemux/%{name}_%{version}.tar.gz
-# Source0-md5:	aa79fb945718a622de35b8f481761d5e
+Source0:	http://download.berlios.de/avidemux/%{name}-%{version}.tar.gz
+# Source0-md5:	524ce4f1f2b3683ab4f9ac25bf0d3ca4
 Source1:	%{name}.desktop
-Source2:	%{name}.png
 Patch0:		%{name}-autoconf.patch
 URL:		http://fixounet.free.fr/avidemux/
 BuildRequires:	SDL-devel
@@ -48,11 +41,11 @@ A small audio/video editing software for Linux.
 Ma³y edytor audio/wideo dla Linuksa.
 
 %prep
-%setup -q -n %{name}_%{version}
+%setup -q
 %patch0 -p1
 
 %{__sed} -i 's/charset=Unicode/charset=UTF-8/' po/ru.po
-%{__sed} -i 's/klingon//' po/LINGUAS
+%{__sed} -i 's/klingon/de\npt_BR/' po/LINGUAS
 
 %build
 cp /usr/share/automake/config.sub admin
@@ -62,10 +55,10 @@ cp /usr/share/automake/config.sub admin
 %{__automake}
 %{__autoconf}
 %configure \
-	--with-jsapi-include=%{_includedir}/js \
 %ifarch ppc
 	--enable-altivec \
 %endif
+	--with-jsapi-include=%{_includedir}/js \
 	--disable-static
 %{__make}
 
@@ -77,7 +70,7 @@ install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir}}
 	DESTDIR=$RPM_BUILD_ROOT
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}
-install %{SOURCE2} $RPM_BUILD_ROOT%{_pixmapsdir}
+install avidemux_icon.png $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
 
 %find_lang %{name}
 
