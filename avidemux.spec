@@ -58,6 +58,7 @@ cp /usr/share/automake/config.sub admin
 %ifarch ppc
 	--enable-altivec \
 %endif
+	--with-newfaad \
 	--with-jsapi-include=%{_includedir}/js \
 	--disable-static
 %{__make}
