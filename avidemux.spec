@@ -1,18 +1,20 @@
 Summary:	A small audio/video editing software for Linux
 Summary(pl):	Ma³y edytor audio/wideo dla Linuksa
 Name:		avidemux
-Version:	2.0.40
-Release:	1
+Version:	2.2
+%define		_rc	preview2
+Release:	0.%{_rc}.1
 License:	GPL v2
 Group:		X11/Applications/Multimedia
-Source0:	http://download.berlios.de/avidemux/%{name}-%{version}.tar.gz
-# Source0-md5:	eed30487a2ae62f927c8a84dbc889e6d
+Source0:	http://download.berlios.de/avidemux/%{name}_%{version}_%{_rc}b.tar.gz
+# Source0-md5:	d94efb83ffbdd8a2aa60226c842bc4aa
 Source1:	%{name}.desktop
-Source2:	%{name}.png
 Patch0:		%{name}-autoconf.patch
+Patch1:		%{name}-dts_internal.patch
 URL:		http://fixounet.free.fr/avidemux/
 BuildRequires:	SDL-devel
 BuildRequires:	a52dec-libs-devel
+BuildRequires:	alsa-lib-devel >= 1.0
 BuildRequires:	artsc-devel
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -21,8 +23,10 @@ BuildRequires:	faad2-devel
 BuildRequires:	ffmpeg-devel
 BuildRequires:	freetype-devel >= 2.0.0
 BuildRequires:	gettext-devel
-BuildRequires:	gtk+2-devel >= 1:2.0.0
+BuildRequires:	gtk+2-devel >= 1:2.6.0
+BuildRequires:	js-devel
 BuildRequires:	lame-libs-devel
+BuildRequires:	libdts-devel
 BuildRequires:	libmad-devel
 BuildRequires:	libmpeg3-devel
 BuildRequires:	libstdc++-devel
@@ -30,6 +34,7 @@ BuildRequires:	libvorbis-devel
 BuildRequires:	libxml2-devel
 BuildRequires:	pkgconfig
 BuildRequires:	sed >= 4.0
+BuildRequires:	xorg-lib-libXv-devel
 BuildRequires:	xvid-devel >= 1:1.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -40,11 +45,12 @@ A small audio/video editing software for Linux.
 Ma³y edytor audio/wideo dla Linuksa.
 
 %prep
-%setup -q
+%setup -q -n %{name}_%{version}_%{_rc}
 %patch0 -p1
+%patch1 -p1
 
 %{__sed} -i 's/charset=Unicode/charset=UTF-8/' po/ru.po
-%{__sed} -i 's/klingon//' po/LINGUAS
+%{__sed} -i 's/klingon/de\npt_BR/' po/LINGUAS
 
 %build
 cp /usr/share/automake/config.sub admin
@@ -53,11 +59,15 @@ cp /usr/share/automake/config.sub admin
 %{__autoheader}
 %{__automake}
 %{__autoconf}
+
 %configure \
 %ifarch ppc
 	--enable-altivec \
 %endif
+	--with-newfaad \
+	--with-jsapi-include=%{_includedir}/js \
 	--disable-static
+
 %{__make}
 
 %install
@@ -68,7 +78,7 @@ install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir}}
 	DESTDIR=$RPM_BUILD_ROOT
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}
-install %{SOURCE2} $RPM_BUILD_ROOT%{_pixmapsdir}
+install avidemux_icon.png $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
 
 %find_lang %{name}
 

@@ -1,0 +1,27 @@
+--- avidemux_2.2_preview2/avidemux/ADM_audiocodec/ADM_dca.cpp.orig	2006-05-07 14:17:12.000000000 +0000
++++ avidemux_2.2_preview2/avidemux/ADM_audiocodec/ADM_dca.cpp	2006-06-26 08:26:01.591646500 +0000
+@@ -31,8 +31,6 @@
+ extern "C"
+ {
+ #include "dts.h"
+-#include "dts_internal.h"
+-
+ }
+ #include "ADM_audio/ADM_dcainfo.h"
+ 
+--- avidemux_2.2_preview2/configure.in.orig	2006-06-19 19:25:24.000000000 +0000
++++ avidemux_2.2_preview2/configure.in	2006-06-26 08:33:11.906539500 +0000
+@@ -546,12 +546,7 @@
+     have_libdca=yes
+     AC_CHECK_HEADERS([dts.h], , have_libdca=no)
+     if test "x$have_libdca" = "xyes"; then
+-    	AC_CHECK_HEADERS([dts_internal.h], , have_libdca=no)
+-    	if test "x$have_libdca" = "xyes"; then
+-            AC_CHECK_LIB( dts, dts_init, , have_libdca=no )
+-	else
+-    	AC_MSG_WARN(dts.h is there but i also need dts_internal.h to compile libdca/libdts. Please copy dts_internal.h where dts.h is)
+-    	fi
++        AC_CHECK_LIB( dts, dts_init, , have_libdca=no )
+     fi
+     if test "x$have_libdca" = "xyes"; then
+             AC_DEFINE(USE_LIBDCA, 1, "[libDCA]")
