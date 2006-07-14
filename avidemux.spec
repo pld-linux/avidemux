@@ -3,7 +3,7 @@ Summary(pl):	Ma³y edytor audio/wideo dla Linuksa
 Name:		avidemux
 Version:	2.2
 %define		_rc	preview2
-Release:	0.%{_rc}.1
+Release:	0.%{_rc}.2
 License:	GPL v2
 Group:		X11/Applications/Multimedia
 Source0:	http://download.berlios.de/avidemux/%{name}_%{version}_%{_rc}b.tar.gz
