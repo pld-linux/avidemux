@@ -1,13 +1,13 @@
 Summary:	A small audio/video editing software for Linux
 Summary(pl):	Ma³y edytor audio/wideo dla Linuksa
 Name:		avidemux
-Version:	2.2
-%define		_rc	preview2
-Release:	0.%{_rc}.2
+Version:	2.3
+%define		_rc	preview1
+Release:	0.%{_rc}.1
 License:	GPL v2
 Group:		X11/Applications/Multimedia
-Source0:	http://download.berlios.de/avidemux/%{name}_%{version}_%{_rc}b.tar.gz
-# Source0-md5:	d94efb83ffbdd8a2aa60226c842bc4aa
+Source0:	http://download.berlios.de/avidemux/%{name}_%{version}_%{_rc}.tar.gz
+# Source0-md5:	2fa36e5e0065a2dc429868d71c40ea04
 Source1:	%{name}.desktop
 Patch0:		%{name}-autoconf.patch
 Patch1:		%{name}-dts_internal.patch
@@ -24,7 +24,7 @@ BuildRequires:	ffmpeg-devel
 BuildRequires:	freetype-devel >= 2.0.0
 BuildRequires:	gettext-devel
 BuildRequires:	gtk+2-devel >= 1:2.6.0
-BuildRequires:	js-devel
+BuildRequires:	js-devel(threads)
 BuildRequires:	lame-libs-devel
 BuildRequires:	libdts-devel
 BuildRequires:	libmad-devel
@@ -36,6 +36,7 @@ BuildRequires:	pkgconfig
 BuildRequires:	sed >= 4.0
 BuildRequires:	xorg-lib-libXv-devel
 BuildRequires:	xvid-devel >= 1:1.0
+Requires:	js(threads)
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -47,18 +48,19 @@ Ma³y edytor audio/wideo dla Linuksa.
 %prep
 %setup -q -n %{name}_%{version}_%{_rc}
 %patch0 -p1
-%patch1 -p1
+%patch1 -p0
 
 %{__sed} -i 's/charset=Unicode/charset=UTF-8/' po/ru.po
 %{__sed} -i 's/klingon/de\npt_BR/' po/LINGUAS
 
 %build
 cp /usr/share/automake/config.sub admin
-%{__gettextize}
-%{__aclocal} -I m4
-%{__autoheader}
-%{__automake}
-%{__autoconf}
+%{__make} -f admin/Makefile.common
+#%{__gettextize}
+#%{__aclocal} -I m4
+#%{__autoheader}
+#%{__automake}
+#%{__autoconf}
 
 %configure \
 %ifarch ppc
