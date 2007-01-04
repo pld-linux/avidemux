@@ -1,7 +1,8 @@
---- avidemux-2.0.22/admin/detect-autoconf.sh-oryg	2004-01-30 20:29:34.000000000 +0100
-+++ avidemux-2.0.22/admin/detect-autoconf.sh	2004-03-06 23:56:20.897642888 +0100
-@@ -19,16 +19,16 @@
-     AUTOCONF="`$WHICH autoconf-2.53`"
+diff -urN avidemux-2.1.2.org/admin/detect-autoconf.sh avidemux-2.1.2/admin/detect-autoconf.sh
+--- avidemux-2.1.2.org/admin/detect-autoconf.sh	2005-07-02 14:41:15.000000000 +0200
++++ avidemux-2.1.2/admin/detect-autoconf.sh	2007-01-04 17:16:16.539072500 +0100
+@@ -21,16 +21,16 @@
+     AUTOCONF="`$WHICH autoconf253`"
    elif test -x "`$WHICH autoconf-2.52`" ; then
      AUTOCONF="`$WHICH autoconf-2.52`"
 -  elif test -x "`$WHICH autoconf2.50`" ; then
@@ -22,7 +23,7 @@
    elif test -x "`$WHICH autoheader-2.53`" ; then
      AUTOHEADER="`$WHICH autoheader-2.53`"
      AUTOM4TE="`$WHICH autom4te-2.53`"
-@@ -42,9 +42,9 @@
+@@ -47,9 +47,9 @@
  checkAutomakeAclocal ()
  {
    if test -z "$UNSERMAKE"; then
@@ -35,3 +36,39 @@
      elif test -x "`$WHICH automake-1.7`" ; then
        AUTOMAKE="`$WHICH automake-1.7`"
        ACLOCAL="`$WHICH aclocal-1.7`"
+diff -urN avidemux-2.1.2.org/admin/detect-autoconf.sh.orig avidemux-2.1.2/admin/detect-autoconf.sh.orig
+diff -urN avidemux-2.1.2.org/configure.in avidemux-2.1.2/configure.in
+--- avidemux-2.1.2.org/configure.in.in	2006-03-01 22:33:35.000000000 +0100
++++ avidemux-2.1.2/configure.in.in	2007-01-04 17:20:59.936783750 +0100
+@@ -37,9 +37,14 @@
+ 
+ dnl Perform program name transformation
+ AC_ARG_PROGRAM
++
++AC_GNU_SOURCE
++
+ dnl Automake doc recommends to do this only here. (Janos)
+ AM_INIT_AUTOMAKE(avidemux,2.1.2)
+ 
++AM_PROG_AS
++
+ dnl almost the same like KDE_SET_PEFIX but the path is /usr/local
+ dnl
+ unset CDPATH
+@@ -54,7 +59,6 @@
+ dnl
+ AM_CONFIG_HEADER(config.h)
+ 
+-
+ dnl create only shared libtool-libraries
+ AC_ENABLE_SHARED(no)
+ 
+@@ -79,7 +83,7 @@
+ 
+ CPPFLAGS="  $USER_INCLUDES  $CPPFLAGS"
+ dnl __________gettext_________________
+-AM_GNU_GETTEXT( [external])
++AM_GNU_GETTEXT
+ GETTEXT_PACKAGE=avidemux
+ AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], "$GETTEXT_PACKAGE",
+                    [gettext package name])
