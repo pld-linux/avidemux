@@ -40,7 +40,7 @@ diff -urN avidemux-2.1.2.org/admin/detect-autoconf.sh.orig avidemux-2.1.2/admin/
 diff -urN avidemux-2.1.2.org/configure.in avidemux-2.1.2/configure.in
 --- avidemux-2.1.2.org/configure.in.in	2006-03-01 22:33:35.000000000 +0100
 +++ avidemux-2.1.2/configure.in.in	2007-01-04 17:20:59.936783750 +0100
-@@ -37,9 +37,14 @@
+@@ -37,9 +37,15 @@
  
  dnl Perform program name transformation
  AC_ARG_PROGRAM
@@ -48,21 +48,14 @@ diff -urN avidemux-2.1.2.org/configure.in avidemux-2.1.2/configure.in
 +AC_GNU_SOURCE
 +
  dnl Automake doc recommends to do this only here. (Janos)
- AM_INIT_AUTOMAKE(avidemux,2.1.2)
- 
+ AM_INIT_AUTOMAKE(avidemux,"2.3.0")
+ ADM_SUBVERSION="0"
++
 +AM_PROG_AS
 +
  dnl almost the same like KDE_SET_PEFIX but the path is /usr/local
  dnl
  unset CDPATH
-@@ -54,7 +59,6 @@
- dnl
- AM_CONFIG_HEADER(config.h)
- 
--
- dnl create only shared libtool-libraries
- AC_ENABLE_SHARED(no)
- 
 @@ -79,7 +83,7 @@
  
  CPPFLAGS="  $USER_INCLUDES  $CPPFLAGS"
