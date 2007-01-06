@@ -1,0 +1,32 @@
+--- avidemux_2.3.0/avidemux/Makefile.am.orig	2007-01-04 14:35:01.000000000 +0000
++++ avidemux_2.3.0/avidemux/Makefile.am	2007-01-04 14:35:08.000000000 +0000
+@@ -74,7 +74,7 @@
+ ./ADM_matroska/libADM_matroska.a   \
+ ./ADM_asf/libADM_asf.a   \
+ ./ADM_h263/libADM_h263.a   \
+-./ADM_nuv/libADM_nuv.a  ./ADM_ogm/libADM_ogm.a ./ADM_audiodevice/libADM_audiodevice.a \
++./ADM_nuv/libADM_nuv.a  ./ADM_ogm/libADM_ogm.a ./ADM_audiodevice/libADM_audiodevice.la \
+ ./ADM_xvidratectl/libADM_xvidratectl.a  \
+ ./ADM_requant/libADM_requant.a \
+ ./ADM_ocr/libADM_ocr.a \
+--- avidemux_2.3.0/avidemux/ADM_audiodevice/Makefile.am.orig	2007-01-04 14:25:24.000000000 +0000
++++ avidemux_2.3.0/avidemux/ADM_audiodevice/Makefile.am	2007-01-04 14:26:39.000000000 +0000
+@@ -1,14 +1,15 @@
+ ####### kdevelop will overwrite this part!!! (begin)##########
+-noinst_LIBRARIES = libADM_audiodevice.a
++noinst_LTLIBRARIES = libADM_audiodevice.la
+ 
+ ## INCLUDES were found outside kdevelop specific part
+ 
+-libADM_audiodevice_a_METASOURCES = AUTO
++libADM_audiodevice_la_METASOURCES = AUTO
+ 
+-libADM_audiodevice_a_SOURCES = ADM_deviceArts.cpp ADM_audiodevice.cpp \
++libADM_audiodevice_la_SOURCES = ADM_deviceArts.cpp ADM_audiodevice.cpp \
+ 	ADM_deviceoss.cpp ADM_deviceALSA.cpp ADM_deviceALSA.h ADM_deviceAudioCore.cpp \
+ 	ADM_deviceSDL.cpp ADM_deviceWin32.cpp ADM_deviceEsd.cpp
+ 
++libADM_audiodevice_la_LIBADD = $(ARTS_LIBS)
+ 
+ EXTRA_DIST = ADM_audiodevice.cpp  ADM_deviceArts.cpp       \
+ ADM_deviceEsd.cpp  ADM_deviceWin32.cpp  audio_out.h \
