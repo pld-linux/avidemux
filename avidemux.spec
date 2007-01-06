@@ -53,14 +53,9 @@ Ma³y edytor audio/wideo dla Linuksa.
 %{__sed} -i 's/klingon/de\npt_BR/' po/LINGUAS
 
 %build
-cp /usr/share/automake/config.sub admin
-%{__make} -f admin/Makefile.common
-#%{__gettextize}
-#%{__aclocal} -I m4
-#%{__autoheader}
-#%{__automake}
-#%{__autoconf}
-
+export kde_htmldir=%{_kdedocdir}
+export kde_libs_htmldir=%{_kdedocdir}
+%{__make} -f admin/Makefile.common cvs
 %configure \
 %ifarch ppc
 	--enable-altivec \
