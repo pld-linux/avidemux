@@ -60,7 +60,6 @@ export kde_libs_htmldir=%{_kdedocdir}
 %ifarch ppc
 	--enable-altivec \
 %endif
-	--with-newfaad \
 	--with-jsapi-include=%{_includedir}/js \
 	--disable-static
 
