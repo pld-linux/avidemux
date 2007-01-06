@@ -1,12 +1,11 @@
 Summary:	A small audio/video editing software for Linux
 Summary(pl):	Ma³y edytor audio/wideo dla Linuksa
 Name:		avidemux
-Version:	2.3
-%define		_rc	preview1
-Release:	0.%{_rc}.1
+Version:	2.3.0
+Release:	1
 License:	GPL v2
 Group:		X11/Applications/Multimedia
-Source0:	http://download.berlios.de/avidemux/%{name}_%{version}_%{_rc}.tar.gz
+Source0:	http://download.berlios.de/avidemux/%{name}_%{version}.tar.gz
 # Source0-md5:	2fa36e5e0065a2dc429868d71c40ea04
 Source1:	%{name}.desktop
 Patch0:		%{name}-autoconf.patch
@@ -46,7 +45,7 @@ A small audio/video editing software for Linux.
 Ma³y edytor audio/wideo dla Linuksa.
 
 %prep
-%setup -q -n %{name}_%{version}_%{_rc}
+%setup -q -n %{name}_%{version}
 %patch0 -p1
 %patch1 -p0
 
