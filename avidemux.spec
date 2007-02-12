@@ -1,5 +1,5 @@
 Summary:	A small audio/video editing software for Linux
-Summary(pl.UTF-8):   Mały edytor audio/wideo dla Linuksa
+Summary(pl.UTF-8):	Mały edytor audio/wideo dla Linuksa
 Name:		avidemux
 Version:	2.3.0
 Release:	1
