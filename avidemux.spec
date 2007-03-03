@@ -35,7 +35,6 @@ BuildRequires:	libvorbis-devel
 BuildRequires:	libxml2-devel
 BuildRequires:	pkgconfig
 BuildRequires:	sed >= 4.0
-BuildRequires:	xorg-lib-libXv-devel
 BuildRequires:	xvid-devel >= 1:1.0
 Requires:	js(threads)
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
