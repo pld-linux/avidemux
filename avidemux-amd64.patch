@@ -1,0 +1,21 @@
+diff -ur avidemux_2.3.0.orig/admin/config.sub avidemux_2.3.0/admin/config.sub
+--- avidemux_2.3.0.orig/admin/config.sub	2007-03-17 15:23:39.000000000 +0100
++++ avidemux_2.3.0/admin/config.sub	2007-03-17 15:24:07.000000000 +0100
+@@ -267,7 +267,7 @@
+ 	# We use `pc' rather than `unknown'
+ 	# because (1) that's what they normally are, and
+ 	# (2) the word "unknown" tends to confuse beginning users.
+-	i*86 | x86_64)
++	i*86 | x86_64 | amd64)
+ 	  basic_machine=$basic_machine-pc
+ 	  ;;
+ 	# Object if more than one company name word.
+@@ -311,7 +311,7 @@
+ 	| t3e-* | tahoe-* | thumb-* | tic30-* | tic54x-* | tic80-* | tron-* \
+ 	| v850-* | v850e-* | vax-* \
+ 	| we32k-* \
+-	| x86-* | x86_64-* | xmp-* | xps100-* | xscale-* | xstormy16-* \
++	| x86-* | x86_64-* | amd64-* | xmp-* | xps100-* | xscale-* | xstormy16-* \
+ 	| xtensa-* \
+ 	| ymp-* \
+ 	| z8k-*)
