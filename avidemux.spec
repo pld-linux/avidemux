@@ -2,7 +2,7 @@ Summary:	A small audio/video editing software for Linux
 Summary(pl):	Ma³y edytor audio/wideo dla Linuksa
 Name:		avidemux
 Version:	2.3.0
-Release:	1
+Release:	2
 License:	GPL v2
 Group:		X11/Applications/Multimedia
 Source0:	http://download2.berlios.de/avidemux/%{name}_%{version}.tar.gz
@@ -12,6 +12,7 @@ Patch0:		%{name}-autoconf.patch
 Patch1:		%{name}-dts_internal.patch
 Patch2:		%{name}-compile.patch
 Patch3:		%{name}-as_needed.patch
+Patch4:		%{name}-amd64.patch
 URL:		http://fixounet.free.fr/avidemux/
 BuildRequires:	SDL-devel
 BuildRequires:	a52dec-libs-devel
@@ -51,6 +52,7 @@ Ma³y edytor audio/wideo dla Linuksa.
 %patch1 -p0
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 %{__sed} -i 's/charset=Unicode/charset=UTF-8/' po/ru.po
 %{__sed} -i 's/klingon/de\npt_BR/' po/LINGUAS
@@ -59,6 +61,7 @@ Ma³y edytor audio/wideo dla Linuksa.
 export kde_htmldir=%{_kdedocdir}
 export kde_libs_htmldir=%{_kdedocdir}
 %{__make} -f admin/Makefile.common cvs
+LDFLAGS="%{rpmldflags} -L/usr/X11R6/%{_lib}"
 %configure \
 %ifarch ppc
 	--enable-altivec \
