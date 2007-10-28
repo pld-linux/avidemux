@@ -67,7 +67,7 @@ export kde_libs_htmldir=%{_kdedocdir}
 	--with-jsapi-include=%{_includedir}/js \
 	--disable-static
 
-%{__make}
+%{__make} -j1
 
 %install
 rm -rf $RPM_BUILD_ROOT
