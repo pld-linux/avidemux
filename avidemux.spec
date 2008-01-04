@@ -12,6 +12,7 @@ Source0:	http://download2.berlios.de/avidemux/%{name}_%{version}.tar.gz
 # Source0-md5:	2a752b9f6bab4123566894a6a21b353b
 Source1:	%{name}.desktop
 Patch0:		%{name}-autoconf.patch
+Patch1:		%{name}-dts_internal.patch
 URL:		http://fixounet.free.fr/avidemux/
 BuildRequires:	SDL-devel
 BuildRequires:	a52dec-libs-devel
@@ -49,6 +50,7 @@ Mały edytor audio/wideo dla Linuksa.
 %prep
 %setup -q -n %{name}_%{version}
 %patch0 -p1
+%patch1 -p0
 
 %{__sed} -i 's/charset=Unicode/charset=UTF-8/' po/ru.po
 %{__sed} -i 's/klingon/de\npt_BR/' po/LINGUAS
