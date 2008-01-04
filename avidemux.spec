@@ -3,14 +3,14 @@
 #	- create aften.spec (aften.sf.net) and use it
 #
 # Conditional build:
-%bcond_with	amrnb		# enable 3GPP Adaptive Multi Rate (AMR) speech codec support
+%bcond_with	amr	# enable 3GPP Adaptive Multi Rate (AMR) speech codec support
 #
 Summary:	A small audio/video editing software for Linux
 Summary(pl.UTF-8):	Mały edytor audio/wideo dla Linuksa
 Name:		avidemux
 Version:	2.4
 Release:	1
-License:	GPL v2
+License:	GPL v2+
 Group:		X11/Applications/Multimedia
 Source0:	http://download2.berlios.de/avidemux/%{name}_%{version}.tar.gz
 # Source0-md5:	2a752b9f6bab4123566894a6a21b353b
@@ -21,7 +21,7 @@ URL:		http://fixounet.free.fr/avidemux/
 BuildRequires:	SDL-devel
 BuildRequires:	a52dec-libs-devel
 BuildRequires:	alsa-lib-devel >= 1.0
-%{?with_amrnb:BuildRequires:	amrnb-devel}
+%{?with_amr:BuildRequires:	amrnb-devel}
 BuildRequires:	artsc-devel
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -58,23 +58,25 @@ Mały edytor audio/wideo dla Linuksa.
 %patch0 -p1
 %patch1 -p0
 
-%{__sed} -i 's/charset=Unicode/charset=UTF-8/' po/ru.po
-%{__sed} -i 's/klingon/de\npt_BR/' po/LINGUAS
+echo 'pt_BR' >> po/LINGUAS
 
 %build
 export kde_htmldir=%{_kdedocdir}
 export kde_libs_htmldir=%{_kdedocdir}
 %{__make} -f admin/Makefile.common cvs
 %configure \
+	%{!?with_amr:ac_cv_header_amrnb_interf_dec_h=no} \
+	--disable-static \
 %ifarch ppc
 	--enable-altivec \
 %endif
-	--with-jsapi-include=%{_includedir}/js \
-	--disable-static
+	--with-jsapi-include=%{_includedir}/js
+# moc-qt4 expected
+#	--with-qt-dir=%{_prefix} \
+#	--with-qt-include=%{_includedir}/qt4 \
+#	--with-qt-lib=%{_libdir}
 
-cd po
-%{__make} -j1
-cd ..
+%{__make} -j1 -C po
 %{__make}
 
 %install
