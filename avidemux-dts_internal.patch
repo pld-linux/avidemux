@@ -1,0 +1,19 @@
+--- configure.in.in	2006-09-21 19:51:13.000000000 +0200
++++ configure.in.in-new	2006-09-27 14:27:00.529197512 +0200
+@@ -585,15 +585,7 @@
+     AC_CHECK_HEADERS([dts.h], , have_libdca=no)
+     
+     if test "x$have_libdca" = "xyes"; then
+-    	AC_CHECK_HEADERS([dts_internal.h], , have_libdca=no)
+-    	
+-    	if test "x$have_libdca" = "xyes"; then
+-    		if test "x$use_late_binding" = "xno"; then
+-				AC_CHECK_LIB(dts, dts_init, , have_libdca=no)
+-			fi
+-		else
+-    		AC_MSG_WARN(dts.h is there but I also need dts_internal.h to compile libdca/libdts. Please copy dts_internal.h where dts.h is)
+-    	fi
++	AC_CHECK_LIB( dts, dts_init, , have_libdca=no )
+     fi
+     
+     if test "x$have_libdca" = "xyes"; then
