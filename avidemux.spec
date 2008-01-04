@@ -1,8 +1,11 @@
+# TODO:
+#	- create aften.spec (aften.sf.net) and use it
+#
 Summary:	A small audio/video editing software for Linux
 Summary(pl.UTF-8):	Mały edytor audio/wideo dla Linuksa
 Name:		avidemux
 Version:	2.4
-Release:	0.1
+Release:	1
 License:	GPL v2
 Group:		X11/Applications/Multimedia
 Source0:	http://download2.berlios.de/avidemux/%{name}_%{version}.tar.gz
@@ -81,6 +84,7 @@ rm -rf $RPM_BUILD_ROOT
 %files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc AUTHORS History
-%attr(755,root,root) %{_bindir}/*
+%attr(755,root,root) %{_bindir}/avidemux2_cli
+%attr(755,root,root) %{_bindir}/avidemux2_gtk
 %{_desktopdir}/*.desktop
 %{_pixmapsdir}/*.png
