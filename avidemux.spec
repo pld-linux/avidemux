@@ -1,5 +1,9 @@
 # TODO:
+#	- build qt4 interface
 #	- create aften.spec (aften.sf.net) and use it
+#
+# Conditional build:
+%bcond_with	amrnb		# enable 3GPP Adaptive Multi Rate (AMR) speech codec support
 #
 Summary:	A small audio/video editing software for Linux
 Summary(pl.UTF-8):	Mały edytor audio/wideo dla Linuksa
@@ -17,6 +21,7 @@ URL:		http://fixounet.free.fr/avidemux/
 BuildRequires:	SDL-devel
 BuildRequires:	a52dec-libs-devel
 BuildRequires:	alsa-lib-devel >= 1.0
+%{?with_amrnb:BuildRequires:	amrnb-devel}
 BuildRequires:	artsc-devel
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -33,6 +38,7 @@ BuildRequires:	libmad-devel
 BuildRequires:	libmpeg3-devel
 BuildRequires:	libstdc++-devel
 BuildRequires:	libvorbis-devel
+BuildRequires:	libx264-devel
 BuildRequires:	libxml2-devel
 BuildRequires:	pkgconfig
 BuildRequires:	sed >= 4.0
@@ -66,6 +72,9 @@ export kde_libs_htmldir=%{_kdedocdir}
 	--with-jsapi-include=%{_includedir}/js \
 	--disable-static
 
+cd po
+%{__make} -j1
+cd ..
 %{__make}
 
 %install
