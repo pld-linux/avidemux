@@ -45,7 +45,7 @@ Mały edytor audio/wideo dla Linuksa.
 
 %prep
 %setup -q -n %{name}_%{version}
-#patch0 -p1
+%patch0 -p1
 
 %{__sed} -i 's/charset=Unicode/charset=UTF-8/' po/ru.po
 %{__sed} -i 's/klingon/de\npt_BR/' po/LINGUAS
