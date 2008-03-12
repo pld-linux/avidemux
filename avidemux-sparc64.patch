@@ -1,0 +1,28 @@
+--- avidemux_2.4/configure.in.in.orig	2008-03-12 08:25:07.000000000 +0000
++++ avidemux_2.4/configure.in.in	2008-03-12 08:30:16.000000000 +0000
+@@ -1165,7 +1165,7 @@
+ 		AC_DEFINE(HAVE_FAST_64BIT,1,"FFMPEG")
+ 		echo "IA64"
+ 		;;
+-	sparc|sparc64)
++	sparc)
+ 		have_little_endian=no;
+ 		LMPG_OPT="";
+ 		AC_DEFINE(ADM_BIG_ENDIAN,1,[Big endian CPU - SPARC or PowerPC])
+@@ -1174,6 +1174,16 @@
+ 		AC_DEFINE(ENABLE_MMX,0,[post proc])
+ 		AC_DEFINE(HAVE_FAST_64BIT,1,"FFMPEG")
+ 		;;		
++	sparc64)
++		have_little_endian=no;
++		LMPG_OPT="";
++		AC_DEFINE(ARCH_64_BITS,1,"SPARC64 assembly")
++		AC_DEFINE(ADM_BIG_ENDIAN,1,[Big endian CPU - SPARC or PowerPC])
++		AC_DEFINE(FPM_SPARC,1,[Mad ])
++		AC_DEFINE(WORDS_BIGENDIAN,1,[Big endian CPU - SPARC or PowerPC])
++		AC_DEFINE(ENABLE_MMX,0,[post proc])
++		AC_DEFINE(HAVE_FAST_64BIT,1,"FFMPEG")
++		;;		
+ 	sun4u)
+ 		LDFLAGS="$LDFLAGS -lposix4";
+ 		have_little_endian=no;
