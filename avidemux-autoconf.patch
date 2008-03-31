@@ -46,7 +46,7 @@ diff -urN avidemux-2.1.2.org/configure.in avidemux-2.1.2/configure.in
  AC_ARG_PROGRAM
 +AC_GNU_SOURCE
  dnl Automake doc recommends to do this only here. (Janos)
- AM_INIT_AUTOMAKE(avidemux,"2.4.0i (r3731)")
+ AM_INIT_AUTOMAKE(avidemux,"2.4.1")
 +AM_PROG_AS
  ADM_SUBVERSION="0"
  
