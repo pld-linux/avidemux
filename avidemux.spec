@@ -1,9 +1,9 @@
 # TODO:
-#	- build qt4 interface
 #	- create aften.spec (aften.sf.net) and use it
 #
 # Conditional build:
 %bcond_with	amr	# enable 3GPP Adaptive Multi Rate (AMR) speech codec support
+%bcond_with	qt	# build qt4-base interface
 #
 Summary:	A small audio/video editing software for Linux
 Summary(pl.UTF-8):	Mały edytor audio/wideo dla Linuksa
@@ -38,10 +38,13 @@ BuildRequires:	libdts-devel
 BuildRequires:	libmad-devel
 BuildRequires:	libmpeg3-devel
 BuildRequires:	libstdc++-devel
+BuildRequires:	libtool
 BuildRequires:	libvorbis-devel
 BuildRequires:	libx264-devel
 BuildRequires:	libxml2-devel
 BuildRequires:	pkgconfig
+%{?with_qt:BuildRequires:	QtGui-devel}
+%{?with_qt:BuildRequires:	qt4-build}
 BuildRequires:	sed >= 4.0
 BuildRequires:	xorg-lib-libXv-devel
 BuildRequires:	xvid-devel >= 1:1.0
@@ -66,17 +69,22 @@ echo 'pt_BR' >> po/LINGUAS
 export kde_htmldir=%{_kdedocdir}
 export kde_libs_htmldir=%{_kdedocdir}
 %{__make} -f admin/Makefile.common cvs
+%{__libtoolize}
+%{__aclocal} -I m4
+%{__automake}
+%{__autoconf}
 %configure \
 	%{!?with_amr:ac_cv_header_amrnb_interf_dec_h=no} \
 	--disable-static \
 %ifarch ppc
 	--enable-altivec \
 %endif
-	--with-jsapi-include=%{_includedir}/js
-# moc-qt4 expected
-#	--with-qt-dir=%{_prefix} \
-#	--with-qt-include=%{_includedir}/qt4 \
-#	--with-qt-lib=%{_libdir}
+	--with-jsapi-include=%{_includedir}/js \
+%if %{with qt}
+	--with-qt-dir=%{_prefix} \
+	--with-qt-include=%{_includedir}/qt4 \
+	--with-qt-lib=%{_libdir}
+%endif
 
 %{__make} -j1 -C po
 %{__make}
@@ -101,5 +109,6 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS History
 %attr(755,root,root) %{_bindir}/avidemux2_cli
 %attr(755,root,root) %{_bindir}/avidemux2_gtk
+%{?with_qt:%attr(755,root,root) %{_bindir}/avidemux2_qt4}
 %{_desktopdir}/*.desktop
 %{_pixmapsdir}/*.png
