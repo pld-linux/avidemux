@@ -18,6 +18,7 @@ Source1:	%{name}.desktop
 Patch0:		%{name}-autoconf.patch
 Patch1:		%{name}-dts_internal.patch
 Patch2:		%{name}-sparc64.patch
+Patch3:		%{name}-c++.patch
 URL:		http://fixounet.free.fr/avidemux/
 BuildRequires:	SDL-devel
 BuildRequires:	a52dec-libs-devel
@@ -62,6 +63,7 @@ Mały edytor audio/wideo dla Linuksa.
 %patch0 -p1
 %patch1 -p0
 %patch2 -p1
+%patch3 -p1
 
 echo 'pt_BR' >> po/LINGUAS
 
