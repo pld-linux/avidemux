@@ -6,7 +6,7 @@
 %bcond_without	arts	# without arts audio output
 %bcond_with	amr	# enable 3GPP Adaptive Multi Rate (AMR) speech codec support
 %bcond_with	qt	# build qt4-base interface
-%bcond_with	sse3	# use SSE3 instructions
+%bcond_with	ssse3	# use SSSE3 instructions
 #
 %ifarch pentium4 %{x8664}
 %define		with_sse3	1
@@ -25,7 +25,6 @@ Source1:	%{name}.desktop
 Patch0:		%{name}-autoconf.patch
 Patch1:		%{name}-dts_internal.patch
 Patch2:		%{name}-sparc64.patch
-Patch3:		%{name}-c++.patch
 URL:		http://fixounet.free.fr/avidemux/
 BuildRequires:	SDL-devel
 BuildRequires:	a52dec-libs-devel
@@ -73,7 +72,6 @@ Mały edytor audio/wideo dla Linuksa.
 %patch0 -p1
 %patch1 -p0
 %patch2 -p1
-#%patch3 -p1
 
 echo 'pt_BR' >> po/LINGUAS
 
@@ -91,7 +89,7 @@ echo 'pt_BR' >> po/LINGUAS
 %ifarch ppc
 	--enable-altivec \
 %endif
-	%{?with_sse3:--enable-ssse3} \
+	%{?with_ssse3:--enable-ssse3} \
 %if %{with qt}
 	--with-qt-dir=%{_prefix} \
 	--with-qt-include=%{_includedir}/qt4 \
