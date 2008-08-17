@@ -36,22 +36,20 @@ diff -urN avidemux-2.1.2.org/admin/detect-autoconf.sh avidemux-2.1.2/admin/detec
      elif test -x "`$WHICH automake-1.7`" ; then
        AUTOMAKE="`$WHICH automake-1.7`"
        ACLOCAL="`$WHICH aclocal-1.7`"
-diff -urN avidemux-2.1.2.org/admin/detect-autoconf.sh.orig avidemux-2.1.2/admin/detect-autoconf.sh.orig
-diff -urN avidemux-2.1.2.org/configure.in avidemux-2.1.2/configure.in
---- avidemux-2.1.2.org/configure.in.in	2006-03-01 22:33:35.000000000 +0100
-+++ avidemux-2.1.2/configure.in.in	2007-01-04 17:20:59.936783750 +0100
+--- avidemux_2.4.3/configure.in.in.orig	2008-07-23 20:58:15.000000000 +0200
++++ avidemux_2.4.3/configure.in.in	2008-08-17 01:02:19.000000000 +0200
 @@ -37,8 +37,10 @@
  
  dnl Perform program name transformation
  AC_ARG_PROGRAM
 +AC_GNU_SOURCE
  dnl Automake doc recommends to do this only here. (Janos)
- AM_INIT_AUTOMAKE(avidemux,"2.4.1")
+ AM_INIT_AUTOMAKE(avidemux,"2.4.3")
 +AM_PROG_AS
  ADM_SUBVERSION="0"
  
  if [[ -f .svn/entries ]]; then
-@@ -79,7 +83,7 @@
+@@ -128,7 +130,7 @@
  
  
  dnl _________________ gettext _________________
@@ -60,3 +58,13 @@ diff -urN avidemux-2.1.2.org/configure.in avidemux-2.1.2/configure.in
  GETTEXT_PACKAGE=avidemux
  AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], "$GETTEXT_PACKAGE", [gettext package name])
  ADM_LOCALEDIR=${datadir}/locale
+@@ -247,7 +249,8 @@
+   *)
+     AC_MSG_NOTICE(I'm assuming this is Linux)
+     AC_PATH_XTRA
+-    QTLIBS="-Wl,-rpath,$QTEXTRALIB -L$QTEXTRALIB -lQtGui  -lQtCore $X_LIBS -lX11 -lXext -lXmu -lXt -lXi $X_EXTRA_LIBS  -lpthread"
++    QTLIBS=`$PKG_CONFIG QtGui --libs`
++    QTLIBS="-Wl,-rpath,$QTEXTRALIB -L$QTEXTRALIB $X_EXTRA_LIBS $QTLIBS"
+     QTINC="-I$QTEXTRAINC -I$QTEXTRAINC/QtGui -I$QTEXTRAINC/QtCore -I$QTEXTRAINC/QtOpenGL $X_CFLAGS -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_SHARED -I$QTEXTRAINC"
+     QTBIN="$QTDIR/bin"
+     ;;
