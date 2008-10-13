@@ -76,6 +76,7 @@ Mały edytor audio/wideo dla Linuksa.
 echo 'pt_BR' >> po/LINGUAS
 
 %build
+%{__cp} /usr/share/aclocal/libtool.m4 admin/libtool.m4.in
 %{__make} -f admin/Makefile.common cvs
 %{__libtoolize}
 %{__aclocal} -I m4
