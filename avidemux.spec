@@ -15,17 +15,16 @@
 Summary:	A small audio/video editing software for Linux
 Summary(pl.UTF-8):	Mały edytor audio/wideo dla Linuksa
 Name:		avidemux
-Version:	2.4.3
-Release:	4
+Version:	2.4.4
+Release:	1
 License:	GPL v2+
 Group:		X11/Applications/Multimedia
-Source0:	http://download2.berlios.de/avidemux/%{name}_%{version}.tar.gz
-# Source0-md5:	ff8e6ac186321e7e8bec9f8177df3724
+Source0:	http://dl.sourceforge.net/avidemux/%{name}_%{version}.tar.gz
+# Source0-md5:	503dfd25842ef81be7c769811e7bc54e
 Source1:	%{name}.desktop
 Patch0:		%{name}-autoconf.patch
 Patch1:		%{name}-dts_internal.patch
 Patch2:		%{name}-sparc64.patch
-Patch3:		%{name}-x264.patch
 URL:		http://fixounet.free.fr/avidemux/
 BuildRequires:	SDL-devel
 BuildRequires:	a52dec-libs-devel
@@ -73,7 +72,6 @@ Mały edytor audio/wideo dla Linuksa.
 %patch0 -p1
 %patch1 -p0
 %patch2 -p1
-%patch3 -p1
 
 echo 'pt_BR' >> po/LINGUAS
 
