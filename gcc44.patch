@@ -1,0 +1,37 @@
+--- avidemux_2.5.0/avidemux/ADM_core/src/ADM_fileio.cpp~	2009-03-09 22:10:03.000000000 +0200
++++ avidemux_2.5.0/avidemux/ADM_core/src/ADM_fileio.cpp	2009-07-08 00:57:10.618959077 +0300
+@@ -681,8 +681,10 @@
+ */
+ const char *ADM_GetFileName(const char *str)
+ {
+-	char *filename;
+-	char *filename2;
++	const char *filename;
++#ifdef __WIN32
++	const char *filename2;
++#endif
+ 
+ #ifndef __WIN32
+ 	filename = strrchr(str, '/');
+--- avidemux_2.5.0/avidemux/ADM_inputs/ADM_mpegdemuxer/dmx_io.cpp~	2008-09-13 19:27:58.000000000 +0300
++++ avidemux_2.5.0/avidemux/ADM_inputs/ADM_mpegdemuxer/dmx_io.cpp	2009-07-08 00:59:27.130400587 +0300
+@@ -71,7 +71,7 @@
+ */
+ uint8_t fileParser::open( const char *filename,FP_TYPE *multi )
+ {
+-        char *dot = NULL;                   // pointer to the last dot in filename
++        const char *dot = NULL;                   // pointer to the last dot in filename
+         uint8_t decimals = 0;               // number of decimals
+         char *left = NULL, *number = NULL, *right = NULL; // parts of filename (after splitting)
+ 
+--- avidemux_2.5.0/avidemux/ADM_libraries/ADM_libmpeg2enc/yuv4mpeg_ratio.cc~	2004-01-30 21:32:00.000000000 +0200
++++ avidemux_2.5.0/avidemux/ADM_libraries/ADM_libmpeg2enc/yuv4mpeg_ratio.cc	2009-07-08 01:00:15.725699935 +0300
+@@ -104,7 +104,7 @@
+ 
+ int y4m_parse_ratio(y4m_ratio_t *r, const char *s)
+ {
+-  char *t = strchr(s, ':');
++  const char *t = strchr(s, ':');
+   if (t == NULL) return Y4M_ERR_RANGE;
+   r->n = atoi(s);
+   r->d = atoi(t+1);
