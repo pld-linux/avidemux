@@ -1,8 +1,10 @@
 # TODO:
 # - create aften.spec (aften.sf.net) and use it
 # - needs some cmake magican to fixup the bconds
-# - use external ffmpeg, seamonkey
+# - use external seamonkey (cmake fix needed)
 # - sync or use .desktop from sources
+# - subpackages per ui engine
+# - uses patched ffmpeg
 #
 # Conditional build:
 %bcond_without	esd	# disable EsounD sound support
@@ -25,6 +27,8 @@ Group:		X11/Applications/Multimedia
 Source0:	http://dl.sourceforge.net/avidemux/%{name}_%{version}.tar.gz
 # Source0-md5:	69624352ac4e4cbb507e02b2bace5f56
 Source1:	%{name}.desktop
+Patch0:		gcc44.patch
+Patch1:		types.patch
 #Patch0:		%{name}-autoconf.patch
 #Patch1:		%{name}-dts_internal.patch
 #Patch2:		%{name}-sparc64.patch
@@ -76,16 +80,19 @@ Mały edytor audio/wideo dla Linuksa.
 #%patch1 -p0
 #%patch2 -p1
 
+find '(' -name '*.js' -o -name '*.cpp' -o -name '*.h' ')' -print0 | xargs -0 %{__sed} -i -e 's,\r$,,'
+%patch0 -p1
+%patch1 -p1
+
 echo 'pt_BR' >> po/LINGUAS
-find -name '*.js' -print0 | xargs -0 %{__sed} -i -e 's,\r$,,'
 
 %build
 install -d build
 cd build
 %cmake \
-	%{?debug:-DCMAKE_BUILD_TYPE=Debug -DVERBOSE=1} \
+	-DCMAKE_INSTALL_DIR=/usr \
+	-DCMAKE_BUILD_TYPE=%{?debug:Debug}%{!?debug:Release} \
 	..
-#-DAVIDEMUX_INSTALL_PREFIX=path_to_avidemux_install
 %{__make}
 
 %install
@@ -96,7 +103,8 @@ install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir}}
 	DESTDIR=$RPM_BUILD_ROOT
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}
-install avidemux_icon.png $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
+cp -a avidemux_icon.png $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
+install -p avidemux/avidemux2_gtk $RPM_BUILD_ROOT%{_bindir}/avidemux2_gtk
 
 %find_lang %{name}
 
