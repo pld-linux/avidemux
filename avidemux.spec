@@ -1,5 +1,8 @@
 # TODO:
-#	- create aften.spec (aften.sf.net) and use it
+# - create aften.spec (aften.sf.net) and use it
+# - needs some cmake magican to fixup the bconds
+# - use external ffmpeg, seamonkey
+# - sync or use .desktop from sources
 #
 # Conditional build:
 %bcond_without	esd	# disable EsounD sound support
@@ -7,7 +10,7 @@
 %bcond_with	amr	# enable 3GPP Adaptive Multi Rate (AMR) speech codec support
 %bcond_with	qt	# build qt4-base interface
 %bcond_with	ssse3	# use SSSE3 instructions
-#
+
 %ifarch pentium4 %{x8664}
 %define		with_sse3	1
 %endif
@@ -15,24 +18,24 @@
 Summary:	A small audio/video editing software for Linux
 Summary(pl.UTF-8):	Mały edytor audio/wideo dla Linuksa
 Name:		avidemux
-Version:	2.4.4
-Release:	1
+Version:	2.5.0
+Release:	0.1
 License:	GPL v2+
 Group:		X11/Applications/Multimedia
 Source0:	http://dl.sourceforge.net/avidemux/%{name}_%{version}.tar.gz
-# Source0-md5:	503dfd25842ef81be7c769811e7bc54e
+# Source0-md5:	69624352ac4e4cbb507e02b2bace5f56
 Source1:	%{name}.desktop
-Patch0:		%{name}-autoconf.patch
-Patch1:		%{name}-dts_internal.patch
-Patch2:		%{name}-sparc64.patch
+#Patch0:		%{name}-autoconf.patch
+#Patch1:		%{name}-dts_internal.patch
+#Patch2:		%{name}-sparc64.patch
 URL:		http://fixounet.free.fr/avidemux/
+%{?with_qt:BuildRequires:	QtGui-devel}
 BuildRequires:	SDL-devel
 BuildRequires:	a52dec-libs-devel
 BuildRequires:	alsa-lib-devel >= 1.0
 %{?with_amr:BuildRequires:	amrnb-devel}
 %{?with_arts:BuildRequires:	artsc-devel}
-BuildRequires:	autoconf
-BuildRequires:	automake
+BuildRequires:	cmake >= 2.6.2
 %{?with_esd:BuildRequires:	esound-devel}
 BuildRequires:	faad2-devel
 BuildRequires:	ffmpeg-devel
@@ -51,8 +54,8 @@ BuildRequires:	libvorbis-devel
 BuildRequires:	libx264-devel
 BuildRequires:	libxml2-devel
 BuildRequires:	pkgconfig
-%{?with_qt:BuildRequires:	QtGui-devel}
 %{?with_qt:BuildRequires:	qt4-build}
+BuildRequires:	sed >= 4.0
 BuildRequires:	sed >= 4.0
 BuildRequires:	xorg-lib-libXt-devel
 BuildRequires:	xorg-lib-libXv-devel
@@ -69,35 +72,20 @@ Mały edytor audio/wideo dla Linuksa.
 
 %prep
 %setup -q -n %{name}_%{version}
-%patch0 -p1
-%patch1 -p0
-%patch2 -p1
+#%patch0 -p1
+#%patch1 -p0
+#%patch2 -p1
 
 echo 'pt_BR' >> po/LINGUAS
+find -name '*.js' -print0 | xargs -0 %{__sed} -i -e 's,\r$,,'
 
 %build
-%{__cp} /usr/share/aclocal/libtool.m4 admin/libtool.m4.in
-%{__make} -f admin/Makefile.common cvs
-%{__libtoolize}
-%{__aclocal} -I m4
-%{__autoconf}
-%{__automake}
-%configure \
-	%{!?with_amr:ac_cv_header_amrnb_interf_dec_h=no} \
-	%{!?with_arts:--without-arts} \
-	%{!?with_esd:--without-esd} \
-	--disable-static \
-%ifarch ppc
-	--enable-altivec \
-%endif
-	%{?with_ssse3:--enable-ssse3} \
-%if %{with qt}
-	--with-qt-dir=%{_prefix} \
-	--with-qt-include=%{_includedir}/qt4 \
-	--with-qt-lib=%{_libdir}
-%endif
-
-%{__make} -j1 -C po
+install -d build
+cd build
+%cmake \
+	%{?debug:-DCMAKE_BUILD_TYPE=Debug -DVERBOSE=1} \
+	..
+#-DAVIDEMUX_INSTALL_PREFIX=path_to_avidemux_install
 %{__make}
 
 %install
