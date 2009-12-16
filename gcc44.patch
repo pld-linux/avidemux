@@ -1,51 +1,3 @@
---- avidemux_2.5.0/avidemux/ADM_core/src/ADM_fileio.cpp~	2009-03-09 22:10:03.000000000 +0200
-+++ avidemux_2.5.0/avidemux/ADM_core/src/ADM_fileio.cpp	2009-07-08 00:57:10.618959077 +0300
-@@ -681,8 +681,10 @@
- */
- const char *ADM_GetFileName(const char *str)
- {
--	char *filename;
--	char *filename2;
-+	const char *filename;
-+#ifdef __WIN32
-+	const char *filename2;
-+#endif
- 
- #ifndef __WIN32
- 	filename = strrchr(str, '/');
---- avidemux_2.5.0/avidemux/ADM_inputs/ADM_mpegdemuxer/dmx_io.cpp~	2008-09-13 19:27:58.000000000 +0300
-+++ avidemux_2.5.0/avidemux/ADM_inputs/ADM_mpegdemuxer/dmx_io.cpp	2009-07-08 00:59:27.130400587 +0300
-@@ -71,7 +71,7 @@
- */
- uint8_t fileParser::open( const char *filename,FP_TYPE *multi )
- {
--        char *dot = NULL;                   // pointer to the last dot in filename
-+        const char *dot = NULL;                   // pointer to the last dot in filename
-         uint8_t decimals = 0;               // number of decimals
-         char *left = NULL, *number = NULL, *right = NULL; // parts of filename (after splitting)
- 
---- avidemux_2.5.0/avidemux/ADM_libraries/ADM_libmpeg2enc/yuv4mpeg_ratio.cc~	2004-01-30 21:32:00.000000000 +0200
-+++ avidemux_2.5.0/avidemux/ADM_libraries/ADM_libmpeg2enc/yuv4mpeg_ratio.cc	2009-07-08 01:00:15.725699935 +0300
-@@ -104,7 +104,7 @@
- 
- int y4m_parse_ratio(y4m_ratio_t *r, const char *s)
- {
--  char *t = strchr(s, ':');
-+  const char *t = strchr(s, ':');
-   if (t == NULL) return Y4M_ERR_RANGE;
-   r->n = atoi(s);
-   r->d = atoi(t+1);
---- avidemux_2.5.0/avidemux/ADM_libraries/ADM_mplex/lpcmstrm_in.cpp~	2009-07-08 02:07:14.000000000 +0300
-+++ avidemux_2.5.0/avidemux/ADM_libraries/ADM_mplex/lpcmstrm_in.cpp	2009-07-08 02:16:34.888485666 +0300
-@@ -53,7 +53,7 @@
- 
- bool LPCMStream::Probe(IBitStream &bs )
- {
--    char *last_dot = strrchr( bs.StreamName(), '.' );
-+    const char *last_dot = strrchr( bs.StreamName(), '.' );
-     return 
-         last_dot != NULL 
-         && strcmp( last_dot+1, "lpcm") == 0;
 --- avidemux_2.5.0/avidemux/ADM_userInterfaces/ADM_QT4/ADM_dialog/Q_license.cpp~	2009-12-16 13:05:49.000000000 +0200
 +++ avidemux_2.5.0/avidemux/ADM_userInterfaces/ADM_QT4/ADM_dialog/Q_license.cpp	2009-12-16 13:05:51.050534943 +0200
 @@ -17,6 +17,7 @@
@@ -77,14 +29,6 @@
  typedef enum 
  {
          ADM_LOG_NONE=0,
---- avidemux_2.5.0/avidemux/ADM_userInterfaces/ADM_QT4/ADM_dialog/DIA_color.cpp~	2009-12-16 12:45:16.000000000 +0200
-+++ avidemux_2.5.0/avidemux/ADM_userInterfaces/ADM_QT4/ADM_dialog/DIA_color.cpp	2009-12-16 13:22:04.967105226 +0200
-@@ -1,4 +1,5 @@
- #include <QtGui/QColorDialog>
-+#include <stdint.h>
- 
- #include "ADM_toolkitQt.h"
- 
 --- avidemux_2.5.0/avidemux/ADM_userInterfaces/ADM_QT4/ADM_gui/ADM_qslider.h~	2009-12-16 12:45:16.000000000 +0200
 +++ avidemux_2.5.0/avidemux/ADM_userInterfaces/ADM_QT4/ADM_gui/ADM_qslider.h	2009-12-16 13:30:37.550386331 +0200
 @@ -1,6 +1,8 @@
@@ -94,36 +38,5 @@
 +#include <stdint.h>
 +
  class ADM_QSlider : public QSlider
- {
- protected:
---- avidemux_2.5.0/avidemux/ADM_userInterfaces/ADM_QT4/ADM_gui/gui_none.cpp~	2009-12-16 12:45:16.000000000 +0200
-+++ avidemux_2.5.0/avidemux/ADM_userInterfaces/ADM_QT4/ADM_gui/gui_none.cpp	2009-12-16 13:34:13.304739869 +0200
-@@ -12,6 +12,7 @@
- 
- #include <QtGui/QApplication>
- #include <QtGui/QDesktopWidget>
-+#include <stdint.h>
- 
- void UI_setAProcessToggleStatus( uint8_t status ) {}
- void UI_setVProcessToggleStatus( uint8_t status ) {}
---- avidemux_2.5.0/avidemux/ADM_userInterfaces/ADM_QT4/ADM_gui/ADM_qslider.cpp~	2009-12-16 12:45:16.000000000 +0200
-+++ avidemux_2.5.0/avidemux/ADM_userInterfaces/ADM_QT4/ADM_gui/ADM_qslider.cpp	2009-12-16 13:34:43.494320144 +0200
-@@ -14,6 +14,7 @@
- 
- #include <QtGui/QPainter>
- #include <QtGui/QSlider>
-+#include <stdio.h>
- 
- #include "ADM_qslider.h"
- 
---- avidemux_2.5.0/avidemux/ADM_userInterfaces/ADM_commonUI/ADM_tray.h~	2009-12-16 12:45:16.000000000 +0200
-+++ avidemux_2.5.0/avidemux/ADM_userInterfaces/ADM_commonUI/ADM_tray.h	2009-12-16 13:35:20.340566492 +0200
-@@ -18,6 +18,8 @@
- #ifndef ADM_TRAY_H
- #define ADM_TRAY_H
- 
-+#include <stdint.h>
-+
- class ADM_tray
  {
  protected:
