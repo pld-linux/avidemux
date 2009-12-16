@@ -7,7 +7,6 @@
 # - uses patched ffmpeg
 # - the bconds don't work with cmake, all gets enabled if BR found
 # - Could not find Gettext -- libintl not required for gettext support
-# - fix lib64 libdir install
 # - fix plugin scan dir: Scanning directory /usr/lib/ADM_plugins/audioDecoder/
 #
 # Conditional build:
@@ -17,17 +16,17 @@
 %bcond_without	qt4	# build qt4-base interface
 %bcond_with	ssse3	# use SSSE3 instructions
 
+%define		qt4_version	4.2
+
 %ifarch pentium4 %{x8664}
 %define		with_sse3	1
 %endif
-
-%define		qt4_version	4.3
 
 Summary:	A small audio/video editing software for Linux
 Summary(pl.UTF-8):	Mały edytor audio/wideo dla Linuksa
 Name:		avidemux
 Version:	2.5.1
-Release:	0.3
+Release:	0.5
 License:	GPL v2+
 Group:		X11/Applications/Multimedia
 Source0:	http://dl.sourceforge.net/avidemux/%{name}_%{version}.tar.gz
@@ -47,30 +46,35 @@ BuildRequires:	alsa-lib-devel >= 1.0
 %{?with_arts:BuildRequires:	artsc-devel}
 BuildRequires:	cmake >= 2.6.2
 %{?with_esd:BuildRequires:	esound-devel}
+BuildRequires:	faac-devel
 BuildRequires:	faad2-devel
 BuildRequires:	ffmpeg-devel
 BuildRequires:	freetype-devel >= 2.0.0
 BuildRequires:	gettext-devel
 BuildRequires:	gtk+2-devel >= 1:2.6.0
+BuildRequires:	jack-audio-connection-kit-devel
 BuildRequires:	js-devel(threads)
 BuildRequires:	lame-libs-devel
+#BuildRequires:	libdca-devel
 BuildRequires:	libdts-devel
 BuildRequires:	libmad-devel
 BuildRequires:	libmpeg3-devel
+BuildRequires:	libpng-devel
 BuildRequires:	libsamplerate-devel
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool
 BuildRequires:	libvorbis-devel
 BuildRequires:	libx264-devel
 BuildRequires:	libxml2-devel
+BuildRequires:	nasm >= 0.98.32
 BuildRequires:	pkgconfig
 %{?with_qt4:BuildRequires:	qt4-build >= %{qt4_version}}
-BuildRequires:	sed >= 4.0
 BuildRequires:	sed >= 4.0
 BuildRequires:	xorg-lib-libXt-devel
 BuildRequires:	xorg-lib-libXv-devel
 BuildRequires:	xorg-proto-xextproto-devel
 BuildRequires:	xvid-devel >= 1:1.0
+BuildRequires:	xvidcore-devel
 BuildRequires:	zlib-devel
 Requires:	js(threads)
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -90,6 +94,10 @@ find '(' -name '*.js' -o -name '*.cpp' -o -name '*.h' -o -name '*.cmake' ')' -pr
 
 echo 'pt_BR' >> po/LINGUAS
 
+# libdir fix
+grep -rl 'DESTINATION lib' . | xargs sed -i -e's,DESTINATION lib,DESTINATION lib${LIB_SUFFIX},g'
+sed -i -e's,FFMPEG_INSTALL_DIR lib,FFMPEG_INSTALL_DIR lib${LIB_SUFFIX},' cmake/admFFmpegBuild.cmake
+
 %build
 install -d build
 cd build
@@ -108,10 +116,6 @@ install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir},%{_bindir}}
 
 %{__make} -C build install \
 	DESTDIR=$RPM_BUILD_ROOT
-
-%if "%{_lib}" != "lib"
-mv $RPM_BUILD_ROOT{%{_prefix}/lib,%{_libdir}}
-%endif
 
 chmod +x $RPM_BUILD_ROOT%{_libdir}/lib*.so*
 
@@ -137,7 +141,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libADM5swscale.so.0
 %attr(755,root,root) %{_libdir}/libADM_UICli.so
 %attr(755,root,root) %{_libdir}/libADM_UIGtk.so
-%attr(755,root,root) %{_libdir}/libADM_UIQT4.so
+%{?with_qt4:%attr(755,root,root) %{_libdir}/libADM_UIQT4.so}
 %attr(755,root,root) %{_libdir}/libADM_core.so
 %attr(755,root,root) %{_libdir}/libADM_coreAudio.so
 %attr(755,root,root) %{_libdir}/libADM_coreImage.so
@@ -146,6 +150,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libADM_render_gtk.so
 %{?with_qt4:%attr(755,root,root) %{_libdir}/libADM_render_qt4.so}
 %attr(755,root,root) %{_libdir}/libADM_smjs.so
+
+%dir %{_datadir}/%{name}
+%dir %{_datadir}/%{name}/i18n
 %lang(ca) %{_datadir}/%{name}/i18n/*_ca.qm
 %lang(cs) %{_datadir}/%{name}/i18n/*_cs.qm
 %lang(de) %{_datadir}/%{name}/i18n/*_de.qm
@@ -160,6 +167,7 @@ rm -rf $RPM_BUILD_ROOT
 %lang(sr@latin) %{_datadir}/%{name}/i18n/*_sr@latin.qm
 %lang(tr) %{_datadir}/%{name}/i18n/*_tr.qm
 %lang(zh_TW) %{_datadir}/%{name}/i18n/*_zh_TW.qm
+
 %{_datadir}/ADM_scripts
 %{_desktopdir}/*.desktop
 %{_pixmapsdir}/*.png
