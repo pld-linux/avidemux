@@ -26,7 +26,7 @@ Summary:	A small audio/video editing software for Linux
 Summary(pl.UTF-8):	Mały edytor audio/wideo dla Linuksa
 Name:		avidemux
 Version:	2.5.1
-Release:	0.5
+Release:	0.7
 License:	GPL v2+
 Group:		X11/Applications/Multimedia
 Source0:	http://dl.sourceforge.net/avidemux/%{name}_%{version}.tar.gz
@@ -97,6 +97,7 @@ echo 'pt_BR' >> po/LINGUAS
 # libdir fix
 grep -rl 'DESTINATION lib' . | xargs sed -i -e's,DESTINATION lib,DESTINATION lib${LIB_SUFFIX},g'
 sed -i -e's,FFMPEG_INSTALL_DIR lib,FFMPEG_INSTALL_DIR lib${LIB_SUFFIX},' cmake/admFFmpegBuild.cmake
+sed -i -e's,"lib","%{_lib}",' avidemux/main.cpp avidemux/ADM_core/src/ADM_fileio.cpp
 
 %build
 install -d build
@@ -113,6 +114,7 @@ cd build
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir},%{_bindir}}
+install -d $RPM_BUILD_ROOT%{_libdir}/ADM_plugins/{audioDecoder,videoFilter,audioDevices,audioEncoders}
 
 %{__make} -C build install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -151,6 +153,14 @@ rm -rf $RPM_BUILD_ROOT
 %{?with_qt4:%attr(755,root,root) %{_libdir}/libADM_render_qt4.so}
 %attr(755,root,root) %{_libdir}/libADM_smjs.so
 
+%dir %{_libdir}/ADM_plugins
+%dir %{_libdir}/ADM_plugins/audioDecoder
+%dir %{_libdir}/ADM_plugins/videoFilter
+%dir %{_libdir}/ADM_plugins/audioDevices
+%dir %{_libdir}/ADM_plugins/audioEncoders
+
+%{_datadir}/ADM_scripts
+
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/i18n
 %lang(ca) %{_datadir}/%{name}/i18n/*_ca.qm
@@ -168,6 +178,5 @@ rm -rf $RPM_BUILD_ROOT
 %lang(tr) %{_datadir}/%{name}/i18n/*_tr.qm
 %lang(zh_TW) %{_datadir}/%{name}/i18n/*_zh_TW.qm
 
-%{_datadir}/ADM_scripts
 %{_desktopdir}/*.desktop
 %{_pixmapsdir}/*.png
