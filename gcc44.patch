@@ -46,3 +46,84 @@
      return 
          last_dot != NULL 
          && strcmp( last_dot+1, "lpcm") == 0;
+--- avidemux_2.5.0/avidemux/ADM_userInterfaces/ADM_QT4/ADM_dialog/Q_license.cpp~	2009-12-16 13:05:49.000000000 +0200
++++ avidemux_2.5.0/avidemux/ADM_userInterfaces/ADM_QT4/ADM_dialog/Q_license.cpp	2009-12-16 13:05:51.050534943 +0200
+@@ -17,6 +17,7 @@
+ 
+ #include "Q_license.h"
+ #include "ADM_toolkitQt.h"
++#include <stdint.h>
+ 
+ Ui_licenseWindow::Ui_licenseWindow(QWidget *parent) : QDialog(parent)
+ {
+--- avidemux_2.5.0/avidemux/ADM_userInterfaces/ADM_QT4/ADM_dialog/Q_jobs.cpp~	2009-12-16 12:45:16.000000000 +0200
++++ avidemux_2.5.0/avidemux/ADM_userInterfaces/ADM_QT4/ADM_dialog/Q_jobs.cpp	2009-12-16 13:07:30.231566738 +0200
+@@ -6,6 +6,7 @@
+ #include "Q_jobs.h"
+ #include "DIA_coreToolkit.h"
+ #include "ADM_toolkitQt.h"
++#include <stdio.h>
+ 
+ static void updateStatus(void);
+ extern bool parseECMAScript(const char *name);
+--- avidemux_2.5.0/avidemux/ADM_coreUI/include/DIA_coreToolkit.h~	2009-12-16 12:45:15.000000000 +0200
++++ avidemux_2.5.0/avidemux/ADM_coreUI/include/DIA_coreToolkit.h	2009-12-16 13:09:16.437182359 +0200
+@@ -19,6 +19,8 @@
+ #ifndef ADM_COREUI_TOOLKIT__
+ #define ADM_COREUI_TOOLKIT__
+ 
++#include <stdint.h>
++
+ typedef enum 
+ {
+         ADM_LOG_NONE=0,
+--- avidemux_2.5.0/avidemux/ADM_userInterfaces/ADM_QT4/ADM_dialog/DIA_color.cpp~	2009-12-16 12:45:16.000000000 +0200
++++ avidemux_2.5.0/avidemux/ADM_userInterfaces/ADM_QT4/ADM_dialog/DIA_color.cpp	2009-12-16 13:22:04.967105226 +0200
+@@ -1,4 +1,5 @@
+ #include <QtGui/QColorDialog>
++#include <stdint.h>
+ 
+ #include "ADM_toolkitQt.h"
+ 
+--- avidemux_2.5.0/avidemux/ADM_userInterfaces/ADM_QT4/ADM_gui/ADM_qslider.h~	2009-12-16 12:45:16.000000000 +0200
++++ avidemux_2.5.0/avidemux/ADM_userInterfaces/ADM_QT4/ADM_gui/ADM_qslider.h	2009-12-16 13:30:37.550386331 +0200
+@@ -1,6 +1,8 @@
+ #ifndef ADM_Q_SLIDER_H
+ #define ADM_Q_SLIDER_H
+ 
++#include <stdint.h>
++
+ class ADM_QSlider : public QSlider
+ {
+ protected:
+--- avidemux_2.5.0/avidemux/ADM_userInterfaces/ADM_QT4/ADM_gui/gui_none.cpp~	2009-12-16 12:45:16.000000000 +0200
++++ avidemux_2.5.0/avidemux/ADM_userInterfaces/ADM_QT4/ADM_gui/gui_none.cpp	2009-12-16 13:34:13.304739869 +0200
+@@ -12,6 +12,7 @@
+ 
+ #include <QtGui/QApplication>
+ #include <QtGui/QDesktopWidget>
++#include <stdint.h>
+ 
+ void UI_setAProcessToggleStatus( uint8_t status ) {}
+ void UI_setVProcessToggleStatus( uint8_t status ) {}
+--- avidemux_2.5.0/avidemux/ADM_userInterfaces/ADM_QT4/ADM_gui/ADM_qslider.cpp~	2009-12-16 12:45:16.000000000 +0200
++++ avidemux_2.5.0/avidemux/ADM_userInterfaces/ADM_QT4/ADM_gui/ADM_qslider.cpp	2009-12-16 13:34:43.494320144 +0200
+@@ -14,6 +14,7 @@
+ 
+ #include <QtGui/QPainter>
+ #include <QtGui/QSlider>
++#include <stdio.h>
+ 
+ #include "ADM_qslider.h"
+ 
+--- avidemux_2.5.0/avidemux/ADM_userInterfaces/ADM_commonUI/ADM_tray.h~	2009-12-16 12:45:16.000000000 +0200
++++ avidemux_2.5.0/avidemux/ADM_userInterfaces/ADM_commonUI/ADM_tray.h	2009-12-16 13:35:20.340566492 +0200
+@@ -18,6 +18,8 @@
+ #ifndef ADM_TRAY_H
+ #define ADM_TRAY_H
+ 
++#include <stdint.h>
++
+ class ADM_tray
+ {
+ protected:
