@@ -9,7 +9,7 @@
 # - Could not find Gettext -- libintl not required for gettext support
 # - fix lib64 libdir install
 # - i18n in /usr/bin/i18n
-# - missing autodep for libva.so.1
+# - fix plugin scan dir: Scanning directory /usr/lib/ADM_plugins/audioDecoder/
 #
 # Conditional build:
 %bcond_without	esd	# disable EsounD sound support
@@ -28,7 +28,7 @@ Summary:	A small audio/video editing software for Linux
 Summary(pl.UTF-8):	Mały edytor audio/wideo dla Linuksa
 Name:		avidemux
 Version:	2.5.0
-Release:	0.1
+Release:	0.2
 License:	GPL v2+
 Group:		X11/Applications/Multimedia
 Source0:	http://dl.sourceforge.net/avidemux/%{name}_%{version}.tar.gz
@@ -117,7 +117,7 @@ install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir},%{_bindir}}
 mv $RPM_BUILD_ROOT{%{_prefix}/lib,%{_libdir}}
 %endif
 
-chmod +x $RPM_BUILD_ROOT%{_libdir}/lib*.so
+chmod +x $RPM_BUILD_ROOT%{_libdir}/lib*.so*
 
 cp -a %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}
 cp -a avidemux_icon.png $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
