@@ -8,7 +8,6 @@
 # - the bconds don't work with cmake, all gets enabled if BR found
 # - Could not find Gettext -- libintl not required for gettext support
 # - fix lib64 libdir install
-# - i18n in /usr/bin/i18n
 # - fix plugin scan dir: Scanning directory /usr/lib/ADM_plugins/audioDecoder/
 #
 # Conditional build:
@@ -22,13 +21,13 @@
 %define		with_sse3	1
 %endif
 
-%define		qt4_version	4.2
+%define		qt4_version	4.3
 
 Summary:	A small audio/video editing software for Linux
 Summary(pl.UTF-8):	Mały edytor audio/wideo dla Linuksa
 Name:		avidemux
 Version:	2.5.1
-Release:	0.2
+Release:	0.3
 License:	GPL v2+
 Group:		X11/Applications/Multimedia
 Source0:	http://dl.sourceforge.net/avidemux/%{name}_%{version}.tar.gz
@@ -36,7 +35,7 @@ Source0:	http://dl.sourceforge.net/avidemux/%{name}_%{version}.tar.gz
 Source1:	%{name}.desktop
 Patch0:		gcc44.patch
 Patch1:		types.patch
-#Patch0:	%{name}-autoconf.patch
+Patch2:		qtlocale.patch
 #Patch1:	%{name}-dts_internal.patch
 #Patch2:	%{name}-sparc64.patch
 URL:		http://fixounet.free.fr/avidemux/
@@ -84,13 +83,10 @@ Mały edytor audio/wideo dla Linuksa.
 
 %prep
 %setup -q -n %{name}_%{version}
-#%patch0 -p1
-#%patch1 -p0
-#%patch2 -p1
-
-find '(' -name '*.js' -o -name '*.cpp' -o -name '*.h' ')' -print0 | xargs -0 %{__sed} -i -e 's,\r$,,'
+find '(' -name '*.js' -o -name '*.cpp' -o -name '*.h' -o -name '*.cmake' ')' -print0 | xargs -0 %{__sed} -i -e 's,\r$,,'
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 echo 'pt_BR' >> po/LINGUAS
 
@@ -150,6 +146,20 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libADM_render_gtk.so
 %{?with_qt4:%attr(755,root,root) %{_libdir}/libADM_render_qt4.so}
 %attr(755,root,root) %{_libdir}/libADM_smjs.so
+%lang(ca) %{_datadir}/%{name}/i18n/*_ca.qm
+%lang(cs) %{_datadir}/%{name}/i18n/*_cs.qm
+%lang(de) %{_datadir}/%{name}/i18n/*_de.qm
+%lang(el) %{_datadir}/%{name}/i18n/*_el.qm
+%lang(es) %{_datadir}/%{name}/i18n/*_es.qm
+%lang(fr) %{_datadir}/%{name}/i18n/*_fr.qm
+%lang(it) %{_datadir}/%{name}/i18n/*_it.qm
+%lang(ja) %{_datadir}/%{name}/i18n/*_ja.qm
+%lang(pt_BR) %{_datadir}/%{name}/i18n/*_pt_BR.qm
+%lang(ru) %{_datadir}/%{name}/i18n/*_ru.qm
+%lang(sr) %{_datadir}/%{name}/i18n/*_sr.qm
+%lang(sr@latin) %{_datadir}/%{name}/i18n/*_sr@latin.qm
+%lang(tr) %{_datadir}/%{name}/i18n/*_tr.qm
+%lang(zh_TW) %{_datadir}/%{name}/i18n/*_zh_TW.qm
 %{_datadir}/ADM_scripts
 %{_desktopdir}/*.desktop
 %{_pixmapsdir}/*.png
