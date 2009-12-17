@@ -1,11 +1,10 @@
 # TODO:
 # - create aften.spec (aften.sf.net) and use it -D USE_AFTEN=1
-# - use external seamonkey (cmake fix needed): Checking for SpiderMonkey -- Skipping check and using bundled version.
+# - use external spidermonkey (cmake fix needed): Checking for SpiderMonkey -- Skipping check and using bundled version.
 # - uses patched ffmpeg
-# - Could not find Gettext -- libintl not required for gettext support
 # - don't force -O3 optimization
 # - look for lrelease from qt4-linguist, not qt-linguist
-# - fix libx264 detection: Could not find x264_encoder_open in /usr/lib64/libx264.so
+# - uses some internal x264 functions, our x264 is to new for it
 #
 # Conditional build:
 %bcond_without	esd	# disable EsounD sound support
@@ -58,7 +57,7 @@ BuildRequires:	libsamplerate-devel
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool
 BuildRequires:	libvorbis-devel
-BuildRequires:	libx264-devel
+#BuildRequires:	libx264-devel
 BuildRequires:	libxml2-devel
 %{?with_qt4:BuildRequires:	libxslt-progs}
 BuildRequires:	nasm >= 0.98.32
