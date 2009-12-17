@@ -1,0 +1,55 @@
+--- avidemux_2.5.1/cmake/av_plugin.cmake~	2009-12-17 18:54:56.000000000 +0200
++++ avidemux_2.5.1/cmake/av_plugin.cmake	2009-12-17 18:56:51.459214578 +0200
+@@ -1,7 +1,7 @@
+ IF (WIN32)
+ 	SET(AUDDEV_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/plugins/audioDevices/")
+ ELSE (WIN32)
+-	SET(AUDDEV_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib/ADM_plugins/audioDevices/")
++	SET(AUDDEV_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX}/ADM_plugins/audioDevices/")
+ ENDIF (WIN32)
+ 
+ MACRO(INIT_AUDIO_DEVICE _lib)
+--- avidemux_2.5.1/cmake/vf_plugin.cmake~	2009-12-17 18:54:56.000000000 +0200
++++ avidemux_2.5.1/cmake/vf_plugin.cmake	2009-12-17 18:57:23.572247309 +0200
+@@ -1,7 +1,7 @@
+ IF (WIN32)
+ 	SET(VIDFLT_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/plugins/videoFilter/")
+ ELSE (WIN32)
+-	SET(VIDFLT_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib/ADM_plugins/videoFilter/")
++	SET(VIDFLT_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX}/ADM_plugins/videoFilter/")
+ ENDIF (WIN32)
+ 
+ MACRO(INIT_VIDEOFILTER_PLUGIN _lib)
+--- avidemux_2.5.1/cmake/ae_plugin.cmake~	2009-12-17 18:54:56.000000000 +0200
++++ avidemux_2.5.1/cmake/ae_plugin.cmake	2009-12-17 18:57:36.368836466 +0200
+@@ -1,7 +1,7 @@
+ IF (WIN32)
+ 	SET(AUDENC_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/plugins/audioEncoders/")
+ ELSE (WIN32)
+-	SET(AUDENC_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib/ADM_plugins/audioEncoders/")
++	SET(AUDENC_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX}/ADM_plugins/audioEncoders/")
+ ENDIF (WIN32)
+ 
+ MACRO(INIT_AUDIO_ENCODER _lib)
+--- avidemux_2.5.1/cmake/admPluginVideoEncoder.cmake~	2009-12-17 18:54:56.000000000 +0200
++++ avidemux_2.5.1/cmake/admPluginVideoEncoder.cmake	2009-12-17 18:57:48.648836334 +0200
+@@ -1,7 +1,7 @@
+ IF (WIN32)
+ 	SET(VIDENC_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/plugins/videoEncoder/")
+ ELSE (WIN32)
+-	SET(VIDENC_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib/ADM_plugins/videoEncoder/")
++	SET(VIDENC_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX}/ADM_plugins/videoEncoder/")
+ ENDIF (WIN32)
+ 
+ MACRO(INIT_VIDEO_ENCODER_PLUGIN _lib)
+--- avidemux_2.5.1/cmake/ad_plugin.cmake~	2009-12-17 18:54:56.000000000 +0200
++++ avidemux_2.5.1/cmake/ad_plugin.cmake	2009-12-17 18:58:01.986126156 +0200
+@@ -1,7 +1,7 @@
+ IF (WIN32)
+ 	SET(AUDDEC_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/plugins/audioDecoder/")
+ ELSE (WIN32)
+-	SET(AUDDEC_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib/ADM_plugins/audioDecoder/")
++	SET(AUDDEC_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX}/ADM_plugins/audioDecoder/")
+ ENDIF (WIN32)
+ 
+ MACRO(INIT_AUDIO_PLUGIN _lib)
