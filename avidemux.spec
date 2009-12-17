@@ -7,7 +7,6 @@
 # - uses patched ffmpeg
 # - the bconds don't work with cmake, all gets enabled if BR found
 # - Could not find Gettext -- libintl not required for gettext support
-# - fix plugin scan dir: Scanning directory /usr/lib/ADM_plugins/audioDecoder/
 #
 # Conditional build:
 %bcond_without	esd	# disable EsounD sound support
@@ -26,7 +25,7 @@ Summary:	A small audio/video editing software for Linux
 Summary(pl.UTF-8):	Mały edytor audio/wideo dla Linuksa
 Name:		avidemux
 Version:	2.5.1
-Release:	0.7
+Release:	0.8
 License:	GPL v2+
 Group:		X11/Applications/Multimedia
 Source0:	http://dl.sourceforge.net/avidemux/%{name}_%{version}.tar.gz
@@ -35,6 +34,7 @@ Source1:	%{name}.desktop
 Patch0:		gcc44.patch
 Patch1:		types.patch
 Patch2:		qtlocale.patch
+Patch3:		link-libs.patch
 #Patch1:	%{name}-dts_internal.patch
 #Patch2:	%{name}-sparc64.patch
 URL:		http://fixounet.free.fr/avidemux/
@@ -87,10 +87,11 @@ Mały edytor audio/wideo dla Linuksa.
 
 %prep
 %setup -q -n %{name}_%{version}
-find '(' -name '*.js' -o -name '*.cpp' -o -name '*.h' -o -name '*.cmake' ')' -print0 | xargs -0 %{__sed} -i -e 's,\r$,,'
+find '(' -name '*.js' -o -name '*.cpp' -o -name '*.h' -o -name '*.cmake' -o -name '*.txt' ')' -print0 | xargs -0 %{__sed} -i -e 's,\r$,,'
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 echo 'pt_BR' >> po/LINGUAS
 
@@ -100,27 +101,47 @@ sed -i -e's,FFMPEG_INSTALL_DIR lib,FFMPEG_INSTALL_DIR lib${LIB_SUFFIX},' cmake/a
 sed -i -e's,"lib","%{_lib}",' avidemux/main.cpp avidemux/ADM_core/src/ADM_fileio.cpp
 
 %build
-install -d build
+TOP=$PWD
+# main
+install -d build plugin-build
 cd build
 %cmake \
 	-DCMAKE_BUILD_TYPE=%{?debug:Debug}%{!?debug:Release} \
 	-DCMAKE_INSTALL_PREFIX=%{_prefix} \
+	-DAVIDEMUX_INSTALL_PREFIX=%{_prefix} \
 %if "%{_lib}" == "lib64"
 	-DLIB_SUFFIX=64 \
 %endif
 	..
-%{__make} -j1
+%{__make}
+cd ..
+
+# plugins
+cd plugin-build
+%cmake \
+	-DCMAKE_INSTALL_PREFIX=%{_prefix} \
+	-DAVIDEMUX_INSTALL_PREFIX=%{_prefix} \
+	-DAVIDEMUX_SOURCE_DIR=$TOP/  \
+	-DAVIDEMUX_CORECONFIG_DIR=$TOP/build/config \
+%if "%{_lib}" == "lib64"
+	-DLIB_SUFFIX=64 \
+%endif
+	../plugins
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir},%{_bindir}}
-install -d $RPM_BUILD_ROOT%{_libdir}/ADM_plugins/{audioDecoder,videoFilter,audioDevices,audioEncoders}
+install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir},%{_bindir},%{_mandir}/man1}
+#install -d $RPM_BUILD_ROOT%{_libdir}/ADM_plugins/{audioDecoder,videoFilter,audioDevices,audioEncoders}
 
 %{__make} -C build install \
 	DESTDIR=$RPM_BUILD_ROOT
 
+%{__make} -C plugin-build install \
+	DESTDIR=$RPM_BUILD_ROOT
+
 chmod +x $RPM_BUILD_ROOT%{_libdir}/lib*.so*
 
+cp -a man/avidemux.1 $RPM_BUILD_ROOT%{_mandir}/man1
 cp -a %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}
 cp -a avidemux_icon.png $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
 install -p build/avidemux/avidemux2_gtk $RPM_BUILD_ROOT%{_bindir}/avidemux2_gtk
