@@ -1,5 +1,6 @@
 # TODO:
-# - create aften.spec (aften.sf.net) and use it
+# - create aften.spec (aften.sf.net) and use it -D USE_AFTEN=1
+# - amr bcond - -D USE_AMR_NB=1
 # - the bconds don't work with cmake, all gets enabled if BR found -- needs some cmake magican to fixup the bconds
 # - use external seamonkey (cmake fix needed): Checking for SpiderMonkey -- Skipping check and using bundled version.
 # - uses patched ffmpeg
@@ -36,8 +37,7 @@ Source2:	%{name}-qt4.desktop
 Patch0:		gcc44.patch
 Patch1:		types.patch
 Patch2:		qtlocale.patch
-Patch3:		link-libs.patch
-Patch4:		libdir.patch
+Patch3:		libdir.patch
 #Patch1:	%{name}-dts_internal.patch
 #Patch2:	%{name}-sparc64.patch
 URL:		http://fixounet.free.fr/avidemux/
@@ -115,7 +115,6 @@ find '(' -name '*.js' -o -name '*.cpp' -o -name '*.h' -o -name '*.cmake' -o -nam
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
-%patch4 -p1
 
 echo 'pt_BR' >> po/LINGUAS
 
@@ -127,7 +126,7 @@ sed -i -e's,"lib","%{_lib}",' avidemux/main.cpp avidemux/ADM_core/src/ADM_fileio
 %build
 TOP=$PWD
 # main
-install -d build plugin-build
+install -d build/lib plugins/build
 cd build
 %cmake \
 	-DCMAKE_BUILD_TYPE=%{?debug:Debug}%{!?debug:Release} \
@@ -140,14 +139,19 @@ cd build
 %endif
 	..
 %{__make}
-cd ..
+
+# plugin build expects libraries to be already installed; we fake a prefix
+# in build/ by symlinking all libraries to build/lib/
+cd lib
+find ../avidemux -name '*.so*' | xargs ln -sft .
+cd ../..
 
 # plugins
-cd plugin-build
+cd plugins/build
 %cmake \
 	-DCMAKE_BUILD_TYPE=%{?debug:Debug}%{!?debug:Release} \
 	-DCMAKE_INSTALL_PREFIX=%{_prefix} \
-	-DAVIDEMUX_INSTALL_PREFIX=%{_prefix} \
+	-DAVIDEMUX_INSTALL_PREFIX=$TOP/build \
 	-DAVIDEMUX_SOURCE_DIR=$TOP/  \
 	-DAVIDEMUX_CORECONFIG_DIR=$TOP/build/config \
 	%{!?with_gtk:-DNO_GTK=1 -DADM_UI_GTK=0} \
@@ -155,7 +159,9 @@ cd plugin-build
 %if "%{_lib}" == "lib64"
 	-DLIB_SUFFIX=64 \
 %endif
-	../plugins
+	..
+
+%{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -164,7 +170,7 @@ install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir},%{_bindir},%{_mandir}/m
 %{__make} -C build install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-%{__make} -C plugin-build install \
+%{__make} -C plugins/build install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 chmod +x $RPM_BUILD_ROOT%{_libdir}/lib*.so*
