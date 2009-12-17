@@ -2,7 +2,6 @@
 # - create aften.spec (aften.sf.net) and use it
 # - the bconds don't work with cmake, all gets enabled if BR found -- needs some cmake magican to fixup the bconds
 # - use external seamonkey (cmake fix needed): Checking for SpiderMonkey -- Skipping check and using bundled version.
-# - sync or use .desktop from sources
 # - uses patched ffmpeg
 # - Could not find Gettext -- libintl not required for gettext support
 #
@@ -23,7 +22,7 @@ Summary:	A small audio/video editing software for Linux
 Summary(pl.UTF-8):	Mały edytor audio/wideo dla Linuksa
 Name:		avidemux
 Version:	2.5.1
-Release:	0.13
+Release:	1
 License:	GPL v2+
 Group:		X11/Applications/Multimedia
 Source0:	http://dl.sourceforge.net/avidemux/%{name}_%{version}.tar.gz
