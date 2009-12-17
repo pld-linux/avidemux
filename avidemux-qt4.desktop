@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Avidemux Video Editor (Qt)
-GenericName=Web Browser
+GenericName=Video Editor
 Comment=Audio/video editing software - Qt interface
 Comment[pl]=Edytor audio/wideo - Qt
 Exec=avidemux2_qt4
