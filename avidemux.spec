@@ -53,7 +53,7 @@ BuildRequires:	faad2-devel
 BuildRequires:	ffmpeg-devel
 BuildRequires:	freetype-devel >= 2.0.0
 BuildRequires:	gettext-devel
-BuildRequires:	gtk+2-devel >= 1:2.6.0
+%{?with_gtk:BuildRequires:	gtk+2-devel >= 1:2.6.0}
 BuildRequires:	jack-audio-connection-kit-devel
 BuildRequires:	js-devel(threads)
 BuildRequires:	lame-libs-devel
@@ -166,6 +166,7 @@ cd plugins/build
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir},%{_bindir},%{_mandir}/man1}
+install -d $RPM_BUILD_ROOT%{_datadir}/%{name}
 
 %{__make} -C build install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -301,21 +302,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/ADM_scripts
 
 %dir %{_datadir}/%{name}
-%dir %{_datadir}/%{name}/i18n
-%lang(ca) %{_datadir}/%{name}/i18n/*_ca.qm
-%lang(cs) %{_datadir}/%{name}/i18n/*_cs.qm
-%lang(de) %{_datadir}/%{name}/i18n/*_de.qm
-%lang(el) %{_datadir}/%{name}/i18n/*_el.qm
-%lang(es) %{_datadir}/%{name}/i18n/*_es.qm
-%lang(fr) %{_datadir}/%{name}/i18n/*_fr.qm
-%lang(it) %{_datadir}/%{name}/i18n/*_it.qm
-%lang(ja) %{_datadir}/%{name}/i18n/*_ja.qm
-%lang(pt_BR) %{_datadir}/%{name}/i18n/*_pt_BR.qm
-%lang(ru) %{_datadir}/%{name}/i18n/*_ru.qm
-%lang(sr) %{_datadir}/%{name}/i18n/*_sr.qm
-%lang(sr@latin) %{_datadir}/%{name}/i18n/*_sr@latin.qm
-%lang(tr) %{_datadir}/%{name}/i18n/*_tr.qm
-%lang(zh_TW) %{_datadir}/%{name}/i18n/*_zh_TW.qm
 
 %if %{with gtk}
 %files ui-gtk
@@ -361,4 +347,20 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_mpdelogo_qt4.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_mplayerResize_qt4.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_sub_qt4.so
+
+%dir %{_datadir}/%{name}/i18n
+%lang(ca) %{_datadir}/%{name}/i18n/*_ca.qm
+%lang(cs) %{_datadir}/%{name}/i18n/*_cs.qm
+%lang(de) %{_datadir}/%{name}/i18n/*_de.qm
+%lang(el) %{_datadir}/%{name}/i18n/*_el.qm
+%lang(es) %{_datadir}/%{name}/i18n/*_es.qm
+%lang(fr) %{_datadir}/%{name}/i18n/*_fr.qm
+%lang(it) %{_datadir}/%{name}/i18n/*_it.qm
+%lang(ja) %{_datadir}/%{name}/i18n/*_ja.qm
+%lang(pt_BR) %{_datadir}/%{name}/i18n/*_pt_BR.qm
+%lang(ru) %{_datadir}/%{name}/i18n/*_ru.qm
+%lang(sr) %{_datadir}/%{name}/i18n/*_sr.qm
+%lang(sr@latin) %{_datadir}/%{name}/i18n/*_sr@latin.qm
+%lang(tr) %{_datadir}/%{name}/i18n/*_tr.qm
+%lang(zh_TW) %{_datadir}/%{name}/i18n/*_zh_TW.qm
 %endif
