@@ -6,11 +6,12 @@
 # - Could not find Gettext -- libintl not required for gettext support
 # - don't force -O3 optimization
 # - look for lrelease from qt4-linguist, not qt-linguist
+# - fix libx264 detection: Could not find x264_encoder_open in /usr/lib64/libx264.so
 #
 # Conditional build:
 %bcond_without	esd	# disable EsounD sound support
 %bcond_without	arts	# without arts audio output
-%bcond_with	amr	# enable 3GPP Adaptive Multi Rate (AMR) speech codec support
+%bcond_without	amr	# enable Adaptive Multi Rate (AMR) speech codec support
 %bcond_without	qt4	# build qt4 interface
 %bcond_without	gtk	# build gtk interface
 %bcond_with	ssse3	# use SSSE3 instructions
@@ -44,7 +45,6 @@ URL:		http://fixounet.free.fr/avidemux/
 BuildRequires:	SDL-devel
 BuildRequires:	a52dec-libs-devel
 BuildRequires:	alsa-lib-devel >= 1.0
-%{?with_amr:BuildRequires:	amrnb-devel}
 %{?with_arts:BuildRequires:	artsc-devel}
 BuildRequires:	cmake >= 2.6.2
 %{?with_esd:BuildRequires:	esound-devel}
@@ -70,6 +70,7 @@ BuildRequires:	libx264-devel
 BuildRequires:	libxml2-devel
 %{?with_qt4:BuildRequires:	libxslt-progs}
 BuildRequires:	nasm >= 0.98.32
+%{?with_amr:BuildRequires:	opencore-amr-devel}
 BuildRequires:	pkgconfig
 BuildRequires:	pulseaudio-devel
 %{?with_qt4:BuildRequires:	qt-linguist}
@@ -206,6 +207,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/ADM_plugins/audioDecoder/libADM_ad_Mad.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/audioDecoder/libADM_ad_a52.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/audioDecoder/libADM_ad_faad.so
+%if %{with amr}
+%attr(755,root,root) %{_libdir}/ADM_plugins/audioDecoder/libADM_ad_opencore_amrnb.so
+%attr(755,root,root) %{_libdir}/ADM_plugins/audioDecoder/libADM_ad_opencore_amrwb.so
+%endif
 
 %attr(755,root,root) %{_libdir}/ADM_plugins/audioDevices/libADM_av_alsa.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/audioDevices/libADM_av_arts.so
