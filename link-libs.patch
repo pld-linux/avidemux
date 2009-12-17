@@ -1,0 +1,1176 @@
+--- avidemux_2.5.1/plugins/ADM_audioDecoders/ADM_ad_ac3/ADM_liba52/CMakeLists.txt~	2009-12-17 15:36:24.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_audioDecoders/ADM_ad_ac3/ADM_liba52/CMakeLists.txt	2009-12-17 15:36:27.450044797 +0200
+@@ -11,6 +11,10 @@
+ 	ADD_TARGET_CFLAGS(${ADM_LIB} -fPIC)
+ ENDIF (UNIX)
+ 
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(${ADM_LIB} -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++ENDIF (UNIX)
++
+ IF (ADM_BIG_ENDIAN)
+ 	ADD_TARGET_CFLAGS(${ADM_LIB} -DWORDS_BIGENDIAN)
+ ENDIF (ADM_BIG_ENDIAN)
+--- avidemux_2.5.1/plugins/ADM_audioDecoders/ADM_ad_ac3/CMakeLists.txt~	2009-12-17 15:38:27.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_audioDecoders/ADM_ad_ac3/CMakeLists.txt	2009-12-17 15:38:30.803364774 +0200
+@@ -7,5 +7,11 @@
+ ADD_LIBRARY(ADM_ad_a52 SHARED ${ADM_ad_a52_SRCS})
+ TARGET_LINK_LIBRARIES(ADM_ad_a52 ADM_liba52)
+ 
++
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_ad_a52 -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++ENDIF (UNIX)
++
++
+ INIT_AUDIO_PLUGIN(ADM_ad_a52)
+ INSTALL_AUDIODECODER(ADM_ad_a52)
+--- avidemux_2.5.1/plugins/ADM_audioDecoders/ADM_ad_faad/CMakeLists.txt~	2008-07-19 19:12:51.000000000 +0300
++++ avidemux_2.5.1/plugins/ADM_audioDecoders/ADM_ad_faad/CMakeLists.txt	2009-12-17 15:42:30.613341120 +0200
+@@ -12,6 +12,10 @@
+ 	ADD_TARGET_CFLAGS(ADM_ad_faad "-I${FAAD_INCLUDE_DIR}")
+ 	ADD_TARGET_DEFINITIONS(ADM_ad_faad FAAD_OLD_PROTOTYPE)
+ 
++	IF (UNIX)
++		ADD_TARGET_LDFLAGS(ADM_ad_faad -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ENDIF (UNIX)
++
+ 	INIT_AUDIO_PLUGIN(ADM_ad_faad)
+ 	INSTALL_AUDIODECODER(ADM_ad_faad)
+ ENDIF (USE_FAAD)
+--- avidemux_2.5.1/plugins/ADM_audioDecoders/ADM_ad_mad/CMakeLists.txt~	2009-12-17 15:46:23.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_audioDecoders/ADM_ad_mad/CMakeLists.txt	2009-12-17 15:46:27.003402821 +0200
+@@ -15,5 +15,9 @@
+ ADD_LIBRARY(ADM_ad_Mad SHARED ${ADM_ad_Mad_SRCS})
+ TARGET_LINK_LIBRARIES(ADM_ad_Mad ADM_libMad)
+ 
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_ad_Mad -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++ENDIF (UNIX)
++
+ INIT_AUDIO_PLUGIN(ADM_ad_Mad)
+ INSTALL_AUDIODECODER(ADM_ad_Mad)
+--- avidemux_2.5.1/plugins/ADM_audioDevices/Alsa/CMakeLists.txt~	2009-12-17 15:51:36.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_audioDevices/Alsa/CMakeLists.txt	2009-12-17 15:51:38.233702776 +0200
+@@ -6,5 +6,10 @@
+ ADD_LIBRARY(ADM_av_alsa SHARED ${ADM_av_alsa_SRCS})
+ TARGET_LINK_LIBRARIES(ADM_av_alsa ADM_core ADM_coreAudio ${ASOUND_LIBRARY})
+ 
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_av_alsa -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_av_alsa -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreAudio/src)
++ENDIF (UNIX)
++
+ INIT_AUDIO_DEVICE(ADM_av_alsa)
+ INSTALL_AUDIODEVICE(ADM_av_alsa)
+--- avidemux_2.5.1/plugins/ADM_audioDevices/Esd/CMakeLists.txt~	2009-12-17 15:52:44.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_audioDevices/Esd/CMakeLists.txt	2009-12-17 15:52:46.610287000 +0200
+@@ -7,6 +7,10 @@
+ INCLUDE_DIRECTORIES(${ESD_INCLUDE_DIR})
+ TARGET_LINK_LIBRARIES(ADM_av_esd ADM_coreAudio ${ESD_LIBRARY_DIR})
+ 
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_av_esd -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_av_esd -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreAudio/src)
++ENDIF (UNIX)
+ 
+ INIT_AUDIO_DEVICE(ADM_av_esd)
+ INSTALL_AUDIODEVICE(ADM_av_esd)
+--- avidemux_2.5.1/plugins/ADM_audioDevices/Sdl/CMakeLists.txt~	2009-12-17 15:54:06.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_audioDevices/Sdl/CMakeLists.txt	2009-12-17 15:54:08.130354565 +0200
+@@ -5,6 +5,12 @@
+ 
+ ADD_LIBRARY(ADM_av_sdl SHARED ${ADM_av_sdl_SRCS})
+ TARGET_LINK_LIBRARIES(ADM_av_sdl ADM_core ADM_coreAudio ${SDL_LIBRARY})
++
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_av_sdl -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_av_sdl -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreAudio/src)
++ENDIF (UNIX)
++
+ SDLify(ADM_deviceSDL.cpp)
+ 
+ INIT_AUDIO_DEVICE(ADM_av_sdl)
+--- avidemux_2.5.1/plugins/ADM_audioDevices/Oss/CMakeLists.txt~	2009-12-17 15:55:02.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_audioDevices/Oss/CMakeLists.txt	2009-12-17 15:55:04.413265947 +0200
+@@ -6,5 +6,11 @@
+ ADD_LIBRARY(ADM_av_oss SHARED ${ADM_av_oss_SRCS})
+ TARGET_LINK_LIBRARIES(ADM_av_oss ADM_coreAudio)
+ include_directories(${OSS_INCLUDE_DIR})
++
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_av_oss -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_av_oss -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreAudio/src)
++ENDIF (UNIX)
++
+ INIT_AUDIO_DEVICE(ADM_av_oss)
+ INSTALL_AUDIODEVICE(ADM_av_oss)
+--- avidemux_2.5.1/plugins/ADM_audioDevices/Arts/CMakeLists.txt~	2009-07-11 11:05:39.000000000 +0300
++++ avidemux_2.5.1/plugins/ADM_audioDevices/Arts/CMakeLists.txt	2009-12-17 15:55:24.563263514 +0200
+@@ -6,5 +6,11 @@
+ ADD_LIBRARY(ADM_av_arts SHARED ${ADM_av_arts_SRCS})
+ TARGET_LINK_LIBRARIES(ADM_av_arts ADM_coreAudio ${ARTS_LDFLAGS})
+ ADD_DEFINITIONS(${ARTS_CFLAGS})
++
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_av_arts -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_av_arts -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreAudio/src)
++ENDIF (UNIX)
++
+ INIT_AUDIO_DEVICE(ADM_av_arts)
+ INSTALL_AUDIODEVICE(ADM_av_arts)
+--- avidemux_2.5.1/plugins/ADM_videoEncoder/ADM_vidEnc_avcodec/CMakeLists.txt~	2009-12-17 16:26:26.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoEncoder/ADM_vidEnc_avcodec/CMakeLists.txt	2009-12-17 16:26:42.886825636 +0200
+@@ -5,7 +5,7 @@
+ if (WIN32)
+ 	set(FFMPEG_INSTALL_DIR ${AVIDEMUX_INSTALL_PREFIX})
+ else (WIN32)
+-	set(FFMPEG_INSTALL_DIR ${AVIDEMUX_INSTALL_PREFIX}/lib)
++	set(FFMPEG_INSTALL_DIR ${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_libraries/ffmpeg/libavcodec)
+ endif (WIN32)
+ 
+ SET(ADM_vidEnc_avcodec_SRCS  interface.c  encoder.cpp  huffyuvEncoder.cpp
+@@ -27,6 +27,11 @@
+ ADD_LIBRARY(ADM_vidEnc_avcodec SHARED ${ADM_vidEnc_avcodec_SRCS})
+ TARGET_LINK_LIBRARIES(ADM_vidEnc_avcodec ${LIBXML2_LIBRARIES} ADM_core ADM_coreUI ADM_libavcodec)
+ 
++IF (UNIX)
++   ADD_TARGET_LDFLAGS(ADM_vidEnc_avcodec -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++   ADD_TARGET_LDFLAGS(ADM_vidEnc_avcodec -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++ENDIF (UNIX)
++
+ INIT_VIDEO_ENCODER_PLUGIN(ADM_vidEnc_avcodec)
+ INSTALL_VIDEO_ENCODER(ADM_vidEnc_avcodec)
+ INSTALL(FILES Mpeg1Param.xsd DESTINATION "${VIDENC_INSTALL_DIR}${PLUGIN_SCHEMA_DIR}")
+--- avidemux_2.5.1/plugins/ADM_videoEncoder/ADM_vidEnc_xvid/CMakeLists.txt~	2009-12-17 15:59:01.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoEncoder/ADM_vidEnc_xvid/CMakeLists.txt	2009-12-17 16:27:38.943287786 +0200
+@@ -25,8 +25,12 @@
+ 		ADD_LIBRARY(ADM_vidEnc_xvid SHARED ${ADM_vidEnc_xvid_SRCS})
+ 		TARGET_LINK_LIBRARIES(ADM_vidEnc_xvid ADM_core ${XVID_LIBRARY_DIR} ${LIBXML2_LIBRARIES})
+ 
++		IF (UNIX)
++		   ADD_TARGET_LDFLAGS(ADM_vidEnc_xvid -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++		ENDIF (UNIX)
++
+ 		INIT_VIDEO_ENCODER_PLUGIN(ADM_vidEnc_xvid)
+ 		INSTALL_VIDEO_ENCODER(ADM_vidEnc_xvid)
+ 		INSTALL(FILES XvidParam.xsd DESTINATION "${VIDENC_INSTALL_DIR}${PLUGIN_SCHEMA_DIR}")
+ 	ENDIF (LIBXML2_FOUND)
+-ENDIF (XVID_FOUND)
+\ No newline at end of file
++ENDIF (XVID_FOUND)
+--- avidemux_2.5.1/plugins/ADM_videoEncoder/ADM_vidEnc_xvid/qt4/CMakeLists.txt~	2009-12-17 15:59:01.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoEncoder/ADM_vidEnc_xvid/qt4/CMakeLists.txt	2009-12-17 16:30:35.576440406 +0200
+@@ -15,6 +15,11 @@
+ 	ADD_LIBRARY(${QT_PLUGIN_NAME} SHARED ${ADM_vidEnc_xvid_Qt_SRCS})
+ 	TARGET_LINK_LIBRARIES(${QT_PLUGIN_NAME} ADM_vidEnc_xvid ADM_coreUI ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY})
+ 
++	IF (UNIX)
++	   ADD_TARGET_LDFLAGS(${QT_PLUGIN_NAME} -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	   ADD_TARGET_LDFLAGS(${QT_PLUGIN_NAME} -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ENDIF (UNIX)
++
+ 	INIT_VIDEO_ENCODER_PLUGIN(${QT_PLUGIN_NAME})
+ 	INSTALL(TARGETS ${QT_PLUGIN_NAME} DESTINATION "${VIDENC_INSTALL_DIR}${PLUGIN_SCHEMA_DIR}")
+-ENDIF (QT4_FOUND)
+\ No newline at end of file
++ENDIF (QT4_FOUND)
+--- avidemux_2.5.1/plugins/ADM_videoFilters/AddBorders/CMakeLists.txt~	2009-12-17 16:32:26.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/AddBorders/CMakeLists.txt	2009-12-17 16:32:28.803457882 +0200
+@@ -5,5 +5,11 @@
+ 
+ ADD_LIBRARY(ADM_vf_addborders SHARED ${ADM_vf_addborders_SRCS})
+ 
++IF (UNIX)
++   ADD_TARGET_LDFLAGS(ADM_vf_addborders -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++   ADD_TARGET_LDFLAGS(ADM_vf_addborders -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++   ADD_TARGET_LDFLAGS(ADM_vf_addborders -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
++
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_addborders)
+ INSTALL_VIDEOFILTER(ADM_vf_addborders)
+--- avidemux_2.5.1/plugins/ADM_videoFilters/BlendRemover/CMakeLists.txt~	2009-12-17 15:59:01.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/BlendRemover/CMakeLists.txt	2009-12-17 16:32:58.936469874 +0200
+@@ -6,5 +6,11 @@
+ ADD_LIBRARY(ADM_vf_blendRemoval SHARED ${ADM_vf_blendRemoval_SRCS})
+ TARGET_LINK_LIBRARIES(ADM_vf_blendRemoval ADM_coreImage)
+ 
++IF (UNIX)
++   ADD_TARGET_LDFLAGS(ADM_vf_blendRemoval -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++   ADD_TARGET_LDFLAGS(ADM_vf_blendRemoval -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++   ADD_TARGET_LDFLAGS(ADM_vf_blendRemoval -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
++
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_blendRemoval)
+ INSTALL_VIDEOFILTER(ADM_vf_blendRemoval)
+--- avidemux_2.5.1/plugins/ADM_videoFilters/Chroma/CMakeLists.txt~	2009-12-17 16:34:54.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/Chroma/CMakeLists.txt	2009-12-17 16:34:56.539901179 +0200
+@@ -3,11 +3,23 @@
+ 
+ SET(ADM_vidChromaU_SRCS ADM_vidChromaU.cpp)
+ ADD_LIBRARY(ADM_vidChromaU SHARED ${ADM_vidChromaU_SRCS})
++IF (UNIX)
++   ADD_TARGET_LDFLAGS(ADM_vidChromaU -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++   ADD_TARGET_LDFLAGS(ADM_vidChromaU -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++   ADD_TARGET_LDFLAGS(ADM_vidChromaU -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
++
+ INIT_VIDEOFILTER_PLUGIN(ADM_vidChromaU)
+ INSTALL_VIDEOFILTER(ADM_vidChromaU)
+ 
+-
+ SET(ADM_vidChromaV_SRCS ADM_vidChromaV.cpp)
+ ADD_LIBRARY(ADM_vidChromaV SHARED ${ADM_vidChromaV_SRCS})
++
++IF (UNIX)
++   ADD_TARGET_LDFLAGS(ADM_vidChromaV -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++   ADD_TARGET_LDFLAGS(ADM_vidChromaV -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++   ADD_TARGET_LDFLAGS(ADM_vidChromaV -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
++
+ INIT_VIDEOFILTER_PLUGIN(ADM_vidChromaV)
+ INSTALL_VIDEOFILTER(ADM_vidChromaV)
+--- avidemux_2.5.1/plugins/ADM_videoFilters/Decimate/CMakeLists.txt~	2009-12-17 16:35:47.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/Decimate/CMakeLists.txt	2009-12-17 16:35:50.369688318 +0200
+@@ -5,6 +5,12 @@
+ 
+ ADD_LIBRARY(ADM_vf_decimate SHARED ${ADM_vf_decimate_SRCS})
+ 
++IF (UNIX)
++   ADD_TARGET_LDFLAGS(ADM_vf_decimate -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++   ADD_TARGET_LDFLAGS(ADM_vf_decimate -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++   ADD_TARGET_LDFLAGS(ADM_vf_decimate -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
++
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_decimate)
+ INSTALL_VIDEOFILTER(ADM_vf_decimate)
+ 
+--- avidemux_2.5.1/plugins/ADM_videoFilters/DgBob/CMakeLists.txt~	2009-12-17 16:36:53.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/DgBob/CMakeLists.txt	2009-12-17 16:36:56.800305942 +0200
+@@ -5,5 +5,11 @@
+ 
+ ADD_LIBRARY(ADM_vf_blendDgBob SHARED ${ADM_vf_blendDgBob_SRCS})
+ 
++IF (UNIX)
++   ADD_TARGET_LDFLAGS(ADM_vf_blendDgBob -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++   ADD_TARGET_LDFLAGS(ADM_vf_blendDgBob -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++   ADD_TARGET_LDFLAGS(ADM_vf_blendDgBob -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
++
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_blendDgBob)
+ INSTALL_VIDEOFILTER(ADM_vf_blendDgBob)
+--- avidemux_2.5.1/plugins/ADM_videoFilters/Fade/CMakeLists.txt~	2009-12-17 16:45:28.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/Fade/CMakeLists.txt	2009-12-17 16:45:30.743171303 +0200
+@@ -5,5 +5,11 @@
+ 
+ ADD_LIBRARY(ADM_vf_fade SHARED ${ADM_vf_fade_SRCS})
+ 
++IF (UNIX)
++   ADD_TARGET_LDFLAGS(ADM_vf_fade -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++   ADD_TARGET_LDFLAGS(ADM_vf_fade -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++   ADD_TARGET_LDFLAGS(ADM_vf_fade -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
++
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_fade)
+ INSTALL_VIDEOFILTER(ADM_vf_fade)
+--- avidemux_2.5.1/plugins/ADM_videoFilters/FastConvolution/CMakeLists.txt~	2009-12-17 16:49:24.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/FastConvolution/CMakeLists.txt	2009-12-17 16:49:27.543010217 +0200
+@@ -3,21 +3,41 @@
+ 
+ SET(ADM_vf_fastconvolutionmean_SRCS ADM_vidFastConvolution.cpp Mean.cpp )
+ ADD_LIBRARY(ADM_vf_fastconvolutionmean SHARED ${ADM_vf_fastconvolutionmean_SRCS})
++IF (UNIX)
++   ADD_TARGET_LDFLAGS(ADM_vf_fastconvolutionmean -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++   ADD_TARGET_LDFLAGS(ADM_vf_fastconvolutionmean -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++   ADD_TARGET_LDFLAGS(ADM_vf_fastconvolutionmean -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_fastconvolutionmean)
+ INSTALL_VIDEOFILTER(ADM_vf_fastconvolutionmean)
+ 
+ SET(ADM_vf_fastconvolutiongauss_SRCS ADM_vidFastConvolution.cpp Gauss.cpp )
+ ADD_LIBRARY(ADM_vf_fastconvolutiongauss SHARED ${ADM_vf_fastconvolutiongauss_SRCS})
++IF (UNIX)
++   ADD_TARGET_LDFLAGS(ADM_vf_fastconvolutiongauss -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++   ADD_TARGET_LDFLAGS(ADM_vf_fastconvolutiongauss -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++   ADD_TARGET_LDFLAGS(ADM_vf_fastconvolutiongauss -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_fastconvolutiongauss)
+ INSTALL_VIDEOFILTER(ADM_vf_fastconvolutiongauss)
+ 
+ SET(ADM_vf_fastconvolutionmedian_SRCS ADM_vidFastConvolution.cpp Median.cpp )
+ ADD_LIBRARY(ADM_vf_fastconvolutionmedian SHARED ${ADM_vf_fastconvolutionmedian_SRCS})
++IF (UNIX)
++   ADD_TARGET_LDFLAGS(ADM_vf_fastconvolutionmedian -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++   ADD_TARGET_LDFLAGS(ADM_vf_fastconvolutionmedian -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++   ADD_TARGET_LDFLAGS(ADM_vf_fastconvolutionmedian -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_fastconvolutionmedian)
+ INSTALL_VIDEOFILTER(ADM_vf_fastconvolutionmedian)
+ 
+ SET(ADM_vf_fastconvolutionsharpen_SRCS ADM_vidFastConvolution.cpp Sharpen.cpp )
+ ADD_LIBRARY(ADM_vf_fastconvolutionsharpen SHARED ${ADM_vf_fastconvolutionsharpen_SRCS})
++IF (UNIX)
++   ADD_TARGET_LDFLAGS(ADM_vf_fastconvolutionsharpen -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++   ADD_TARGET_LDFLAGS(ADM_vf_fastconvolutionsharpen -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++   ADD_TARGET_LDFLAGS(ADM_vf_fastconvolutionsharpen -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_fastconvolutionsharpen)
+ INSTALL_VIDEOFILTER(ADM_vf_fastconvolutionsharpen)
+ 
+--- avidemux_2.5.1/plugins/ADM_videoFilters/ForcedPP/CMakeLists.txt~	2009-12-17 16:59:26.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/ForcedPP/CMakeLists.txt	2009-12-17 16:59:30.443295685 +0200
+@@ -1,16 +1,27 @@
+ INCLUDE(vf_plugin)
+ include(admFFmpegUtil)
+ 
++if (WIN32)
++	set(FFMPEG_INSTALL_DIR ${AVIDEMUX_INSTALL_PREFIX})
++else (WIN32)
++	set(FFMPEG_INSTALL_DIR ${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_libraries/ffmpeg/libpostproc)
++endif (WIN32)
++
+ getFfmpegLibNames("${AVIDEMUX_SOURCE_DIR}/avidemux/ADM_libraries/ffmpeg")
+ INCLUDE_DIRECTORIES("${AVIDEMUX_SOURCE_DIR}/avidemux/ADM_libraries/ffmpeg")
+ 
+ SET(ADM_vf_forcedPP_SRCS ADM_vidForcedPP.cpp)
+ 
+ add_library(ADM_libpostproc UNKNOWN IMPORTED)
+-set_property(TARGET ADM_libpostproc PROPERTY IMPORTED_LOCATION "${FFMPEG_LIB_DIR}/${LIBPOSTPROC_LIB}")
++set_property(TARGET ADM_libpostproc PROPERTY IMPORTED_LOCATION "${FFMPEG_INSTALL_DIR}/${LIBPOSTPROC_LIB}")
+ 
+ ADD_LIBRARY(ADM_vf_forcedPP SHARED ${ADM_vf_forcedPP_SRCS})
+ TARGET_LINK_LIBRARIES(ADM_vf_forcedPP ADM_libpostproc)
++IF (UNIX)
++   ADD_TARGET_LDFLAGS(ADM_vf_forcedPP -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++   ADD_TARGET_LDFLAGS(ADM_vf_forcedPP -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++   ADD_TARGET_LDFLAGS(ADM_vf_forcedPP -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ 
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_forcedPP)
+ INSTALL_VIDEOFILTER(ADM_vf_forcedPP)
+--- avidemux_2.5.1/plugins/ADM_videoFilters/LargeMedian/CMakeLists.txt~	2009-12-17 17:00:31.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/LargeMedian/CMakeLists.txt	2009-12-17 17:00:34.886414147 +0200
+@@ -4,6 +4,11 @@
+ SET(ADM_vf_largemedian_SRCS ADM_vidLargeMedian.cpp)
+ 
+ ADD_LIBRARY(ADM_vf_largemedian SHARED ${ADM_vf_largemedian_SRCS})
++IF (UNIX)
++   ADD_TARGET_LDFLAGS(ADM_vf_largemedian -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++   ADD_TARGET_LDFLAGS(ADM_vf_largemedian -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++   ADD_TARGET_LDFLAGS(ADM_vf_largemedian -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ 
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_largemedian)
+ INSTALL_VIDEOFILTER(ADM_vf_largemedian)
+--- avidemux_2.5.1/plugins/ADM_videoFilters/LumaOnly/CMakeLists.txt~	2009-12-17 17:01:21.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/LumaOnly/CMakeLists.txt	2009-12-17 17:01:23.986409287 +0200
+@@ -4,6 +4,11 @@
+ SET(ADM_vf_lumaonly_SRCS ADM_vidLuma.cpp)
+ 
+ ADD_LIBRARY(ADM_vf_lumaonly SHARED ${ADM_vf_lumaonly_SRCS})
++IF (UNIX)
++   ADD_TARGET_LDFLAGS(ADM_vf_lumaonly -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++   ADD_TARGET_LDFLAGS(ADM_vf_lumaonly -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++   ADD_TARGET_LDFLAGS(ADM_vf_lumaonly -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ 
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_lumaonly)
+ INSTALL_VIDEOFILTER(ADM_vf_lumaonly)
+--- avidemux_2.5.1/plugins/ADM_videoFilters/McDeint/CMakeLists.txt~	2009-12-17 17:03:45.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/McDeint/CMakeLists.txt	2009-12-17 17:03:48.106448547 +0200
+@@ -1,16 +1,27 @@
+ INCLUDE(vf_plugin)
+ include(admFFmpegUtil)
+ 
++if (WIN32)
++   set(FFMPEG_INSTALL_DIR ${AVIDEMUX_INSTALL_PREFIX})
++else (WIN32)
++   set(FFMPEG_INSTALL_DIR ${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_libraries/ffmpeg/libavcodec)
++endif (WIN32)
++
+ getFfmpegLibNames("${AVIDEMUX_SOURCE_DIR}/avidemux/ADM_libraries/ffmpeg")
+ INCLUDE_DIRECTORIES("${AVIDEMUX_SOURCE_DIR}/avidemux")
+ INCLUDE_DIRECTORIES("${AVIDEMUX_SOURCE_DIR}/avidemux/ADM_libraries/ffmpeg")
+ SET(ADM_vf_mcdeint_SRCS ADM_vidMcDeint.cpp)
+ 
+ add_library(ADM_libavcodec UNKNOWN IMPORTED)
+-set_property(TARGET ADM_libavcodec PROPERTY IMPORTED_LOCATION "${FFMPEG_LIB_DIR}/${LIBAVCODEC_LIB}")
++set_property(TARGET ADM_libavcodec PROPERTY IMPORTED_LOCATION "${FFMPEG_INSTALL_DIR}/${LIBAVCODEC_LIB}")
+ 
+ ADD_LIBRARY(ADM_vf_mcdeint SHARED ${ADM_vf_mcdeint_SRCS})
+ TARGET_LINK_LIBRARIES(ADM_vf_mcdeint ADM_libavcodec)
++IF (UNIX)
++   ADD_TARGET_LDFLAGS(ADM_vf_mcdeint -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++   ADD_TARGET_LDFLAGS(ADM_vf_mcdeint -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++   ADD_TARGET_LDFLAGS(ADM_vf_mcdeint -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ 
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_mcdeint)
+ INSTALL_VIDEOFILTER(ADM_vf_mcdeint)
+--- avidemux_2.5.1/plugins/ADM_videoFilters/MplayerDenoise3D/CMakeLists.txt~	2009-12-17 17:06:04.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/MplayerDenoise3D/CMakeLists.txt	2009-12-17 17:06:06.739560739 +0200
+@@ -3,10 +3,20 @@
+ 
+ SET(ADM_vf_denoise3dhq_SRCS ADM_vidMPLD3D.cpp)
+ ADD_LIBRARY(ADM_vf_denoise3dhq SHARED ${ADM_vf_denoise3dhq_SRCS})
++IF (UNIX)
++   ADD_TARGET_LDFLAGS(ADM_vf_denoise3dhq -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++   ADD_TARGET_LDFLAGS(ADM_vf_denoise3dhq -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++   ADD_TARGET_LDFLAGS(ADM_vf_denoise3dhq -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_denoise3dhq)
+ INSTALL_VIDEOFILTER(ADM_vf_denoise3dhq)
+ 
+ SET(ADM_vf_denoise3d_SRCS ADM_vidMPLD3Dlow.cpp)
+ ADD_LIBRARY(ADM_vf_denoise3d SHARED ${ADM_vf_denoise3d_SRCS})
++IF (UNIX)
++   ADD_TARGET_LDFLAGS(ADM_vf_denoise3d -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++   ADD_TARGET_LDFLAGS(ADM_vf_denoise3d -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++   ADD_TARGET_LDFLAGS(ADM_vf_denoise3d -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_denoise3d)
+ INSTALL_VIDEOFILTER(ADM_vf_denoise3d)
+--- avidemux_2.5.1/plugins/ADM_videoFilters/ResampleFps/CMakeLists.txt~	2009-12-17 17:06:57.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/ResampleFps/CMakeLists.txt	2009-12-17 17:07:00.326375723 +0200
+@@ -9,5 +9,11 @@
+ 	TARGET_LINK_LIBRARIES(ADM_vf_resampleFps -Wl,-read_only_relocs,suppress)
+ ENDIF (APPLE)
+ 
++IF (UNIX)
++   ADD_TARGET_LDFLAGS(ADM_vf_resampleFps -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++   ADD_TARGET_LDFLAGS(ADM_vf_resampleFps -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++   ADD_TARGET_LDFLAGS(ADM_vf_resampleFps -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
++
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_resampleFps)
+ INSTALL_VIDEOFILTER(ADM_vf_resampleFps)
+--- avidemux_2.5.1/plugins/ADM_videoFilters/Reverse/CMakeLists.txt~	2009-12-17 17:25:35.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/Reverse/CMakeLists.txt	2009-12-17 17:25:37.086056172 +0200
+@@ -4,6 +4,11 @@
+ SET(ADM_vf_reverse_SRCS ADM_vidReverse.cpp)
+ 
+ ADD_LIBRARY(ADM_vf_reverse SHARED ${ADM_vf_reverse_SRCS})
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_reverse -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_reverse -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_reverse -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ 
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_reverse)
+ INSTALL_VIDEOFILTER(ADM_vf_reverse)
+--- avidemux_2.5.1/plugins/ADM_videoFilters/SwapUV/CMakeLists.txt~	2009-12-17 17:26:46.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/SwapUV/CMakeLists.txt	2009-12-17 17:26:48.249381855 +0200
+@@ -4,6 +4,11 @@
+ SET(ADM_vf_swapuv_SRCS ADM_vidUVSwap.cpp)
+ 
+ ADD_LIBRARY(ADM_vf_swapuv SHARED ${ADM_vf_swapuv_SRCS})
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_swapuv -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_swapuv -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_swapuv -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ 
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_swapuv)
+ INSTALL_VIDEOFILTER(ADM_vf_swapuv)
+--- avidemux_2.5.1/plugins/ADM_videoFilters/TemporalCleaner/CMakeLists.txt~	2009-12-17 17:35:01.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/TemporalCleaner/CMakeLists.txt	2009-12-17 17:35:03.452873917 +0200
+@@ -4,6 +4,11 @@
+ SET(ADM_vf_vlad_SRCS ADM_vidVlad.cpp)
+ 
+ ADD_LIBRARY(ADM_vf_vlad SHARED ${ADM_vf_vlad_SRCS})
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_vlad -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_vlad -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_vlad -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ 
+ IF (UNIX AND ADM_DEBUG)
+ 	ADD_DEFINITIONS(-O2)
+--- avidemux_2.5.1/plugins/ADM_videoFilters/VerticalFlip/CMakeLists.txt~	2009-12-17 15:59:01.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/VerticalFlip/CMakeLists.txt	2009-12-17 17:36:00.469534995 +0200
+@@ -4,6 +4,11 @@
+ SET(ADM_vf_vflip_SRCS ADM_vidFlipV.cpp)
+ 
+ ADD_LIBRARY(ADM_vf_vflip SHARED ${ADM_vf_vflip_SRCS})
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_vflip -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_vflip -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_vflip -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ 
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_vflip)
+ INSTALL_VIDEOFILTER(ADM_vf_vflip)
+--- avidemux_2.5.1/plugins/ADM_videoFilters/Yadif/CMakeLists.txt~	2009-12-17 15:59:01.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/Yadif/CMakeLists.txt	2009-12-17 17:36:24.849324488 +0200
+@@ -4,6 +4,11 @@
+ SET(ADM_vf_yadif_SRCS ADM_vidYadif_asm.c  ADM_vidYadif.cpp )
+ 
+ ADD_LIBRARY(ADM_vf_yadif SHARED ${ADM_vf_yadif_SRCS})
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_yadif -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_yadif -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_yadif -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ 
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_yadif)
+ INSTALL_VIDEOFILTER(ADM_vf_yadif)
+--- avidemux_2.5.1/plugins/ADM_videoFilters/Pulldown/CMakeLists.txt~	2009-12-17 15:59:01.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/Pulldown/CMakeLists.txt	2009-12-17 17:36:46.872728122 +0200
+@@ -4,6 +4,11 @@
+ SET(ADM_vf_Pulldown_SRCS ADM_vidPulldown.cpp)
+ 
+ ADD_LIBRARY(ADM_vf_Pulldown SHARED ${ADM_vf_Pulldown_SRCS})
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_Pulldown -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_Pulldown -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_Pulldown -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ 
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_Pulldown)
+ INSTALL_VIDEOFILTER(ADM_vf_Pulldown)
+--- avidemux_2.5.1/plugins/ADM_videoFilters/Denoise/CMakeLists.txt~	2009-12-17 15:59:01.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/Denoise/CMakeLists.txt	2009-12-17 17:37:53.402654521 +0200
+@@ -4,6 +4,11 @@
+ SET(ADM_vf_Denoise_SRCS ADM_vidDenoise.cpp)
+ 
+ ADD_LIBRARY(ADM_vf_Denoise SHARED ${ADM_vf_Denoise_SRCS})
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_Denoise -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_Denoise -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_Denoise -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ 
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_Denoise)
+ INSTALL_VIDEOFILTER(ADM_vf_Denoise)
+--- avidemux_2.5.1/plugins/ADM_videoFilters/Delta/CMakeLists.txt~	2009-12-17 15:59:01.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/Delta/CMakeLists.txt	2009-12-17 17:38:25.586603690 +0200
+@@ -4,6 +4,11 @@
+ SET(ADM_vf_Delta_SRCS ADM_vidDelta.cpp)
+ 
+ ADD_LIBRARY(ADM_vf_Delta SHARED ${ADM_vf_Delta_SRCS})
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_Delta -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_Delta -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_Delta -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ 
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_Delta)
+ INSTALL_VIDEOFILTER(ADM_vf_Delta)
+--- avidemux_2.5.1/plugins/ADM_videoFilters/DropOut/CMakeLists.txt~	2009-12-17 15:59:01.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/DropOut/CMakeLists.txt	2009-12-17 17:38:49.576195674 +0200
+@@ -4,6 +4,11 @@
+ SET(ADM_vf_dropOut_SRCS ADM_vidDropOut.cpp)
+ 
+ ADD_LIBRARY(ADM_vf_dropOut SHARED ${ADM_vf_dropOut_SRCS})
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_dropOut -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_dropOut -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_dropOut -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ 
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_dropOut)
+ INSTALL_VIDEOFILTER(ADM_vf_dropOut)
+--- avidemux_2.5.1/cmake/vf_plugin_gtk.cmake~	2009-12-17 15:59:01.000000000 +0200
++++ avidemux_2.5.1/cmake/vf_plugin_gtk.cmake	2009-12-17 17:41:13.755986519 +0200
+@@ -20,6 +20,14 @@
+         TARGET_LINK_LIBRARIES( ${lib} ADM_UIGtk ADM_render_gtk)
+         TARGET_LINK_LIBRARIES(${lib} ${GTK_LDFLAGS} ${GTHREAD_LDFLAGS})
+ 
++		IF (UNIX)
++           ADD_TARGET_LDFLAGS(${lib} -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++           ADD_TARGET_LDFLAGS(${lib} -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++           ADD_TARGET_LDFLAGS(${lib} -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++			ADD_TARGET_LDFLAGS(${lib} -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_UIs/ADM_GTK/src)
++			ADD_TARGET_LDFLAGS(${lib} -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_userInterfaces/ADM_render)
++		ENDIF (UNIX)
++
+ 	IF (GETTEXT_FOUND)
+ 		TARGET_LINK_LIBRARIES(${lib} ${GETTEXT_LIBRARY_DIR})
+ 	ENDIF(GETTEXT_FOUND)
+--- avidemux_2.5.1/plugins/ADM_videoEncoder/ADM_vidEnc_xvid/gtk/CMakeLists.txt~	2009-12-17 17:48:16.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoEncoder/ADM_vidEnc_xvid/gtk/CMakeLists.txt	2009-12-17 18:04:32.039363834 +0200
+@@ -17,6 +17,11 @@
+ 	ADD_DEFINITIONS(${GTK_CFLAGS})
+ 	ADD_LIBRARY(${GTK_PLUGIN_NAME} SHARED ${ADM_vidEnc_xvid_Gtk_SRCS})
+ 	TARGET_LINK_LIBRARIES(${GTK_PLUGIN_NAME} ADM_vidEnc_xvid ADM_coreUI ${GTK_LDFLAGS} ${GTHREAD_LDFLAGS})
++
++	IF (UNIX)
++		ADD_TARGET_LDFLAGS(${GTK_PLUGIN_NAME} -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++		ADD_TARGET_LDFLAGS(${GTK_PLUGIN_NAME} -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ENDIF (UNIX)
+ 	
+ 	IF (GETTEXT_FOUND)
+ 		TARGET_LINK_LIBRARIES(${GTK_PLUGIN_NAME} ${GETTEXT_LIBRARY_DIR})
+--- avidemux_2.5.1/plugins/ADM_videoFilters/Telecide/CMakeLists.txt~	2009-12-17 18:06:41.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/Telecide/CMakeLists.txt	2009-12-17 18:06:45.132903518 +0200
+@@ -4,6 +4,11 @@
+ SET(ADM_vf_telecide_SRCS ADM_vidDecTelecide.cpp  videoFunctions.cpp)
+ 
+ ADD_LIBRARY(ADM_vf_telecide SHARED ${ADM_vf_telecide_SRCS})
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_telecide -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_telecide -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_telecide -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ 
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_telecide)
+ INSTALL_VIDEOFILTER(ADM_vf_telecide)
+--- avidemux_2.5.1/cmake/vf_plugin_qt4.cmake~	2009-12-17 17:48:16.000000000 +0200
++++ avidemux_2.5.1/cmake/vf_plugin_qt4.cmake	2009-12-17 18:09:26.880584294 +0200
+@@ -18,6 +18,14 @@
+ 		TARGET_LINK_LIBRARIES( ${lib} ADM_UIQT4  ADM_render_qt4)
+ 		TARGET_LINK_LIBRARIES(${lib} ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY})
+ 
++		IF (UNIX)
++			ADD_TARGET_LDFLAGS(${lib} -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++			ADD_TARGET_LDFLAGS(${lib} -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++			ADD_TARGET_LDFLAGS(${lib} -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++			ADD_TARGET_LDFLAGS(${lib} -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_UIs/ADM_QT4/src)
++			ADD_TARGET_LDFLAGS(${lib} -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_userInterfaces/ADM_render)
++		ENDIF (UNIX)
++
+ 		INIT_VIDEOFILTER_PLUGIN(${lib})
+ 		INSTALL_VIDEOFILTER(${lib})
+ 	ENDIF (QT4_FOUND)
+--- avidemux_2.5.1/plugins/ADM_videoFilters/MplayerResize/CMakeLists.txt~	2009-12-17 18:13:53.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/MplayerResize/CMakeLists.txt	2009-12-17 18:14:02.269098903 +0200
+@@ -1,6 +1,16 @@
+ INCLUDE(vf_plugin)
+ include(admFFmpegUtil)
+ 
++if (WIN32)
++	set(LIBAVCODEC_INSTALL_DIR ${AVIDEMUX_INSTALL_PREFIX})
++	set(LIBAVUTIL_INSTALL_DIR ${AVIDEMUX_INSTALL_PREFIX})
++	set(LIBSWSCALE_INSTALL_DIR ${AVIDEMUX_INSTALL_PREFIX})
++else (WIN32)
++	set(LIBAVCODEC_INSTALL_DIR ${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_libraries/ffmpeg/libavcodec)
++	set(LIBAVUTIL_INSTALL_DIR ${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_libraries/ffmpeg/libavutil)
++	set(LIBSWSCALE_INSTALL_DIR ${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_libraries/ffmpeg/libswscale)
++endif (WIN32)
++
+ SET(resizeCommon_SRCS ADM_vidMPLResize.cpp)
+ SET(resizeCommonGtk_SRCS gtk/gtk_resize.cpp)
+ SET(resizeCommonQT_SRCS qt4/Q_resize.cpp)
+@@ -12,13 +22,13 @@
+ INCLUDE_DIRECTORIES("${AVIDEMUX_SOURCE_DIR}/avidemux/ADM_libraries/ffmpeg")
+ 
+ add_library(ADM_libswscale UNKNOWN IMPORTED)
+-set_property(TARGET ADM_libswscale PROPERTY IMPORTED_LOCATION "${FFMPEG_LIB_DIR}/${LIBSWSCALE_LIB}")
++set_property(TARGET ADM_libswscale PROPERTY IMPORTED_LOCATION "${LIBSWSCALE_INSTALL_DIR}/${LIBSWSCALE_LIB}")
+ 
+ add_library(ADM_libavcodec UNKNOWN IMPORTED)
+-set_property(TARGET ADM_libavcodec PROPERTY IMPORTED_LOCATION "${FFMPEG_LIB_DIR}/${LIBAVCODEC_LIB}")
++set_property(TARGET ADM_libavcodec PROPERTY IMPORTED_LOCATION "${LIBAVCODEC_INSTALL_DIR}/${LIBAVCODEC_LIB}")
+ 
+ add_library(ADM_libavutil UNKNOWN IMPORTED)
+-set_property(TARGET ADM_libavutil PROPERTY IMPORTED_LOCATION "${FFMPEG_LIB_DIR}/${LIBAVUTIL_LIB}")
++set_property(TARGET ADM_libavutil PROPERTY IMPORTED_LOCATION "${LIBAVUTIL_INSTALL_DIR}/${LIBAVUTIL_LIB}")
+ 
+ INCLUDE(vf_plugin_gtk)
+ INIT_VIDEOFILTER_PLUGIN_GTK(ADM_vf_mplayerResize_gtk ${resizeCommonGtk_SRCS} ${resizeCommon_SRCS})
+--- avidemux_2.5.1/plugins/ADM_videoFilters/BlackenBorders/CMakeLists.txt~	2009-12-17 18:15:32.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/BlackenBorders/CMakeLists.txt	2009-12-17 18:15:34.575755761 +0200
+@@ -4,6 +4,11 @@
+ SET(ADM_vf_blackenBorders_SRCS ADM_vidBlackenBorders.cpp)
+ 
+ ADD_LIBRARY(ADM_vf_blackenBorders SHARED ${ADM_vf_blackenBorders_SRCS})
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_blackenBorders -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_blackenBorders -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_blackenBorders -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ 
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_blackenBorders)
+ INSTALL_VIDEOFILTER(ADM_vf_blackenBorders)
+--- avidemux_2.5.1/plugins/ADM_videoFilters/KernelDeint/CMakeLists.txt~	2009-12-17 17:48:16.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/KernelDeint/CMakeLists.txt	2009-12-17 18:15:53.225754243 +0200
+@@ -4,6 +4,11 @@
+ SET(ADM_vf_kernelDeint_SRCS ADM_vidKernelDeint.cpp)
+ 
+ ADD_LIBRARY(ADM_vf_kernelDeint SHARED ${ADM_vf_kernelDeint_SRCS})
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_kernelDeint -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_kernelDeint -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_kernelDeint -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ 
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_kernelDeint)
+ INSTALL_VIDEOFILTER(ADM_vf_kernelDeint)
+--- avidemux_2.5.1/plugins/ADM_videoFilters/Deinterlace/CMakeLists.txt~	2009-12-17 17:48:16.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/Deinterlace/CMakeLists.txt	2009-12-17 18:16:18.419085514 +0200
+@@ -4,6 +4,11 @@
+ SET(ADM_vf_Deinterlace_SRCS ADM_vidDeinterlace.cpp)
+ 
+ ADD_LIBRARY(ADM_vf_Deinterlace SHARED ${ADM_vf_Deinterlace_SRCS})
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_Deinterlace -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_Deinterlace -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_Deinterlace -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ 
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_Deinterlace)
+ INSTALL_VIDEOFILTER(ADM_vf_Deinterlace)
+--- avidemux_2.5.1/plugins/ADM_videoFilters/KeepField/CMakeLists.txt~	2009-12-17 18:20:52.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/KeepField/CMakeLists.txt	2009-12-17 18:20:55.059265548 +0200
+@@ -3,27 +3,52 @@
+ 
+ SET(ADM_vf_separateFieldSRCS ADM_vidSeparateField.cpp)
+ ADD_LIBRARY(ADM_vf_separateField SHARED ${ADM_vf_separateFieldSRCS})
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_separateField -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_separateField -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_separateField -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_separateField)
+ INSTALL_VIDEOFILTER(ADM_vf_separateField)
+ 
+ SET(ADM_vf_mergeFieldSRCS ADM_vidMergeField.cpp)
+ ADD_LIBRARY(ADM_vf_mergeField SHARED ${ADM_vf_mergeFieldSRCS})
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_mergeField -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_mergeField -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_mergeField -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_mergeField)
+ INSTALL_VIDEOFILTER(ADM_vf_mergeField)
+ 
+ SET(ADM_vf_stackFieldSRCS ADM_vidStackField.cpp)
+ ADD_LIBRARY(ADM_vf_stackField SHARED ${ADM_vf_stackFieldSRCS})
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_stackField -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_stackField -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_stackField -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_stackField)
+ INSTALL_VIDEOFILTER(ADM_vf_stackField)
+ 
+ 
+ SET(ADM_vf_hzStackFieldSRCS ADM_vidHzStackField.cpp)
+ ADD_LIBRARY(ADM_vf_hzStackField SHARED ${ADM_vf_hzStackFieldSRCS})
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_hzStackField -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_hzStackField -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_hzStackField -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_hzStackField)
+ INSTALL_VIDEOFILTER(ADM_vf_hzStackField)
+ 
+ SET(ADM_vf_unstackFieldSRCS ADM_vidUnstackField.cpp)
+ ADD_LIBRARY(ADM_vf_unstackField SHARED ${ADM_vf_unstackFieldSRCS})
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_unstackField -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_unstackField -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_unstackField -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_unstackField)
+ INSTALL_VIDEOFILTER(ADM_vf_unstackField)
+ 
+--- avidemux_2.5.1/plugins/ADM_videoFilters/FluxSmooth/CMakeLists.txt~	2009-12-17 17:48:16.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/FluxSmooth/CMakeLists.txt	2009-12-17 18:21:35.355720292 +0200
+@@ -4,6 +4,11 @@
+ SET(ADM_vf_FluxSmooth_SRCS ADM_vidFlux.cpp)
+ 
+ ADD_LIBRARY(ADM_vf_FluxSmooth SHARED ${ADM_vf_FluxSmooth_SRCS})
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_FluxSmooth -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_FluxSmooth -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_FluxSmooth -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ 
+ IF (APPLE)
+ 	TARGET_LINK_LIBRARIES(ADM_vf_FluxSmooth -Wl,-read_only_relocs,suppress)
+--- avidemux_2.5.1/plugins/ADM_videoFilters/Stabilize/CMakeLists.txt~	2009-12-17 17:48:16.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/Stabilize/CMakeLists.txt	2009-12-17 18:22:02.955717229 +0200
+@@ -4,6 +4,11 @@
+ SET(ADM_vf_Stabilize_SRCS ADM_vidStabilize.cpp)
+ 
+ ADD_LIBRARY(ADM_vf_Stabilize SHARED ${ADM_vf_Stabilize_SRCS})
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_Stabilize -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_Stabilize -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_Stabilize -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ 
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_Stabilize)
+ INSTALL_VIDEOFILTER(ADM_vf_Stabilize)
+--- avidemux_2.5.1/plugins/ADM_videoFilters/Mosaic/CMakeLists.txt~	2009-12-17 18:25:10.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/Mosaic/CMakeLists.txt	2009-12-17 18:25:13.082781359 +0200
+@@ -1,6 +1,16 @@
+ INCLUDE(vf_plugin)
+ include(admFFmpegUtil)
+ 
++if (WIN32)
++	set(LIBAVCODEC_INSTALL_DIR ${AVIDEMUX_INSTALL_PREFIX})
++	set(LIBAVUTIL_INSTALL_DIR ${AVIDEMUX_INSTALL_PREFIX})
++	set(LIBSWSCALE_INSTALL_DIR ${AVIDEMUX_INSTALL_PREFIX})
++else (WIN32)
++	set(LIBAVCODEC_INSTALL_DIR ${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_libraries/ffmpeg/libavcodec)
++	set(LIBAVUTIL_INSTALL_DIR ${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_libraries/ffmpeg/libavutil)
++	set(LIBSWSCALE_INSTALL_DIR ${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_libraries/ffmpeg/libswscale)
++endif (WIN32)
++
+ SET(ADM_vf_Mosaic_SRCS ADM_vidMosaic.cpp)
+ 
+ getFfmpegLibNames("${AVIDEMUX_SOURCE_DIR}/avidemux/ADM_libraries/ffmpeg")
+@@ -8,16 +18,22 @@
+ INCLUDE_DIRECTORIES("${AVIDEMUX_SOURCE_DIR}/avidemux/ADM_libraries/ffmpeg")
+ 
+ add_library(ADM_libswscale UNKNOWN IMPORTED)
+-set_property(TARGET ADM_libswscale PROPERTY IMPORTED_LOCATION "${FFMPEG_LIB_DIR}/${LIBSWSCALE_LIB}")
++set_property(TARGET ADM_libswscale PROPERTY IMPORTED_LOCATION "${LIBSWSCALE_INSTALL_DIR}/${LIBSWSCALE_LIB}")
+ 
+ add_library(ADM_libavcodec UNKNOWN IMPORTED)
+-set_property(TARGET ADM_libavcodec PROPERTY IMPORTED_LOCATION "${FFMPEG_LIB_DIR}/${LIBAVCODEC_LIB}")
++set_property(TARGET ADM_libavcodec PROPERTY IMPORTED_LOCATION "${LIBAVCODEC_INSTALL_DIR}/${LIBAVCODEC_LIB}")
+ 
+ add_library(ADM_libavutil UNKNOWN IMPORTED)
+-set_property(TARGET ADM_libavutil PROPERTY IMPORTED_LOCATION "${FFMPEG_LIB_DIR}/${LIBAVUTIL_LIB}")
++set_property(TARGET ADM_libavutil PROPERTY IMPORTED_LOCATION "${LIBAVUTIL_INSTALL_DIR}/${LIBAVUTIL_LIB}")
+ 
+ ADD_LIBRARY(ADM_vf_Mosaic SHARED ${ADM_vf_Mosaic_SRCS})
+ TARGET_LINK_LIBRARIES(ADM_vf_Mosaic ADM_libswscale ADM_libavcodec ADM_libavutil)
+ 
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_Mosaic -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_Mosaic -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_Mosaic -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
++
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_Mosaic)
+ INSTALL_VIDEOFILTER(ADM_vf_Mosaic)
+--- avidemux_2.5.1/plugins/ADM_videoFilters/Whirl/CMakeLists.txt~	2009-12-17 17:48:16.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/Whirl/CMakeLists.txt	2009-12-17 18:25:36.139445701 +0200
+@@ -4,6 +4,11 @@
+ SET(ADM_vf_Whirl_SRCS ADM_vidWhirl.cpp)
+ 
+ ADD_LIBRARY(ADM_vf_Whirl SHARED ${ADM_vf_Whirl_SRCS})
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_Whirl -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_Whirl -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_Whirl -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ 
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_Whirl)
+ INSTALL_VIDEOFILTER(ADM_vf_Whirl)
+--- avidemux_2.5.1/plugins/ADM_videoFilters/PalShift/CMakeLists.txt~	2009-12-17 18:27:14.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/PalShift/CMakeLists.txt	2009-12-17 18:27:15.889019040 +0200
+@@ -3,12 +3,22 @@
+ 
+ SET(ADM_vf_palShift_SRCS ADM_vidPalShift.cpp)
+ ADD_LIBRARY(ADM_vf_palShift SHARED ${ADM_vf_palShift_SRCS})
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_palShift -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_palShift -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_palShift -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_palShift)
+ INSTALL_VIDEOFILTER(ADM_vf_palShift)
+ 
+ 
+ SET(ADM_vf_smartPalShift_SRCS ADM_vidPalSmart.cpp)
+ ADD_LIBRARY(ADM_vf_smartPalShift SHARED ${ADM_vf_smartPalShift_SRCS})
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_smartPalShift -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_smartPalShift -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_smartPalShift -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_smartPalShift)
+ INSTALL_VIDEOFILTER(ADM_vf_smartPalShift)
+ 
+--- avidemux_2.5.1/plugins/ADM_videoFilters/SwapField/CMakeLists.txt~	2009-12-17 18:29:24.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/SwapField/CMakeLists.txt	2009-12-17 18:29:27.222755929 +0200
+@@ -3,23 +3,43 @@
+ 
+ SET(ADM_vf_swapField_SRCS ADM_vidSwapFields.cpp)
+ ADD_LIBRARY(ADM_vf_swapField SHARED ${ADM_vf_swapField_SRCS})
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_swapField -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_swapField -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_swapField -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_swapField)
+ INSTALL_VIDEOFILTER(ADM_vf_swapField)
+ 
+ 
+ SET(ADM_vf_smartSwapField_SRCS ADM_vidSwapSmart.cpp)
+ ADD_LIBRARY(ADM_vf_smartSwapField SHARED ${ADM_vf_smartSwapField_SRCS})
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_smartSwapField -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_smartSwapField -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_smartSwapField -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_smartSwapField)
+ INSTALL_VIDEOFILTER(ADM_vf_smartSwapField)
+ 
+ 
+ SET(ADM_vf_keepOddField_SRCS ADM_vidKeepOddFields.cpp)
+ ADD_LIBRARY(ADM_vf_keepOddField SHARED ${ADM_vf_keepOddField_SRCS})
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_keepOddField -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_keepOddField -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_keepOddField -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_keepOddField)
+ INSTALL_VIDEOFILTER(ADM_vf_keepOddField)
+ 
+ SET(ADM_vf_keepEvenField_SRCS ADM_vidKeepEvenFields.cpp)
+ ADD_LIBRARY(ADM_vf_keepEvenField SHARED ${ADM_vf_keepEvenField_SRCS})
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_keepEvenField -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_keepEvenField -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_keepEvenField -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_keepEvenField)
+ INSTALL_VIDEOFILTER(ADM_vf_keepEvenField)
+ 
+--- avidemux_2.5.1/plugins/ADM_videoFilters/MSharpen/CMakeLists.txt~	2009-12-17 17:48:16.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/MSharpen/CMakeLists.txt	2009-12-17 18:29:56.839286455 +0200
+@@ -4,6 +4,11 @@
+ SET(ADM_vf_mSharpen_SRCS ADM_vidMSharpen.cpp)
+ 
+ ADD_LIBRARY(ADM_vf_mSharpen SHARED ${ADM_vf_mSharpen_SRCS})
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_mSharpen -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_mSharpen -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_mSharpen -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ 
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_mSharpen)
+ INSTALL_VIDEOFILTER(ADM_vf_mSharpen)
+--- avidemux_2.5.1/plugins/ADM_videoFilters/MSmooth/CMakeLists.txt~	2009-12-17 17:48:16.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/MSmooth/CMakeLists.txt	2009-12-17 18:30:25.092333293 +0200
+@@ -4,6 +4,11 @@
+ SET(ADM_vf_mSmooth_SRCS ADM_vidMsmooth.cpp)
+ 
+ ADD_LIBRARY(ADM_vf_mSmooth SHARED ${ADM_vf_mSmooth_SRCS})
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_mSmooth -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_mSmooth -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_mSmooth -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ 
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_mSmooth)
+ INSTALL_VIDEOFILTER(ADM_vf_mSmooth)
+--- avidemux_2.5.1/plugins/ADM_videoFilters/Soften/CMakeLists.txt~	2009-12-17 17:48:16.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/Soften/CMakeLists.txt	2009-12-17 18:30:47.122747898 +0200
+@@ -4,6 +4,11 @@
+ SET(ADM_vf_soften_SRCS ADM_vidSoften.cpp)
+ 
+ ADD_LIBRARY(ADM_vf_soften SHARED ${ADM_vf_soften_SRCS})
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_soften -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_soften -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_soften -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ 
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_soften)
+ INSTALL_VIDEOFILTER(ADM_vf_soften)
+--- avidemux_2.5.1/plugins/ADM_videoFilters/lavDeinterlace/CMakeLists.txt~	2009-12-17 18:33:13.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/lavDeinterlace/CMakeLists.txt	2009-12-17 18:33:16.192316325 +0200
+@@ -1,6 +1,14 @@
+ INCLUDE(vf_plugin)
+ include(admFFmpegUtil)
+ 
++if (WIN32)
++	set(LIBPOSTPROC_INSTALL_DIR ${AVIDEMUX_INSTALL_PREFIX})
++	set(LIBSWSCALE_INSTALL_DIR ${AVIDEMUX_INSTALL_PREFIX})
++else (WIN32)
++	set(LIBPOSTPROC_INSTALL_DIR ${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_libraries/ffmpeg/libpostproc)
++	set(LIBSWSCALE_INSTALL_DIR ${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_libraries/ffmpeg/libswscale)
++endif (WIN32)
++
+ SET(ADM_vf_lavDeinterlace_SRCS ADM_lavpp_deint.cpp)
+ 
+ getFfmpegLibNames("${AVIDEMUX_SOURCE_DIR}/avidemux/ADM_libraries/ffmpeg")
+@@ -8,13 +16,18 @@
+ INCLUDE_DIRECTORIES("${AVIDEMUX_SOURCE_DIR}/avidemux/ADM_libraries/ffmpeg")
+ 
+ add_library(ADM_libswscale UNKNOWN IMPORTED)
+-set_property(TARGET ADM_libswscale PROPERTY IMPORTED_LOCATION "${FFMPEG_LIB_DIR}/${LIBSWSCALE_LIB}")
++set_property(TARGET ADM_libswscale PROPERTY IMPORTED_LOCATION "${LIBSWSCALE_INSTALL_DIR}/${LIBSWSCALE_LIB}")
+ 
+ add_library(ADM_libpostproc UNKNOWN IMPORTED)
+-set_property(TARGET ADM_libpostproc PROPERTY IMPORTED_LOCATION "${FFMPEG_LIB_DIR}/${LIBPOSTPROC_LIB}")
++set_property(TARGET ADM_libpostproc PROPERTY IMPORTED_LOCATION "${LIBPOSTPROC_INSTALL_DIR}/${LIBPOSTPROC_LIB}")
+ 
+ ADD_LIBRARY(ADM_vf_lavDeinterlace SHARED ${ADM_vf_lavDeinterlace_SRCS})
+ TARGET_LINK_LIBRARIES(ADM_vf_lavDeinterlace ADM_libswscale ADM_libpostproc)
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_lavDeinterlace -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_lavDeinterlace -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_lavDeinterlace -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ 
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_lavDeinterlace)
+ INSTALL_VIDEOFILTER(ADM_vf_lavDeinterlace)
+--- avidemux_2.5.1/plugins/ADM_videoFilters/Rotate/CMakeLists.txt~	2009-12-17 17:48:16.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/Rotate/CMakeLists.txt	2009-12-17 18:35:00.028973213 +0200
+@@ -4,6 +4,11 @@
+ SET(ADM_vf_rotate_SRCS ADM_vidRotate.cpp)
+ 
+ ADD_LIBRARY(ADM_vf_rotate SHARED ${ADM_vf_rotate_SRCS})
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_rotate -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_rotate -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_rotate -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ 
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_rotate)
+ INSTALL_VIDEOFILTER(ADM_vf_rotate)
+--- avidemux_2.5.1/plugins/ADM_videoFilters/Tdeint/CMakeLists.txt~	2009-12-17 17:48:16.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/Tdeint/CMakeLists.txt	2009-12-17 18:35:32.682350488 +0200
+@@ -4,6 +4,11 @@
+ SET(ADM_vf_tdeint_SRCS ADM_vidTdeint.cpp  DIA_tdeint.cpp )
+ 
+ ADD_LIBRARY(ADM_vf_tdeint SHARED ${ADM_vf_tdeint_SRCS})
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_tdeint -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_tdeint -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_tdeint -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ 
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_tdeint)
+ INSTALL_VIDEOFILTER(ADM_vf_tdeint)
+--- avidemux_2.5.1/plugins/ADM_audioEncoders/lavcodec/CMakeLists.txt~	2009-12-17 18:43:48.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_audioEncoders/lavcodec/CMakeLists.txt	2009-12-17 18:43:50.376002948 +0200
+@@ -1,6 +1,12 @@
+ 	INCLUDE(ae_plugin)
+ 	include(admFFmpegUtil)
+ 
++	if (WIN32)
++		set(LIBAVCODEC_INSTALL_DIR ${AVIDEMUX_INSTALL_PREFIX})
++	else (WIN32)
++		set(LIBAVCODEC_INSTALL_DIR ${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_libraries/ffmpeg/libavcodec)
++	endif (WIN32)
++
+ 	getFfmpegLibNames("${AVIDEMUX_SOURCE_DIR}/avidemux/ADM_libraries/ffmpeg")
+ 	INCLUDE_DIRECTORIES("${AVIDEMUX_SOURCE_DIR}/avidemux")
+ 	INCLUDE_DIRECTORIES("${AVIDEMUX_SOURCE_DIR}/avidemux/ADM_libraries/ffmpeg")
+@@ -8,11 +14,16 @@
+ 	SET(ADM_ae_lav_mp2_SRCS audioencoder_lavcodec.cpp)
+ 	
+ 	add_library(ADM_libavcodec UNKNOWN IMPORTED)
+-	set_property(TARGET ADM_libavcodec PROPERTY IMPORTED_LOCATION "${FFMPEG_LIB_DIR}/${LIBAVCODEC_LIB}")	
++	set_property(TARGET ADM_libavcodec PROPERTY IMPORTED_LOCATION "${LIBAVCODEC_INSTALL_DIR}/${LIBAVCODEC_LIB}")	
+ 
+ 	ADD_LIBRARY(ADM_ae_lav_mp2 SHARED ${ADM_ae_lav_mp2_SRCS})
+ 	ADD_TARGET_CFLAGS(ADM_ae_lav_mp2 "-DADM_LAV_MP2")
+ 	TARGET_LINK_LIBRARIES(ADM_ae_lav_mp2 ADM_core ADM_coreAudio ADM_coreUI ADM_libavcodec)
++	IF (UNIX)
++		ADD_TARGET_LDFLAGS(ADM_ae_lav_mp2 -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++		ADD_TARGET_LDFLAGS(ADM_ae_lav_mp2 -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++		ADD_TARGET_LDFLAGS(ADM_ae_lav_mp2 -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreAudio/src)
++	ENDIF (UNIX)
+ 
+ 	INIT_AUDIO_ENCODER(ADM_ae_lav_mp2)
+ 	INSTALL_AUDIOENCODER(ADM_ae_lav_mp2)
+@@ -22,6 +33,11 @@
+ 	ADD_LIBRARY(ADM_ae_lav_ac3 SHARED ${ADM_ae_lav_ac3_SRCS})
+ 	ADD_TARGET_CFLAGS(ADM_ae_lav_ac3 "-DADM_LAV_AC3")
+ 	TARGET_LINK_LIBRARIES(ADM_ae_lav_ac3 ADM_core ADM_coreAudio ADM_coreUI ADM_libavcodec)
++	IF (UNIX)
++		ADD_TARGET_LDFLAGS(ADM_ae_lav_ac3 -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++		ADD_TARGET_LDFLAGS(ADM_ae_lav_ac3 -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++		ADD_TARGET_LDFLAGS(ADM_ae_lav_ac3 -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreAudio/src)
++	ENDIF (UNIX)
+ 
+ 	INIT_AUDIO_ENCODER(ADM_ae_lav_ac3)
+ 	INSTALL_AUDIOENCODER(ADM_ae_lav_ac3)
+--- avidemux_2.5.1/plugins/ADM_audioEncoders/lame/CMakeLists.txt~	2009-12-17 17:48:16.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_audioEncoders/lame/CMakeLists.txt	2009-12-17 18:44:42.138914394 +0200
+@@ -5,6 +5,11 @@
+ 	ADD_LIBRARY(ADM_ae_lame SHARED ${ADM_ae_lame_SRCS})
+ 
+ 	TARGET_LINK_LIBRARIES(ADM_ae_lame ${LAME_LIBRARY_DIR} ADM_core ADM_coreAudio ADM_coreUI)
++	IF (UNIX)
++		ADD_TARGET_LDFLAGS(ADM_ae_lame -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++		ADD_TARGET_LDFLAGS(ADM_ae_lame -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++		ADD_TARGET_LDFLAGS(ADM_ae_lame -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreAudio/src)
++	ENDIF (UNIX)
+ 
+ 	ADD_TARGET_CFLAGS(ADM_ae_lame "-I${LAME_INCLUDE_DIR}")
+ 
+--- avidemux_2.5.1/plugins/ADM_audioEncoders/vorbis/CMakeLists.txt~	2009-12-17 17:48:16.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_audioEncoders/vorbis/CMakeLists.txt	2009-12-17 18:52:10.085537011 +0200
+@@ -5,6 +5,11 @@
+ 	ADD_LIBRARY(ADM_ae_vorbis SHARED ${ADM_ae_vorbis_SRCS})
+ 
+ 	TARGET_LINK_LIBRARIES(ADM_ae_vorbis ${VORBIS_LIBRARY_DIR} ${VORBISENC_LIBRARY_DIR} ADM_core ADM_coreAudio ADM_coreUI)
++	IF (UNIX)
++		ADD_TARGET_LDFLAGS(ADM_ae_vorbis -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++		ADD_TARGET_LDFLAGS(ADM_ae_vorbis -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++		ADD_TARGET_LDFLAGS(ADM_ae_vorbis -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreAudio/src)
++	ENDIF (UNIX)
+ 
+ 	ADD_TARGET_CFLAGS(ADM_ae_vorbis "-I${VORBIS_INCLUDE_DIR}")
+ 
+--- avidemux_2.5.1/plugins/ADM_audioEncoders/faac/CMakeLists.txt~	2009-12-17 17:48:16.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_audioEncoders/faac/CMakeLists.txt	2009-12-17 18:52:49.859490623 +0200
+@@ -5,6 +5,11 @@
+ 	ADD_LIBRARY(ADM_ae_faac SHARED ${ADM_ae_faac_SRCS})
+ 
+ 	TARGET_LINK_LIBRARIES(ADM_ae_faac ${FAAC_LIBRARY_DIR} ADM_core ADM_coreAudio ADM_coreUI)
++	IF (UNIX)
++		ADD_TARGET_LDFLAGS(ADM_ae_faac -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++		ADD_TARGET_LDFLAGS(ADM_ae_faac -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++		ADD_TARGET_LDFLAGS(ADM_ae_faac -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreAudio/src)
++	ENDIF (UNIX)
+ 
+ 	ADD_TARGET_CFLAGS(ADM_ae_faac "-I${FAAC_INCLUDE_DIR}")
+ 
+--- avidemux_2.5.1/plugins/ADM_videoFilters/Ass/CMakeLists.txt~	2009-12-17 19:07:00.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/Ass/CMakeLists.txt	2009-12-17 19:07:02.589061336 +0200
+@@ -10,6 +10,11 @@
+ 	ADD_LIBRARY(ADM_vf_ssa SHARED ${ADM_vf_ssa_SRCS})
+ 	TARGET_LINK_LIBRARIES(ADM_vf_ssa ADM_libass)
+ 	ADD_TARGET_LDFLAGS(ADM_vf_ssa "${FREETYPE2_LDFLAGS}")
++	IF (UNIX)
++		ADD_TARGET_LDFLAGS(ADM_vf_ssa -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++		ADD_TARGET_LDFLAGS(ADM_vf_ssa -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++		ADD_TARGET_LDFLAGS(ADM_vf_ssa -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++	ENDIF (UNIX)
+ 
+ 	IF (FONTCONFIG_FOUND)
+ 		ADD_TARGET_LDFLAGS(ADM_vf_ssa "${FONTCONFIG_LDFLAGS}")
+--- avidemux_2.5.1/plugins/ADM_videoFilters/TIsophote/CMakeLists.txt~	2009-12-17 18:59:00.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/TIsophote/CMakeLists.txt	2009-12-17 19:07:47.502137255 +0200
+@@ -4,6 +4,11 @@
+ SET(ADM_vf_Tisophote_SRCS ADM_vidTisophote.cpp)
+ 
+ ADD_LIBRARY(ADM_vf_Tisophote SHARED ${ADM_vf_Tisophote_SRCS})
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_Tisophote -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_Tisophote -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_Tisophote -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ 
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_Tisophote)
+ INSTALL_VIDEOFILTER(ADM_vf_Tisophote)
+--- avidemux_2.5.1/plugins/ADM_audioEncoders/twolame/CMakeLists.txt~	2009-12-17 19:10:06.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_audioEncoders/twolame/CMakeLists.txt	2009-12-17 19:10:08.465845321 +0200
+@@ -8,6 +8,11 @@
+ 	TARGET_LINK_LIBRARIES(ADM_ae_twolame ADM_libtwolame ADM_core ADM_coreAudio ADM_coreUI)
+         include_directories(ADM_libtwolame)
+ 
++	IF (UNIX)
++		ADD_TARGET_LDFLAGS(ADM_ae_twolame -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++		ADD_TARGET_LDFLAGS(ADM_ae_twolame -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++		ADD_TARGET_LDFLAGS(ADM_ae_twolame -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreAudio/src)
++	ENDIF (UNIX)
+ 
+ 	INIT_AUDIO_ENCODER(ADM_ae_twolame)
+ 	INSTALL_AUDIOENCODER(ADM_ae_twolame)
+--- avidemux_2.5.1/plugins/ADM_audioEncoders/pcm/CMakeLists.txt~	2009-12-17 18:59:00.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_audioEncoders/pcm/CMakeLists.txt	2009-12-17 19:10:29.465843181 +0200
+@@ -4,6 +4,11 @@
+ 
+ 	ADD_LIBRARY(ADM_ae_pcm SHARED ${ADM_ae_pcm_SRCS})
+ 	TARGET_LINK_LIBRARIES(ADM_ae_pcm ADM_core ADM_coreAudio)
++	IF (UNIX)
++		ADD_TARGET_LDFLAGS(ADM_ae_pcm -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++		ADD_TARGET_LDFLAGS(ADM_ae_pcm -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++		ADD_TARGET_LDFLAGS(ADM_ae_pcm -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreAudio/src)
++	ENDIF (UNIX)
+ 
+ 	INIT_AUDIO_ENCODER(ADM_ae_pcm)
+ 	INSTALL_AUDIOENCODER(ADM_ae_pcm)
