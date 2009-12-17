@@ -1174,3 +1174,27 @@
  
  	INIT_AUDIO_ENCODER(ADM_ae_pcm)
  	INSTALL_AUDIOENCODER(ADM_ae_pcm)
+--- avidemux_2.5.1/plugins/ADM_audioDecoders/ADM_ad_opencore_amrnb/CMakeLists.txt~	2009-12-17 19:27:04.038062926 +0100
++++ avidemux_2.5.1/plugins/ADM_audioDecoders/ADM_ad_opencore_amrnb/CMakeLists.txt	2009-12-17 19:37:57.131389904 +0100
+@@ -11,6 +11,9 @@
+ 	TARGET_LINK_LIBRARIES(ADM_ad_opencore_amrnb ADM_core ${OPENCORE_AMRNB_LIBRARY_DIR})
+ 
+ 	ADD_TARGET_CFLAGS(ADM_ad_opencore_amrnb "-I${OPENCORE_AMRNB_INCLUDE_DIR}")
++	IF (UNIX)
++		ADD_TARGET_LDFLAGS(ADM_ad_opencore_amrnb -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ENDIF (UNIX)
+ 
+ 	INIT_AUDIO_PLUGIN(ADM_ad_opencore_amrnb)
+ 	INSTALL_AUDIODECODER(ADM_ad_opencore_amrnb)
+--- avidemux_2.5.1/plugins/ADM_audioDecoders/ADM_ad_opencore_amrwb/CMakeLists.txt~	2009-12-17 19:27:04.041389250 +0100
++++ avidemux_2.5.1/plugins/ADM_audioDecoders/ADM_ad_opencore_amrwb/CMakeLists.txt	2009-12-17 19:38:09.348515016 +0100
+@@ -11,6 +11,9 @@
+ 	TARGET_LINK_LIBRARIES(ADM_ad_opencore_amrwb ADM_core ${OPENCORE_AMRWB_LIBRARY_DIR})
+ 
+ 	ADD_TARGET_CFLAGS(ADM_ad_opencore_amrwb "-I${OPENCORE_AMRWB_INCLUDE_DIR}")
++	IF (UNIX)
++		ADD_TARGET_LDFLAGS(ADM_ad_opencore_amrwb -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ENDIF (UNIX)
+ 
+ 	INIT_AUDIO_PLUGIN(ADM_ad_opencore_amrwb)
+ 	INSTALL_AUDIODECODER(ADM_ad_opencore_amrwb)
