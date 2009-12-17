@@ -35,6 +35,7 @@ Patch0:		gcc44.patch
 Patch1:		types.patch
 Patch2:		qtlocale.patch
 Patch3:		link-libs.patch
+Patch4:		libdir.patch
 #Patch1:	%{name}-dts_internal.patch
 #Patch2:	%{name}-sparc64.patch
 URL:		http://fixounet.free.fr/avidemux/
@@ -92,6 +93,7 @@ find '(' -name '*.js' -o -name '*.cpp' -o -name '*.h' -o -name '*.cmake' -o -nam
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 echo 'pt_BR' >> po/LINGUAS
 
