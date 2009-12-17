@@ -1,7 +1,5 @@
 # TODO:
 # - create aften.spec (aften.sf.net) and use it -D USE_AFTEN=1
-# - amr bcond - -D USE_AMR_NB=1, maybe just drop it ?
-# - the bconds don't work with cmake, all gets enabled if BR found -- needs some cmake magican to fixup the bconds
 # - use external seamonkey (cmake fix needed): Checking for SpiderMonkey -- Skipping check and using bundled version.
 # - uses patched ffmpeg
 # - Could not find Gettext -- libintl not required for gettext support
@@ -112,8 +110,6 @@ find '(' -name '*.js' -o -name '*.cpp' -o -name '*.h' -o -name '*.cmake' -o -nam
 
 echo 'pt_BR' >> po/LINGUAS
 
-sed -i -e '/SET(ADM_UI_.* 1)/d' CMakeLists.txt
-
 # libdir fix
 grep -rl 'DESTINATION lib' . | xargs sed -i -e's,DESTINATION lib,DESTINATION lib${LIB_SUFFIX},g'
 sed -i -e's,FFMPEG_INSTALL_DIR lib,FFMPEG_INSTALL_DIR lib${LIB_SUFFIX},' cmake/admFFmpegBuild.cmake
@@ -128,12 +124,13 @@ cd build
 	-DCMAKE_BUILD_TYPE=%{?debug:Debug}%{!?debug:Release} \
 	-DCMAKE_INSTALL_PREFIX=%{_prefix} \
 	-DAVIDEMUX_INSTALL_PREFIX=%{_prefix} \
-	%{!?with_gtk:-DGTK_CHECKED=1 -DADM_UI_GTK=0} \
-	%{!?with_qt4:-DQT4_CHECKED=1 -DADM_UI_QT4=0} \
+	%{!?with_gtk:-DGTK=0} \
+	%{!?with_qt4:-DQT4=0} \
 %if "%{_lib}" == "lib64"
 	-DLIB_SUFFIX=64 \
 %endif
 	..
+
 %{__make}
 
 # plugin build expects libraries to be already installed; we fake a prefix
@@ -150,8 +147,11 @@ cd plugins/build
 	-DAVIDEMUX_INSTALL_PREFIX=$TOP/build \
 	-DAVIDEMUX_SOURCE_DIR=$TOP/  \
 	-DAVIDEMUX_CORECONFIG_DIR=$TOP/build/config \
-	%{!?with_gtk:-DGTK_CHECKED=1 -DADM_UI_GTK=0} \
-	%{!?with_qt4:-DQT4_CHECKED=1 -DADM_UI_QT4=0} \
+	%{!?with_arts:-DARTS=0} \
+	%{!?with_esd:-DESD=0} \
+	%{!?with_amr:-DOPENCORE_AMRNB=0 -DOPENCORE_AMRWB=0} \
+	%{!?with_gtk:-DGTK=0} \
+	%{!?with_qt4:-DQT4=0} \
 %if "%{_lib}" == "lib64"
 	-DLIB_SUFFIX=64 \
 %endif
@@ -216,8 +216,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %attr(755,root,root) %{_libdir}/ADM_plugins/audioDevices/libADM_av_alsa.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/audioDevices/libADM_av_arts.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/audioDevices/libADM_av_esd.so
+%{?with_arts:%attr(755,root,root) %{_libdir}/ADM_plugins/audioDevices/libADM_av_arts.so}
+%{?with_esd:%attr(755,root,root) %{_libdir}/ADM_plugins/audioDevices/libADM_av_esd.so}
 %attr(755,root,root) %{_libdir}/ADM_plugins/audioDevices/libADM_av_jack.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/audioDevices/libADM_av_oss.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/audioDevices/libADM_av_pulseAudioSimple.so
