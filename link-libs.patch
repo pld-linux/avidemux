@@ -1118,3 +1118,59 @@
  
  	ADD_TARGET_CFLAGS(ADM_ae_faac "-I${FAAC_INCLUDE_DIR}")
  
+--- avidemux_2.5.1/plugins/ADM_videoFilters/Ass/CMakeLists.txt~	2009-12-17 19:07:00.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/Ass/CMakeLists.txt	2009-12-17 19:07:02.589061336 +0200
+@@ -10,6 +10,11 @@
+ 	ADD_LIBRARY(ADM_vf_ssa SHARED ${ADM_vf_ssa_SRCS})
+ 	TARGET_LINK_LIBRARIES(ADM_vf_ssa ADM_libass)
+ 	ADD_TARGET_LDFLAGS(ADM_vf_ssa "${FREETYPE2_LDFLAGS}")
++	IF (UNIX)
++		ADD_TARGET_LDFLAGS(ADM_vf_ssa -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++		ADD_TARGET_LDFLAGS(ADM_vf_ssa -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++		ADD_TARGET_LDFLAGS(ADM_vf_ssa -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++	ENDIF (UNIX)
+ 
+ 	IF (FONTCONFIG_FOUND)
+ 		ADD_TARGET_LDFLAGS(ADM_vf_ssa "${FONTCONFIG_LDFLAGS}")
+--- avidemux_2.5.1/plugins/ADM_videoFilters/TIsophote/CMakeLists.txt~	2009-12-17 18:59:00.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_videoFilters/TIsophote/CMakeLists.txt	2009-12-17 19:07:47.502137255 +0200
+@@ -4,6 +4,11 @@
+ SET(ADM_vf_Tisophote_SRCS ADM_vidTisophote.cpp)
+ 
+ ADD_LIBRARY(ADM_vf_Tisophote SHARED ${ADM_vf_Tisophote_SRCS})
++IF (UNIX)
++	ADD_TARGET_LDFLAGS(ADM_vf_Tisophote -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_Tisophote -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++	ADD_TARGET_LDFLAGS(ADM_vf_Tisophote -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreImage/src)
++ENDIF (UNIX)
+ 
+ INIT_VIDEOFILTER_PLUGIN(ADM_vf_Tisophote)
+ INSTALL_VIDEOFILTER(ADM_vf_Tisophote)
+--- avidemux_2.5.1/plugins/ADM_audioEncoders/twolame/CMakeLists.txt~	2009-12-17 19:10:06.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_audioEncoders/twolame/CMakeLists.txt	2009-12-17 19:10:08.465845321 +0200
+@@ -8,6 +8,11 @@
+ 	TARGET_LINK_LIBRARIES(ADM_ae_twolame ADM_libtwolame ADM_core ADM_coreAudio ADM_coreUI)
+         include_directories(ADM_libtwolame)
+ 
++	IF (UNIX)
++		ADD_TARGET_LDFLAGS(ADM_ae_twolame -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++		ADD_TARGET_LDFLAGS(ADM_ae_twolame -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++		ADD_TARGET_LDFLAGS(ADM_ae_twolame -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreAudio/src)
++	ENDIF (UNIX)
+ 
+ 	INIT_AUDIO_ENCODER(ADM_ae_twolame)
+ 	INSTALL_AUDIOENCODER(ADM_ae_twolame)
+--- avidemux_2.5.1/plugins/ADM_audioEncoders/pcm/CMakeLists.txt~	2009-12-17 18:59:00.000000000 +0200
++++ avidemux_2.5.1/plugins/ADM_audioEncoders/pcm/CMakeLists.txt	2009-12-17 19:10:29.465843181 +0200
+@@ -4,6 +4,11 @@
+ 
+ 	ADD_LIBRARY(ADM_ae_pcm SHARED ${ADM_ae_pcm_SRCS})
+ 	TARGET_LINK_LIBRARIES(ADM_ae_pcm ADM_core ADM_coreAudio)
++	IF (UNIX)
++		ADD_TARGET_LDFLAGS(ADM_ae_pcm -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_core/src)
++		ADD_TARGET_LDFLAGS(ADM_ae_pcm -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreUI/src)
++		ADD_TARGET_LDFLAGS(ADM_ae_pcm -L${AVIDEMUX_SOURCE_DIR}/build/avidemux/ADM_coreAudio/src)
++	ENDIF (UNIX)
+ 
+ 	INIT_AUDIO_ENCODER(ADM_ae_pcm)
+ 	INSTALL_AUDIOENCODER(ADM_ae_pcm)
