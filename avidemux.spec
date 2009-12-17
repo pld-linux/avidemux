@@ -4,6 +4,8 @@
 # - use external seamonkey (cmake fix needed): Checking for SpiderMonkey -- Skipping check and using bundled version.
 # - uses patched ffmpeg
 # - Could not find Gettext -- libintl not required for gettext support
+# - don't force -O3 optimization
+# - look for lrelease from qt4-linguist, not qt-linguist
 #
 # Conditional build:
 %bcond_without	esd	# disable EsounD sound support
@@ -65,9 +67,13 @@ BuildRequires:	libtool
 BuildRequires:	libvorbis-devel
 BuildRequires:	libx264-devel
 BuildRequires:	libxml2-devel
+%{?with_qt4:BuildRequires:	libxslt-progs}
 BuildRequires:	nasm >= 0.98.32
 BuildRequires:	pkgconfig
+BuildRequires:	pulseaudio-devel
+%{?with_qt4:BuildRequires:	qt-linguist}
 %{?with_qt4:BuildRequires:	qt4-build >= %{qt4_version}}
+%{?with_qt4:BuildRequires:	qt4-qmake >= %{qt4_version}}
 BuildRequires:	sed >= 4.0
 BuildRequires:	xorg-lib-libXt-devel
 BuildRequires:	xorg-lib-libXv-devel
