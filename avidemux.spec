@@ -3,7 +3,6 @@
 # - the bconds don't work with cmake, all gets enabled if BR found -- needs some cmake magican to fixup the bconds
 # - use external seamonkey (cmake fix needed): Checking for SpiderMonkey -- Skipping check and using bundled version.
 # - sync or use .desktop from sources
-# - subpackages for qt4/gtk2 ui engine
 # - uses patched ffmpeg
 # - Could not find Gettext -- libintl not required for gettext support
 #
@@ -24,12 +23,13 @@ Summary:	A small audio/video editing software for Linux
 Summary(pl.UTF-8):	Mały edytor audio/wideo dla Linuksa
 Name:		avidemux
 Version:	2.5.1
-Release:	0.10
+Release:	0.13
 License:	GPL v2+
 Group:		X11/Applications/Multimedia
 Source0:	http://dl.sourceforge.net/avidemux/%{name}_%{version}.tar.gz
 # Source0-md5:	081db3af87f1f93c7b4e5d5975e07e40
 Source1:	%{name}.desktop
+Source2:	%{name}-qt4.desktop
 Patch0:		gcc44.patch
 Patch1:		types.patch
 Patch2:		qtlocale.patch
@@ -159,7 +159,8 @@ chmod +x $RPM_BUILD_ROOT%{_libdir}/lib*.so*
 
 mv $RPM_BUILD_ROOT%{_bindir}/avidemux2{_cli,}
 cp -a man/avidemux.1 $RPM_BUILD_ROOT%{_mandir}/man1
-cp -a %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}
+cp -a %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}/%{name}-gtk.desktop
+cp -a %{SOURCE2} $RPM_BUILD_ROOT%{_desktopdir}/%{name}-qt4.desktop
 cp -a avidemux_icon.png $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
 
 %find_lang %{name}
@@ -293,11 +294,12 @@ rm -rf $RPM_BUILD_ROOT
 %lang(tr) %{_datadir}/%{name}/i18n/*_tr.qm
 %lang(zh_TW) %{_datadir}/%{name}/i18n/*_zh_TW.qm
 
-%{_desktopdir}/*.desktop
 %{_pixmapsdir}/*.png
 
 %files ui-gtk
+%defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/avidemux2_gtk
+%{_desktopdir}/%{name}-gtk.desktop
 %attr(755,root,root) %{_libdir}/libADM_UIGtk.so
 %attr(755,root,root) %{_libdir}/libADM_render_gtk.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoEncoder/xvid/libADM_vidEnc_Xvid_Gtk.so
@@ -309,6 +311,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_contrast_gtk.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_Crop_gtk.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_eq2_gtk.so
+%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_equalizer_gtk.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_hue_gtk.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_mpdelogo_gtk.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_mplayerResize_gtk.so
@@ -316,7 +319,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %if %{with qt4}
 %files ui-qt4
+%defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/avidemux2_qt4
+%{_desktopdir}/%{name}-qt4.desktop
 %attr(755,root,root) %{_libdir}/libADM_UIQT4.so
 %attr(755,root,root) %{_libdir}/libADM_render_qt4.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoEncoder/xvid/libADM_vidEnc_Xvid_Qt.so
@@ -328,7 +333,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_contrast_qt4.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_crop_qt4.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_eq2_qt4.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_equalizer_gtk.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_equalizer_qt4.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_hue_qt4.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_mpdelogo_qt4.so
