@@ -11,7 +11,8 @@
 %bcond_without	esd	# disable EsounD sound support
 %bcond_without	arts	# without arts audio output
 %bcond_with	amr	# enable 3GPP Adaptive Multi Rate (AMR) speech codec support
-%bcond_without	qt4	# build qt4-base interface
+%bcond_without	qt4	# build qt4 interface
+%bcond_without	gtk	# build gtk interface
 %bcond_with	ssse3	# use SSSE3 instructions
 
 %define		qt4_version	4.2
@@ -131,6 +132,8 @@ cd build
 	-DCMAKE_BUILD_TYPE=%{?debug:Debug}%{!?debug:Release} \
 	-DCMAKE_INSTALL_PREFIX=%{_prefix} \
 	-DAVIDEMUX_INSTALL_PREFIX=%{_prefix} \
+	%{!?with_gtk:-DNO_GTK=1 -DADM_UI_GTK=0} \
+	%{!?with_qt4:-DNO_QT4=1 -DADM_UI_QT4=0} \
 %if "%{_lib}" == "lib64"
 	-DLIB_SUFFIX=64 \
 %endif
@@ -141,10 +144,13 @@ cd ..
 # plugins
 cd plugin-build
 %cmake \
+	-DCMAKE_BUILD_TYPE=%{?debug:Debug}%{!?debug:Release} \
 	-DCMAKE_INSTALL_PREFIX=%{_prefix} \
 	-DAVIDEMUX_INSTALL_PREFIX=%{_prefix} \
 	-DAVIDEMUX_SOURCE_DIR=$TOP/  \
 	-DAVIDEMUX_CORECONFIG_DIR=$TOP/build/config \
+	%{!?with_gtk:-DNO_GTK=1 -DADM_UI_GTK=0} \
+	%{!?with_qt4:-DNO_QT4=1 -DADM_UI_QT4=0} \
 %if "%{_lib}" == "lib64"
 	-DLIB_SUFFIX=64 \
 %endif
@@ -279,6 +285,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vidChromaU.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vidChromaV.so
 %{_mandir}/man1/avidemux.1*
+%{_pixmapsdir}/*.png
 
 %{_datadir}/ADM_scripts
 
@@ -299,8 +306,7 @@ rm -rf $RPM_BUILD_ROOT
 %lang(tr) %{_datadir}/%{name}/i18n/*_tr.qm
 %lang(zh_TW) %{_datadir}/%{name}/i18n/*_zh_TW.qm
 
-%{_pixmapsdir}/*.png
-
+%if %{with gtk}
 %files ui-gtk
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/avidemux2_gtk
@@ -321,6 +327,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_mpdelogo_gtk.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_mplayerResize_gtk.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_sub_gtk.so
+%endif
 
 %if %{with qt4}
 %files ui-qt4
