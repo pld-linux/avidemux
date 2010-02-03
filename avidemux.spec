@@ -4,8 +4,6 @@
 # - use external spidermonkey (cmake fix needed): Checking for SpiderMonkey -- Skipping check and using bundled version.
 # - uses patched ffmpeg
 # - don't force -O3 optimization
-# - look for lrelease from qt4-linguist, not qt-linguist
-# - uses some internal x264 functions, our x264 is to new for it
 #
 # Conditional build:
 %bcond_without	esd	# disable EsounD sound support
@@ -35,7 +33,7 @@ Patch2:		qtlocale.patch
 URL:		http://fixounet.free.fr/avidemux/
 %{?with_qt4:BuildRequires:	QtGui-devel >= %{qt4_version}}
 BuildRequires:	SDL-devel
-BuildRequires:	a52dec-libs-devel
+#BuildRequires:	a52dec-libs-devel
 BuildRequires:	alsa-lib-devel >= 1.0
 %{?with_arts:BuildRequires:	artsc-devel}
 BuildRequires:	cmake >= 2.6.2
@@ -46,35 +44,35 @@ BuildRequires:	freetype-devel >= 2.0.0
 BuildRequires:	gettext-devel
 %{?with_gtk:BuildRequires:	gtk+2-devel >= 1:2.6.0}
 BuildRequires:	jack-audio-connection-kit-devel
-BuildRequires:	js-devel(threads)
+#BuildRequires:	js-devel(threads)
 BuildRequires:	lame-libs-devel
 #BuildRequires:	libdca-devel
-BuildRequires:	libdts-devel
-BuildRequires:	libmad-devel
-BuildRequires:	libmpeg3-devel
+#BuildRequires:	libdts-devel
+#BuildRequires:	libmad-devel
+#BuildRequires:	libmpeg3-devel
 BuildRequires:	libpng-devel
 BuildRequires:	libsamplerate-devel
 BuildRequires:	libstdc++-devel
-BuildRequires:	libtool
 BuildRequires:	libvorbis-devel
-#BuildRequires:	libx264-devel
+BuildRequires:	libx264-devel
 BuildRequires:	libxml2-devel
 %{?with_qt4:BuildRequires:	libxslt-progs}
+%ifarch %{ix86}
 BuildRequires:	nasm >= 0.98.32
+%endif
 %{?with_amr:BuildRequires:	opencore-amr-devel}
 BuildRequires:	pkgconfig
 BuildRequires:	pulseaudio-devel
-%{?with_qt4:BuildRequires:	qt-linguist}
 %{?with_qt4:BuildRequires:	qt4-build >= %{qt4_version}}
+%{?with_qt4:BuildRequires:	qt4-linguist}
 %{?with_qt4:BuildRequires:	qt4-qmake >= %{qt4_version}}
 BuildRequires:	sed >= 4.0
-BuildRequires:	xorg-lib-libXt-devel
 BuildRequires:	xorg-lib-libXv-devel
 BuildRequires:	xorg-proto-xextproto-devel
 BuildRequires:	xvid-devel >= 1:1.0
 BuildRequires:	xvidcore-devel
 BuildRequires:	zlib-devel
-Requires:	js(threads)
+#Requires:	js(threads)
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -113,9 +111,12 @@ sed -i -e's,"lib","%{_lib}",' avidemux/main.cpp avidemux/ADM_core/src/ADM_fileio
 
 %build
 TOP=$PWD
+
 # main
 install -d build/%{_lib} plugins/build
 cd build
+
+export QTDIR=%{_libdir}/qt4
 %cmake \
 	-DCMAKE_BUILD_TYPE=%{?debug:Debug}%{!?debug:Release} \
 	-DCMAKE_INSTALL_PREFIX=%{_prefix} \
