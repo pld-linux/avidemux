@@ -19,7 +19,7 @@ Summary:	A small audio/video editing software for Linux
 Summary(pl.UTF-8):	Mały edytor audio/wideo dla Linuksa
 Name:		avidemux
 Version:	2.5.2
-Release:	3
+Release:	4
 License:	GPL v2+
 Group:		X11/Applications/Multimedia
 Source0:	http://downloads.sourceforge.net/avidemux/%{name}_%{version}.tar.gz
@@ -220,6 +220,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/ADM_plugins/audioDecoder/libADM_ad_Mad.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/audioDecoder/libADM_ad_a52.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/audioDecoder/libADM_ad_faad.so
+%attr(755,root,root) %{_libdir}/ADM_plugins/audioDecoder/libADM_ad_vorbis.so
 %if %{with amr}
 %attr(755,root,root) %{_libdir}/ADM_plugins/audioDecoder/libADM_ad_opencore_amrnb.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/audioDecoder/libADM_ad_opencore_amrwb.so
@@ -242,6 +243,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/ADM_plugins/audioEncoders/libADM_ae_vorbis.so
 
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoEncoder/libADM_vidEnc_avcodec.so
+%attr(755,root,root) %{_libdir}/ADM_plugins/videoEncoder/libADM_vidEnc_x264.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoEncoder/libADM_vidEnc_xvid.so
 
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_addborders.so
@@ -349,8 +351,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_desktopdir}/%{name}-qt4.desktop
 %attr(755,root,root) %{_libdir}/libADM_UIQT4.so
 %attr(755,root,root) %{_libdir}/libADM_render_qt4.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/audioDecoder/libADM_ad_vorbis.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoEncoder/libADM_vidEnc_x264.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoEncoder/x264/libADM_vidEnc_x264_Qt.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoEncoder/xvid/libADM_vidEnc_Xvid_Qt.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_asharp_qt4.so
