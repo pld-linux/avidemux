@@ -7,7 +7,7 @@
 # - get rid of gcc-bug-mmx-x86 patch
 #
 # Conditional build:
-%bcond_without	esd	# disable EsounD sound support
+%bcond_with	esd	# disable EsounD sound support
 %bcond_with	arts	# with arts audio output
 %bcond_without	amr	# disable Adaptive Multi Rate (AMR) speech codec support
 %bcond_without	qt4	# build qt4 interface
@@ -19,7 +19,7 @@ Summary:	A small audio/video editing software for Linux
 Summary(pl.UTF-8):	Mały edytor audio/wideo dla Linuksa
 Name:		avidemux
 Version:	2.5.2
-Release:	5
+Release:	6
 License:	GPL v2+
 Group:		X11/Applications/Multimedia
 Source0:	http://downloads.sourceforge.net/avidemux/%{name}_%{version}.tar.gz
