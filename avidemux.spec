@@ -138,8 +138,6 @@ cd ../..
 # plugins
 cd plugins/build
 %cmake \
-	-DCMAKE_BUILD_TYPE=%{?debug:Debug}%{!?debug:Release} \
-	-DCMAKE_INSTALL_PREFIX=%{_prefix} \
 	-DAVIDEMUX_INSTALL_PREFIX=$TOP/build \
 	-DAVIDEMUX_SOURCE_DIR=$TOP/  \
 	-DAVIDEMUX_CORECONFIG_DIR=$TOP/build/config \
@@ -148,9 +146,6 @@ cd plugins/build
 	%{!?with_amr:-DOPENCORE_AMRNB=0 -DOPENCORE_AMRWB=0} \
 	%{!?with_gtk:-DGTK=0} \
 	%{!?with_qt4:-DQT4=0} \
-%if "%{_lib}" == "lib64"
-	-DLIB_SUFFIX=64 \
-%endif
 	..
 
 %{__make}
