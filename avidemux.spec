@@ -205,6 +205,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/ADM_plugins/videoEncoder/avcodec/mpeg-1
 %dir %{_libdir}/ADM_plugins/videoEncoder/avcodec/mpeg-2
 %dir %{_libdir}/ADM_plugins/videoEncoder/mpeg2enc
+%dir %{_libdir}/ADM_plugins/videoEncoder/mpeg2enc/mpeg-1
+%dir %{_libdir}/ADM_plugins/videoEncoder/mpeg2enc/mpeg-2
 %dir %{_libdir}/ADM_plugins/videoEncoder/x264
 %dir %{_libdir}/ADM_plugins/videoEncoder/xvid
 %dir %{_libdir}/ADM_plugins/videoFilter
