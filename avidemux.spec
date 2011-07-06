@@ -19,7 +19,7 @@ Summary:	A small audio/video editing software for Linux
 Summary(pl.UTF-8):	Mały edytor audio/wideo dla Linuksa
 Name:		avidemux
 Version:	2.5.5
-Release:	2
+Release:	3
 License:	GPL v2+
 Group:		X11/Applications/Multimedia
 Source0:	http://downloads.sourceforge.net/avidemux/%{name}_%{version}.tar.gz
@@ -68,6 +68,7 @@ BuildRequires:	pulseaudio-devel
 %{?with_qt4:BuildRequires:	qt4-build >= %{qt4_version}}
 %{?with_qt4:BuildRequires:	qt4-linguist}
 %{?with_qt4:BuildRequires:	qt4-qmake >= %{qt4_version}}
+BuildRequires:	rpmbuild(macros) >= 1.600
 BuildRequires:	sed >= 4.0
 BuildRequires:	xorg-lib-libXv-devel
 BuildRequires:	xorg-proto-xextproto-devel
@@ -121,14 +122,9 @@ cd build
 
 export QTDIR=%{_libdir}/qt4
 %cmake \
-	-DCMAKE_BUILD_TYPE=%{?debug:Debug}%{!?debug:Release} \
-	-DCMAKE_INSTALL_PREFIX=%{_prefix} \
 	-DAVIDEMUX_INSTALL_PREFIX=%{_prefix} \
 	%{!?with_gtk:-DGTK=0} \
 	%{!?with_qt4:-DQT4=0} \
-%if "%{_lib}" == "lib64"
-	-DLIB_SUFFIX=64 \
-%endif
 	..
 
 %{__make}
@@ -210,12 +206,25 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/ADM_plugins/videoEncoder/xvid
 %dir %{_libdir}/ADM_plugins/videoFilter
 
+%{_libdir}/ADM_plugins/videoEncoder/avcodec/Flv1Param.xsd
+%{_libdir}/ADM_plugins/videoEncoder/avcodec/H263Param.xsd
+%{_libdir}/ADM_plugins/videoEncoder/avcodec/MjpegParam.xsd
 %{_libdir}/ADM_plugins/videoEncoder/avcodec/Mpeg1Param.xsd
-%{_libdir}/ADM_plugins/videoEncoder/xvid/XvidParam.xsd
+%{_libdir}/ADM_plugins/videoEncoder/avcodec/Mpeg2Param.xsd
+%{_libdir}/ADM_plugins/videoEncoder/avcodec/Mpeg4aspParam.xsd
+%{_libdir}/ADM_plugins/videoEncoder/avcodec/mpeg-1/Video CD.xml
+%{_libdir}/ADM_plugins/videoEncoder/avcodec/mpeg-2/DVD.xml
+%{_libdir}/ADM_plugins/videoEncoder/avcodec/mpeg-2/Super Video CD.xml
+%{_libdir}/ADM_plugins/videoEncoder/mpeg2enc/Mpeg1Param.xsd
+%{_libdir}/ADM_plugins/videoEncoder/mpeg2enc/Mpeg2Param.xsd
+%{_libdir}/ADM_plugins/videoEncoder/mpeg2enc/mpeg-1/Video CD.xml
+%{_libdir}/ADM_plugins/videoEncoder/mpeg2enc/mpeg-2/DVD.xml
+%{_libdir}/ADM_plugins/videoEncoder/mpeg2enc/mpeg-2/Super Video CD.xml
 %{_libdir}/ADM_plugins/videoEncoder/x264/Apple*.xml
 %{_libdir}/ADM_plugins/videoEncoder/x264/Microsoft*.xml
 %{_libdir}/ADM_plugins/videoEncoder/x264/Sony*.xml
 %{_libdir}/ADM_plugins/videoEncoder/x264/x264Param.xsd
+%{_libdir}/ADM_plugins/videoEncoder/xvid/XvidParam.xsd
 
 %attr(755,root,root) %{_libdir}/ADM_plugins/audioDecoder/libADM_ad_Mad.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/audioDecoder/libADM_ad_a52.so
@@ -243,12 +252,14 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/ADM_plugins/audioEncoders/libADM_ae_vorbis.so
 
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoEncoder/libADM_vidEnc_avcodec.so
+%attr(755,root,root) %{_libdir}/ADM_plugins/videoEncoder/libADM_vidEnc_mpeg2enc.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoEncoder/libADM_vidEnc_x264.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoEncoder/libADM_vidEnc_xvid.so
 
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_addborders.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_asharp_cli.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_avisynthResize_cli.so
+%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_avsfilter.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_blackenBorders.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_blendDgBob.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_blendRemoval.so
@@ -280,6 +291,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_kernelDeint.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_largemedian.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_lavDeinterlace.so
+%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_logo.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_lumaonly.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_mcdeint.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_mergeField.so
@@ -313,6 +325,11 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_yadif.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vidChromaU.so
 %attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vidChromaV.so
+
+%dir %{_datadir}/ADM_addons
+%{_datadir}/ADM_addons/avsfilter/avsload.exe
+%{_datadir}/ADM_addons/avsfilter/pipe_source.dll
+
 %{_mandir}/man1/avidemux.1*
 %{_pixmapsdir}/*.png
 
@@ -377,6 +394,7 @@ rm -rf $RPM_BUILD_ROOT
 %lang(fr) %{_datadir}/%{name}/i18n/*_fr.qm
 %lang(it) %{_datadir}/%{name}/i18n/*_it.qm
 %lang(ja) %{_datadir}/%{name}/i18n/*_ja.qm
+%lang(pl) %{_datadir}/%{name}/i18n/*_pl.qm
 %lang(pt_BR) %{_datadir}/%{name}/i18n/*_pt_BR.qm
 %lang(ru) %{_datadir}/%{name}/i18n/*_ru.qm
 %lang(sr) %{_datadir}/%{name}/i18n/*_sr.qm
