@@ -212,14 +212,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/ADM_plugins/videoEncoder/avcodec/Mpeg1Param.xsd
 %{_libdir}/ADM_plugins/videoEncoder/avcodec/Mpeg2Param.xsd
 %{_libdir}/ADM_plugins/videoEncoder/avcodec/Mpeg4aspParam.xsd
-%{_libdir}/ADM_plugins/videoEncoder/avcodec/mpeg-1/Video CD.xml
+%{_libdir}/ADM_plugins/videoEncoder/avcodec/mpeg-1/Video*CD.xml
 %{_libdir}/ADM_plugins/videoEncoder/avcodec/mpeg-2/DVD.xml
-%{_libdir}/ADM_plugins/videoEncoder/avcodec/mpeg-2/Super Video CD.xml
+%{_libdir}/ADM_plugins/videoEncoder/avcodec/mpeg-2/Super*Video*CD.xml
 %{_libdir}/ADM_plugins/videoEncoder/mpeg2enc/Mpeg1Param.xsd
 %{_libdir}/ADM_plugins/videoEncoder/mpeg2enc/Mpeg2Param.xsd
-%{_libdir}/ADM_plugins/videoEncoder/mpeg2enc/mpeg-1/Video CD.xml
+%{_libdir}/ADM_plugins/videoEncoder/mpeg2enc/mpeg-1/Video*CD.xml
 %{_libdir}/ADM_plugins/videoEncoder/mpeg2enc/mpeg-2/DVD.xml
-%{_libdir}/ADM_plugins/videoEncoder/mpeg2enc/mpeg-2/Super Video CD.xml
+%{_libdir}/ADM_plugins/videoEncoder/mpeg2enc/mpeg-2/Super*Video*CD.xml
 %{_libdir}/ADM_plugins/videoEncoder/x264/Apple*.xml
 %{_libdir}/ADM_plugins/videoEncoder/x264/Microsoft*.xml
 %{_libdir}/ADM_plugins/videoEncoder/x264/Sony*.xml
