@@ -111,7 +111,7 @@ find '(' -name '*.js' -o -name '*.cpp' -o -name '*.h' -o -name '*.cmake' -o -nam
 echo 'pt_BR' >> po/LINGUAS
 
 # libdir fix
-sed -i -e's,"lib","%{_lib}",' avidemux/main.cpp avidemux/ADM_core/src/ADM_fileio.cpp
+%{__sed} -i -e's,"lib","%{_lib}",' avidemux/main.cpp avidemux/ADM_core/src/ADM_fileio.cpp
 
 %build
 TOP=$PWD
@@ -138,14 +138,19 @@ cd ../..
 # plugins
 cd plugins/build
 %cmake \
+	-DCMAKE_BUILD_TYPE=%{?debug:Debug}%{!?debug:Release} \
+	-DCMAKE_INSTALL_PREFIX=%{_prefix} \
 	-DAVIDEMUX_INSTALL_PREFIX=$TOP/build \
-	-DAVIDEMUX_SOURCE_DIR=$TOP/  \
+	-DAVIDEMUX_SOURCE_DIR=$TOP/ \
 	-DAVIDEMUX_CORECONFIG_DIR=$TOP/build/config \
 	%{!?with_arts:-DARTS=0} \
 	%{!?with_esd:-DESD=0} \
 	%{!?with_amr:-DOPENCORE_AMRNB=0 -DOPENCORE_AMRWB=0} \
 	%{!?with_gtk:-DGTK=0} \
 	%{!?with_qt4:-DQT4=0} \
+%if "%{_lib}" == "lib64"
+	-DLIB_SUFFIX=64 \
+%endif
 	..
 
 %{__make}
