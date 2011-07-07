@@ -19,7 +19,7 @@ Summary:	A small audio/video editing software for Linux
 Summary(pl.UTF-8):	Mały edytor audio/wideo dla Linuksa
 Name:		avidemux
 Version:	2.5.5
-Release:	4
+Release:	5
 License:	GPL v2+
 Group:		X11/Applications/Multimedia
 Source0:	http://downloads.sourceforge.net/avidemux/%{name}_%{version}.tar.gz
@@ -174,6 +174,11 @@ cp -a %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}/%{name}-gtk.desktop
 cp -a %{SOURCE2} $RPM_BUILD_ROOT%{_desktopdir}/%{name}-qt4.desktop
 cp -a avidemux_icon.png $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
 
+# make install doesn't install these
+cp -a plugins/build/ADM_videoEncoder/common/pluginOptions/libADM_vidEnc_pluginOptions.so $RPM_BUILD_ROOT%{_libdir}
+cp -a plugins/build/ADM_videoEncoder/common/xvidRateCtl/libADM_xvidRateCtl.so $RPM_BUILD_ROOT%{_libdir}
+cp -a plugins/build/ADM_videoEncoder/ADM_vidEnc_mpeg2enc/mpeg2enc/libmpeg2enc.so $RPM_BUILD_ROOT%{_libdir}
+
 %find_lang %{name}
 
 %clean
@@ -195,6 +200,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libADM_coreUI.so
 %attr(755,root,root) %{_libdir}/libADM_render_cli.so
 %attr(755,root,root) %{_libdir}/libADM_smjs.so
+%attr(755,root,root) %{_libdir}/libADM_vidEnc_pluginOptions.so
+%attr(755,root,root) %{_libdir}/libADM_xvidRateCtl.so
+%attr(755,root,root) %{_libdir}/libmpeg2enc.so
 
 %dir %{_libdir}/ADM_plugins
 %dir %{_libdir}/ADM_plugins/audioDecoder
