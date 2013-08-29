@@ -133,6 +133,8 @@ cp -a %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}/%{name}-gtk.desktop
 cp -a %{SOURCE2} $RPM_BUILD_ROOT%{_desktopdir}/%{name}-qt4.desktop
 cp -a avidemux_icon.png $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
 
+%{__rm} -r $RPM_BUILD_ROOT%{_includedir}
+
 #find_lang %{name}
 
 %clean
