@@ -149,7 +149,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc AUTHORS
 %attr(755,root,root) %{_bindir}/avidemux3
-%attr(755,root,root) %{_bindir}/avidemux3_jobs
 %attr(755,root,root) %{_libdir}/libADM6avcodec.so.54
 %attr(755,root,root) %{_libdir}/libADM6avformat.so.54
 %attr(755,root,root) %{_libdir}/libADM6avutil.so.52
@@ -281,14 +280,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_CropCli.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_changeFps.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_dummy.so
-%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_glBenchmark.so
-%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_glResize.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_msharpen.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_printInfo.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_removePlane.so
-%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_rotateGlFrag2.so
-%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_sampleGlFrag2.so
-%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_sampleGlVertex.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_swscaleResize_cli.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_vdpauFilter.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_vdpauFilterDeint.so
@@ -320,8 +314,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/ADM_plugins6/muxers/libADM_mx_mp4.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/muxers/libADM_mx_mp4v2.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/muxers/libADM_mx_raw.so
-%attr(755,root,root) %{_libdir}/ADM_plugins6/pluginSettings/x264/1/PSP.json
-%attr(755,root,root) %{_libdir}/ADM_plugins6/pluginSettings/x264/1/iPhone.json
+%{_libdir}/ADM_plugins6/pluginSettings/x264/1/PSP.json
+%{_libdir}/ADM_plugins6/pluginSettings/x264/1/iPhone.json
 %attr(755,root,root) %{_libdir}/ADM_plugins6/scriptEngines/libADM_script_spiderMonkey.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/scriptEngines/libADM_script_tinyPy.so
 
@@ -356,6 +350,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with qt4}
 %files ui-qt4
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/avidemux3_jobs
 %attr(755,root,root) %{_bindir}/avidemux3_qt4
 %{_desktopdir}/%{name}-qt4.desktop
 %attr(755,root,root) %{_libdir}/libADM_UIQT46.so
@@ -369,6 +364,11 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_HueQt4.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_swscaleResize_qt4.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_mpdelogoQt4.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_glBenchmark.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_glResize.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_rotateGlFrag2.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_sampleGlFrag2.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_sampleGlVertex.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/scriptEngines/libADM_script_qt.so
 
 %{_datadir}/%{name}6/help
