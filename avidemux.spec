@@ -18,25 +18,22 @@
 Summary:	A small audio/video editing software for Linux
 Summary(pl.UTF-8):	Mały edytor audio/wideo dla Linuksa
 Name:		avidemux
-Version:	2.5.5
-Release:	9
+Version:	2.6.4
+Release:	1
 License:	GPL v2+
 Group:		X11/Applications/Multimedia
 Source0:	http://downloads.sourceforge.net/avidemux/%{name}_%{version}.tar.gz
-# Source0-md5:	33bbe210c6826cea1987ed18a41d57a7
+# Source0-md5:	adb9110ab230fe13a8e9799f547f2f57
 Source1:	%{name}.desktop
 Source2:	%{name}-qt4.desktop
-Patch0:		gcc44.patch
-Patch1:		types.patch
-Patch2:		mmx-asm.patch
-Patch3:		%{name}-x264.patch
-#Patch1:	%{name}-dts_internal.patch
-#Patch2:	%{name}-sparc64.patch
+Patch0:		build.patch
+Patch1:		no-qt-in-gtk.patch
 URL:		http://fixounet.free.fr/avidemux/
 %{?with_qt4:BuildRequires:	QtGui-devel >= %{qt4_version}}
 BuildRequires:	SDL-devel
 #BuildRequires:	a52dec-libs-devel
 BuildRequires:	alsa-lib-devel >= 1.0
+BuildRequires:	bash
 %{?with_arts:BuildRequires:	artsc-devel}
 BuildRequires:	cmake >= 2.6.2
 %{?with_esd:BuildRequires:	esound-devel}
@@ -107,81 +104,36 @@ Qt4 UI for Avidemux
 find '(' -name '*.js' -o -name '*.cpp' -o -name '*.h' -o -name '*.cmake' -o -name '*.txt' ')' -print0 | xargs -0 %{__sed} -i -e 's,\r$,,'
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
-%patch3 -p1
 
 echo 'pt_BR' >> po/LINGUAS
 
 # libdir fix
-%{__sed} -i -e's,"lib","%{_lib}",' avidemux/main.cpp avidemux/ADM_core/src/ADM_fileio.cpp
+%{__sed} -i -e's,"lib","%{_lib}",' avidemux/common/main.cpp avidemux_core/ADM_core/src/ADM_fileio.cpp
 
 %build
-TOP=$PWD
-
-# main
-install -d build/%{_lib} plugins/build
-cd build
-
-export QTDIR=%{_libdir}/qt4
-%cmake \
-	-DAVIDEMUX_INSTALL_PREFIX=%{_prefix} \
-	%{!?with_gtk:-DGTK=0} \
-	%{!?with_qt4:-DQT4=0} \
-	..
-
-%{__make}
-
-# plugin build expects libraries to be already installed; we fake a prefix
-# in build/ by symlinking all libraries to build/lib/
-cd %{_lib}
-find ../avidemux -name '*.so*' | xargs ln -sft .
-cd ../..
-
-# plugins
-cd plugins/build
-%cmake \
-	-DCMAKE_BUILD_TYPE=%{?debug:Debug}%{!?debug:Release} \
-	-DCMAKE_INSTALL_PREFIX=%{_prefix} \
-	-DAVIDEMUX_INSTALL_PREFIX=$TOP/build \
-	-DAVIDEMUX_SOURCE_DIR=$TOP/ \
-	-DAVIDEMUX_CORECONFIG_DIR=$TOP/build/config \
-	%{!?with_arts:-DARTS=0} \
-	%{!?with_esd:-DESD=0} \
-	%{!?with_amr:-DOPENCORE_AMRNB=0 -DOPENCORE_AMRWB=0} \
-	%{!?with_gtk:-DGTK=0} \
-	%{!?with_qt4:-DQT4=0} \
-%if "%{_lib}" == "lib64"
-	-DLIB_SUFFIX=64 \
-%endif
-	..
-
-%{__make}
+bash ./bootStrap.bash \
+	--with-core \
+	--with-cli \
+	--with-gtk \
+	--with-qt4 \
+	--with-plugins
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir},%{_bindir},%{_mandir}/man1}
 install -d $RPM_BUILD_ROOT%{_datadir}/%{name}
 
-%{__make} -C build install \
-	DESTDIR=$RPM_BUILD_ROOT
-
-%{__make} -C plugins/build install \
-	DESTDIR=$RPM_BUILD_ROOT
+cp -a install/* $RPM_BUILD_ROOT
 
 chmod +x $RPM_BUILD_ROOT%{_libdir}/lib*.so*
 
-mv $RPM_BUILD_ROOT%{_bindir}/avidemux2{_cli,}
+mv $RPM_BUILD_ROOT%{_bindir}/avidemux3{_cli,}
 cp -a man/avidemux.1 $RPM_BUILD_ROOT%{_mandir}/man1
 cp -a %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}/%{name}-gtk.desktop
 cp -a %{SOURCE2} $RPM_BUILD_ROOT%{_desktopdir}/%{name}-qt4.desktop
 cp -a avidemux_icon.png $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
 
-# make install doesn't install these
-install -p plugins/build/ADM_videoEncoder/common/pluginOptions/libADM_vidEnc_pluginOptions.so $RPM_BUILD_ROOT%{_libdir}
-install -p plugins/build/ADM_videoEncoder/common/xvidRateCtl/libADM_xvidRateCtl.so $RPM_BUILD_ROOT%{_libdir}
-install -p plugins/build/ADM_videoEncoder/ADM_vidEnc_mpeg2enc/mpeg2enc/libmpeg2enc.so $RPM_BUILD_ROOT%{_libdir}
-
-%find_lang %{name}
+#find_lang %{name}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -192,235 +144,251 @@ rm -rf $RPM_BUILD_ROOT
 %post ui-qt4
 %update_desktop_database
 
-%files -f %{name}.lang
+#files -f %{name}.lang
+%files
 %defattr(644,root,root,755)
 %doc AUTHORS
-%attr(755,root,root) %{_bindir}/avidemux2
-%attr(755,root,root) %{_libdir}/libADM5avcodec.so.52
-%attr(755,root,root) %{_libdir}/libADM5avformat.so.52
-%attr(755,root,root) %{_libdir}/libADM5avutil.so.50
-%attr(755,root,root) %{_libdir}/libADM5postproc.so.51
-%attr(755,root,root) %{_libdir}/libADM5swscale.so.0
-%attr(755,root,root) %{_libdir}/libADM_UICli.so
-%attr(755,root,root) %{_libdir}/libADM_core.so
-%attr(755,root,root) %{_libdir}/libADM_coreAudio.so
-%attr(755,root,root) %{_libdir}/libADM_coreImage.so
-%attr(755,root,root) %{_libdir}/libADM_coreUI.so
-%attr(755,root,root) %{_libdir}/libADM_render_cli.so
-%attr(755,root,root) %{_libdir}/libADM_smjs.so
-%attr(755,root,root) %{_libdir}/libADM_vidEnc_pluginOptions.so
-%attr(755,root,root) %{_libdir}/libADM_xvidRateCtl.so
-%attr(755,root,root) %{_libdir}/libmpeg2enc.so
+%attr(755,root,root) %{_bindir}/avidemux3
+%attr(755,root,root) %{_bindir}/avidemux3_jobs
+%attr(755,root,root) %{_libdir}/libADM6avcodec.so.54
+%attr(755,root,root) %{_libdir}/libADM6avformat.so.54
+%attr(755,root,root) %{_libdir}/libADM6avutil.so.52
+%attr(755,root,root) %{_libdir}/libADM6postproc.so.52
+%attr(755,root,root) %{_libdir}/libADM6swscale.so.2
+%attr(755,root,root) %{_libdir}/libADM_UI_Cli6.so
+%attr(755,root,root) %{_libdir}/libADM_core6.so
+%attr(755,root,root) %{_libdir}/libADM_coreAudio6.so
+%attr(755,root,root) %{_libdir}/libADM_coreImage6.so
+%attr(755,root,root) %{_libdir}/libADM_coreUI6.so
+%attr(755,root,root) %{_libdir}/libADM_render6_cli.so
+%attr(755,root,root) %{_libdir}/libADM_audioParser6.so
+%attr(755,root,root) %{_libdir}/libADM_coreAudioDevice6.so
+%attr(755,root,root) %{_libdir}/libADM_coreAudioEncoder6.so
+%attr(755,root,root) %{_libdir}/libADM_coreAudioFilterAPI6.so
+%attr(755,root,root) %{_libdir}/libADM_coreDemuxer6.so
+%attr(755,root,root) %{_libdir}/libADM_coreDemuxerMpeg6.so
+%attr(755,root,root) %{_libdir}/libADM_coreImageLoader6.so
+%attr(755,root,root) %{_libdir}/libADM_coreJobs.so
+%attr(755,root,root) %{_libdir}/libADM_coreMuxer6.so
+%attr(755,root,root) %{_libdir}/libADM_coreScript.so
+%attr(755,root,root) %{_libdir}/libADM_coreSocket6.so
+%attr(755,root,root) %{_libdir}/libADM_coreSqlLight3.so
+%attr(755,root,root) %{_libdir}/libADM_coreUtils6.so
+%attr(755,root,root) %{_libdir}/libADM_coreVDPAU6.so
+%attr(755,root,root) %{_libdir}/libADM_coreVideoCodec6.so
+%attr(755,root,root) %{_libdir}/libADM_coreVideoEncoder6.so
+%attr(755,root,root) %{_libdir}/libADM_coreVideoFilter6.so
 
-%dir %{_libdir}/ADM_plugins
-%dir %{_libdir}/ADM_plugins/audioDecoder
-%dir %{_libdir}/ADM_plugins/audioDevices
-%dir %{_libdir}/ADM_plugins/audioEncoders
-%dir %{_libdir}/ADM_plugins/videoEncoder
-%dir %{_libdir}/ADM_plugins/videoEncoder/avcodec
-%dir %{_libdir}/ADM_plugins/videoEncoder/avcodec/mpeg-1
-%dir %{_libdir}/ADM_plugins/videoEncoder/avcodec/mpeg-2
-%dir %{_libdir}/ADM_plugins/videoEncoder/mpeg2enc
-%dir %{_libdir}/ADM_plugins/videoEncoder/mpeg2enc/mpeg-1
-%dir %{_libdir}/ADM_plugins/videoEncoder/mpeg2enc/mpeg-2
-%dir %{_libdir}/ADM_plugins/videoEncoder/x264
-%dir %{_libdir}/ADM_plugins/videoEncoder/xvid
-%dir %{_libdir}/ADM_plugins/videoFilter
+%dir %{_libdir}/ADM_plugins6
+%dir %{_libdir}/ADM_plugins6/audioDecoder
+%dir %{_libdir}/ADM_plugins6/audioDevices
+%dir %{_libdir}/ADM_plugins6/audioEncoders
+%dir %{_libdir}/ADM_plugins6/videoDecoders
+%dir %{_libdir}/ADM_plugins6/videoEncoders
+%dir %{_libdir}/ADM_plugins6/videoFilters
+%dir %{_libdir}/ADM_plugins6/autoScripts
+%dir %{_libdir}/ADM_plugins6/autoScripts/lib
+%dir %{_libdir}/ADM_plugins6/demuxers
+%dir %{_libdir}/ADM_plugins6/muxers
+%dir %{_libdir}/ADM_plugins6/pluginSettings
+%dir %{_libdir}/ADM_plugins6/pluginSettings/x264
+%dir %{_libdir}/ADM_plugins6/pluginSettings/x264/1
+%dir %{_libdir}/ADM_plugins6/scriptEngines
 
-%{_libdir}/ADM_plugins/videoEncoder/avcodec/Flv1Param.xsd
-%{_libdir}/ADM_plugins/videoEncoder/avcodec/H263Param.xsd
-%{_libdir}/ADM_plugins/videoEncoder/avcodec/MjpegParam.xsd
-%{_libdir}/ADM_plugins/videoEncoder/avcodec/Mpeg1Param.xsd
-%{_libdir}/ADM_plugins/videoEncoder/avcodec/Mpeg2Param.xsd
-%{_libdir}/ADM_plugins/videoEncoder/avcodec/Mpeg4aspParam.xsd
-%{_libdir}/ADM_plugins/videoEncoder/avcodec/mpeg-1/Video*CD.xml
-%{_libdir}/ADM_plugins/videoEncoder/avcodec/mpeg-2/DVD.xml
-%{_libdir}/ADM_plugins/videoEncoder/avcodec/mpeg-2/Super*Video*CD.xml
-%{_libdir}/ADM_plugins/videoEncoder/mpeg2enc/Mpeg1Param.xsd
-%{_libdir}/ADM_plugins/videoEncoder/mpeg2enc/Mpeg2Param.xsd
-%{_libdir}/ADM_plugins/videoEncoder/mpeg2enc/mpeg-1/Video*CD.xml
-%{_libdir}/ADM_plugins/videoEncoder/mpeg2enc/mpeg-2/DVD.xml
-%{_libdir}/ADM_plugins/videoEncoder/mpeg2enc/mpeg-2/Super*Video*CD.xml
-%{_libdir}/ADM_plugins/videoEncoder/x264/Apple*.xml
-%{_libdir}/ADM_plugins/videoEncoder/x264/Microsoft*.xml
-%{_libdir}/ADM_plugins/videoEncoder/x264/Sony*.xml
-%{_libdir}/ADM_plugins/videoEncoder/x264/x264Param.xsd
-%{_libdir}/ADM_plugins/videoEncoder/xvid/XvidParam.xsd
-
-%attr(755,root,root) %{_libdir}/ADM_plugins/audioDecoder/libADM_ad_Mad.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/audioDecoder/libADM_ad_a52.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/audioDecoder/libADM_ad_faad.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/audioDecoder/libADM_ad_vorbis.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/audioDecoder/libADM_ad_Mad.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/audioDecoder/libADM_ad_a52.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/audioDecoder/libADM_ad_faad.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/audioDecoder/libADM_ad_vorbis.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/audioDecoder/libADM_ad_dca.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/audioDecoder/libADM_ad_ima_adpcm.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/audioDecoder/libADM_ad_lav.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/audioDecoder/libADM_ad_ms_adpcm.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/audioDecoder/libADM_ad_ulaw.so
 %if %{with amr}
-%attr(755,root,root) %{_libdir}/ADM_plugins/audioDecoder/libADM_ad_opencore_amrnb.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/audioDecoder/libADM_ad_opencore_amrwb.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/audioDecoder/libADM_ad_opencore_amrnb.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/audioDecoder/libADM_ad_opencore_amrwb.so
 %endif
 
-%attr(755,root,root) %{_libdir}/ADM_plugins/audioDevices/libADM_av_alsa.so
-%{?with_arts:%attr(755,root,root) %{_libdir}/ADM_plugins/audioDevices/libADM_av_arts.so}
-%{?with_esd:%attr(755,root,root) %{_libdir}/ADM_plugins/audioDevices/libADM_av_esd.so}
-%attr(755,root,root) %{_libdir}/ADM_plugins/audioDevices/libADM_av_jack.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/audioDevices/libADM_av_oss.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/audioDevices/libADM_av_pulseAudioSimple.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/audioDevices/libADM_av_sdl.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/audioDevices/libADM_av_alsaDMix.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/audioDevices/libADM_av_alsaDefault.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/audioDevices/libADM_av_alsaHw.so
+%{?with_arts:%attr(755,root,root) %{_libdir}/ADM_plugins6/audioDevices/libADM_av_arts.so}
+%{?with_esd:%attr(755,root,root) %{_libdir}/ADM_plugins6/audioDevices/libADM_av_esd.so}
+%attr(755,root,root) %{_libdir}/ADM_plugins6/audioDevices/libADM_av_jack.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/audioDevices/libADM_av_oss.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/audioDevices/libADM_av_pulseAudioSimple.so
+#%attr(755,root,root) %{_libdir}/ADM_plugins6/audioDevices/libADM_av_sdl.so
 
-%attr(755,root,root) %{_libdir}/ADM_plugins/audioEncoders/libADM_ae_faac.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/audioEncoders/libADM_ae_lame.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/audioEncoders/libADM_ae_lav_ac3.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/audioEncoders/libADM_ae_lav_mp2.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/audioEncoders/libADM_ae_pcm.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/audioEncoders/libADM_ae_twolame.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/audioEncoders/libADM_ae_vorbis.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/audioEncoders/libADM_ae_faac.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/audioEncoders/libADM_ae_lame.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/audioEncoders/libADM_ae_lav_ac3.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/audioEncoders/libADM_ae_lav_mp2.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/audioEncoders/libADM_ae_pcm.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/audioEncoders/libADM_ae_twolame.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/audioEncoders/libADM_ae_vorbis.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/audioEncoders/libADM_ae_lav_aac.so
 
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoEncoder/libADM_vidEnc_avcodec.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoEncoder/libADM_vidEnc_mpeg2enc.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoEncoder/libADM_vidEnc_x264.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoEncoder/libADM_vidEnc_xvid.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoDecoders/libADM_vd_vpx.so
 
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_addborders.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_asharp_cli.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_avisynthResize_cli.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_avsfilter.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_blackenBorders.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_blendDgBob.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_blendRemoval.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_chromashift_cli.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_cnr2_cli.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_colorYUV_cli.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_contrast_cli.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_crop_cli.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_decimate.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_Deinterlace.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_Delta.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_denoise3dhq.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_denoise3d.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_Denoise.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_dropOut.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_eq2_cli.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_equalizer_cli.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_fade.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_fastconvolutiongauss.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_fastconvolutionmean.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_fastconvolutionmedian.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_fastconvolutionsharpen.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_FluxSmooth.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_forcedPP.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_Hue_cli.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_hzStackField.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_keepEvenField.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_keepOddField.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_kernelDeint.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_largemedian.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_lavDeinterlace.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_logo.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_lumaonly.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_mcdeint.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_mergeField.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_Mosaic.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_mpdelogo_cli.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_mplayerResize_cli.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_mSharpen.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_mSmooth.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_palShift.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_Pulldown.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_resampleFps.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_reverse.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_rotate.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_separateField.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_smartPalShift.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_smartSwapField.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_soften.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_ssa.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_Stabilize.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_stackField.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_sub_cli.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_swapField.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_swapuv.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_tdeint.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_telecide.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_Tisophote.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_unstackField.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_vflip.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_vlad.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_Whirl.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_yadif.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vidChromaU.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vidChromaV.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/libADM_ve_x264_other.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/libADM_ve_xvid4.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/libADM_ve_ffFlv1.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/libADM_ve_ffMpeg2.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/libADM_ve_ffMpeg4.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/libADM_ve_huff.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/libADM_ve_jpeg.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/libADM_ve_null.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/libADM_ve_png.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/libADM_ve_yv12.so
 
-%dir %{_datadir}/ADM_addons
-%dir %{_datadir}/ADM_addons/avsfilter
-%{_datadir}/ADM_addons/avsfilter/avsload.exe
-%{_datadir}/ADM_addons/avsfilter/pipe_source.dll
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_addBorders.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_avsfilter.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_blackenBorders.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_DgBob.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_chromaShiftCli.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_colorYuv.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_contrastCli.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_decimate.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_denoise3dhq.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_denoise3d.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_eq2Cli.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_fadeToBlack.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_gauss.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_mean.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_median.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_sharpen.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_FluxSmooth.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_HueCli.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_hzstackField.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_kernelDeint.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_largeMedian.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_lavDeint.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_logo.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_lumaOnly.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_mergeField.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_mpdelogoCli.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_resampleFps.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_rotate.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_separateField.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_ssa.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_stackField.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_swapUV.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_telecide.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_unstackField.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_vflip.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_yadif.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_hf_hflip.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_CropCli.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_changeFps.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_dummy.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_glBenchmark.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_glResize.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_msharpen.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_printInfo.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_removePlane.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_rotateGlFrag2.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_sampleGlFrag2.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_sampleGlVertex.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_swscaleResize_cli.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_vdpauFilter.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_vdpauFilterDeint.so
+
+%attr(755,root,root) %{_libdir}/ADM_plugins6/autoScripts/720p.py
+%attr(755,root,root) %{_libdir}/ADM_plugins6/autoScripts/PSP.py
+%attr(755,root,root) %{_libdir}/ADM_plugins6/autoScripts/check24fps.py
+%attr(755,root,root) %{_libdir}/ADM_plugins6/autoScripts/dvd.py
+%attr(755,root,root) %{_libdir}/ADM_plugins6/autoScripts/lib/ADM_image.py
+%attr(755,root,root) %{_libdir}/ADM_plugins6/autoScripts/lib/ADM_imageInfo.py
+%attr(755,root,root) %{_libdir}/ADM_plugins6/autoScripts/svcd.py
+%attr(755,root,root) %{_libdir}/ADM_plugins6/autoScripts/vcd.py
+%attr(755,root,root) %{_libdir}/ADM_plugins6/demuxers/libADM_dm_asf.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/demuxers/libADM_dm_avsproxy.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/demuxers/libADM_dm_flv.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/demuxers/libADM_dm_matroska.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/demuxers/libADM_dm_mp4.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/demuxers/libADM_dm_mxf.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/demuxers/libADM_dm_opendml.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/demuxers/libADM_dm_pic.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/demuxers/libADM_dm_ps.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/demuxers/libADM_dm_ts.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/muxers/libADM_mx_Mkv.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/muxers/libADM_mx_avi.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/muxers/libADM_mx_dummy.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/muxers/libADM_mx_ffPS.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/muxers/libADM_mx_ffTS.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/muxers/libADM_mx_flv.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/muxers/libADM_mx_mp4.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/muxers/libADM_mx_mp4v2.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/muxers/libADM_mx_raw.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/pluginSettings/x264/1/PSP.json
+%attr(755,root,root) %{_libdir}/ADM_plugins6/pluginSettings/x264/1/iPhone.json
+%attr(755,root,root) %{_libdir}/ADM_plugins6/scriptEngines/libADM_script_spiderMonkey.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/scriptEngines/libADM_script_tinyPy.so
+
+%dir %{_datadir}/ADM6_addons
+%dir %{_datadir}/ADM6_addons/avsfilter
+%{_datadir}/ADM6_addons/avsfilter/avsload.exe
+%{_datadir}/ADM6_addons/avsfilter/pipe_source.dll
 
 %{_mandir}/man1/avidemux.1*
 %{_pixmapsdir}/*.png
-
-%{_datadir}/ADM_scripts
 
 %dir %{_datadir}/%{name}
 
 %if %{with gtk}
 %files ui-gtk
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/avidemux2_gtk
+%attr(755,root,root) %{_bindir}/avidemux3_gtk
 %{_desktopdir}/%{name}-gtk.desktop
-%attr(755,root,root) %{_libdir}/libADM_UIGtk.so
-%attr(755,root,root) %{_libdir}/libADM_render_gtk.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoEncoder/x264/libADM_vidEnc_x264_Gtk.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoEncoder/xvid/libADM_vidEnc_Xvid_Gtk.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_asharp_gtk.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_avisynthResize_gtk.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_chromaShift_gtk.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_cnr2_gtk.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_colorYUV_gtk.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_contrast_gtk.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_Crop_gtk.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_eq2_gtk.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_equalizer_gtk.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_hue_gtk.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_mpdelogo_gtk.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_mplayerResize_gtk.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_sub_gtk.so
+%attr(755,root,root) %{_libdir}/libADM_UIGtk6.so
+%attr(755,root,root) %{_libdir}/libADM_render6_gtk.so
+%attr(755,root,root) %{_libdir}/libADM_toolkitGtk.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_asharpGtk.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_chromaShiftGtk.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_contrastGtk.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_cropGtk.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_eq2Gtk.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_HueGtk.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_swscaleResize_gtk.so
+%{_libdir}/ADM_glade
 %endif
 
 %if %{with qt4}
 %files ui-qt4
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/avidemux2_qt4
+%attr(755,root,root) %{_bindir}/avidemux3_qt4
 %{_desktopdir}/%{name}-qt4.desktop
-%attr(755,root,root) %{_libdir}/libADM_UIQT4.so
-%attr(755,root,root) %{_libdir}/libADM_render_qt4.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoEncoder/x264/libADM_vidEnc_x264_Qt.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoEncoder/xvid/libADM_vidEnc_Xvid_Qt.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_asharp_qt4.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_avisynthResize_qt4.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_chromaShift_qt4.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_cnr2_qt4.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_colorYUV_qt4.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_contrast_qt4.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_crop_qt4.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_curveEditor_qt4.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_eq2_qt4.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_equalizer_qt4.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_hue_qt4.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_mpdelogo_qt4.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_mplayerResize_qt4.so
-%attr(755,root,root) %{_libdir}/ADM_plugins/videoFilter/libADM_vf_sub_qt4.so
+%attr(755,root,root) %{_libdir}/libADM_UIQT46.so
+%attr(755,root,root) %{_libdir}/libADM_render6_qt4.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/libADM_ve_x264_qt4.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_asharpQt4.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_chromaShiftQt4.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_contrastQt4.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_cropQt4.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_eq2Qt4.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_HueQt4.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_swscaleResize_qt4.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_mpdelogoQt4.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/scriptEngines/libADM_script_qt.so
 
-%dir %{_datadir}/%{name}/i18n
-%lang(ca) %{_datadir}/%{name}/i18n/*_ca.qm
-%lang(cs) %{_datadir}/%{name}/i18n/*_cs.qm
-%lang(de) %{_datadir}/%{name}/i18n/*_de.qm
-%lang(el) %{_datadir}/%{name}/i18n/*_el.qm
-%lang(es) %{_datadir}/%{name}/i18n/*_es.qm
-%lang(fr) %{_datadir}/%{name}/i18n/*_fr.qm
-%lang(it) %{_datadir}/%{name}/i18n/*_it.qm
-%lang(ja) %{_datadir}/%{name}/i18n/*_ja.qm
-%lang(pl) %{_datadir}/%{name}/i18n/*_pl.qm
-%lang(pt_BR) %{_datadir}/%{name}/i18n/*_pt_BR.qm
-%lang(ru) %{_datadir}/%{name}/i18n/*_ru.qm
-%lang(sr) %{_datadir}/%{name}/i18n/*_sr.qm
-%lang(sr@latin) %{_datadir}/%{name}/i18n/*_sr@latin.qm
-%lang(tr) %{_datadir}/%{name}/i18n/*_tr.qm
-%lang(zh_TW) %{_datadir}/%{name}/i18n/*_zh_TW.qm
+%{_datadir}/%{name}6/help
+
+%dir %{_datadir}/%{name}6/i18n
+%lang(ca) %{_datadir}/%{name}6/i18n/*_ca.qm
+%lang(cs) %{_datadir}/%{name}6/i18n/*_cs.qm
+%lang(de) %{_datadir}/%{name}6/i18n/*_de.qm
+%lang(el) %{_datadir}/%{name}6/i18n/*_el.qm
+%{_datadir}/%{name}6/i18n/*_en.qm
+%lang(es) %{_datadir}/%{name}6/i18n/*_es.qm
+%lang(eu) %{_datadir}/%{name}6/i18n/*_eu.qm
+%lang(fr) %{_datadir}/%{name}6/i18n/*_fr.qm
+%lang(it) %{_datadir}/%{name}6/i18n/*_it.qm
+%lang(ja) %{_datadir}/%{name}6/i18n/*_ja.qm
+%lang(pl) %{_datadir}/%{name}6/i18n/*_pl.qm
+%lang(pt_BR) %{_datadir}/%{name}6/i18n/*_pt_BR.qm
+%lang(ru) %{_datadir}/%{name}6/i18n/*_ru.qm
+%lang(sr) %{_datadir}/%{name}6/i18n/*_sr.qm
+%lang(sr@latin) %{_datadir}/%{name}6/i18n/*_sr@latin.qm
+%lang(tr) %{_datadir}/%{name}6/i18n/*_tr.qm
+%lang(zh_TW) %{_datadir}/%{name}6/i18n/*_zh_TW.qm
 %endif

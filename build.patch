@@ -1,0 +1,11 @@
+--- avidemux_2.6.4/bootStrap.bash~	2013-05-09 13:10:35.000000000 +0200
++++ avidemux_2.6.4/bootStrap.bash	2013-08-29 11:56:46.570506339 +0200
+@@ -34,7 +34,7 @@
+         mkdir $BUILDDIR || fail mkdir
+         cd $BUILDDIR 
+         cmake $PKG $FAKEROOT -DCMAKE_EDIT_COMMAND=vim -DAVIDEMUX_SOURCE_DIR=$TOP -DCMAKE_INSTALL_PREFIX=/usr $EXTRA $DEBUG -G "$BUILDER" $SOURCEDIR || fail cmakeZ
+-        make  $PARAL >& /tmp/log$BUILDDIR || fail "make, result in /tmp/log$BUILDDIR"
++        make  $PARAL || fail "make, result in /tmp/log$BUILDDIR"
+ 	if  [ "x$PKG" != "x" ] ; then
+           $FAKEROOT_COMMAND make package DESTDIR=$FAKEROOT_DIR/tmp || fail package
+ 	fi

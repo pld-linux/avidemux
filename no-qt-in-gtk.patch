@@ -1,0 +1,11 @@
+--- avidemux_2.6.4/avidemux/gtk/ADM_userInterfaces/ui_support.cpp~	2013-08-29 11:43:01.874486807 +0200
++++ avidemux_2.6.4/avidemux/gtk/ADM_userInterfaces/ui_support.cpp	2013-08-29 12:02:27.797682441 +0200
+@@ -51,7 +51,7 @@
+ 
+ const char* getNativeRendererDesc(void)
+ {
+-	return QT_TR_NOOP("GTK+");
++	return "GTK+";
+ }
+ 
+ void getMainWindowHandles(long int *handle,long int *nativeHandle)
