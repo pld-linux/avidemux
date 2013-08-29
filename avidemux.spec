@@ -19,7 +19,7 @@ Summary:	A small audio/video editing software for Linux
 Summary(pl.UTF-8):	Mały edytor audio/wideo dla Linuksa
 Name:		avidemux
 Version:	2.6.4
-Release:	1
+Release:	2
 License:	GPL v2+
 Group:		X11/Applications/Multimedia
 Source0:	http://downloads.sourceforge.net/avidemux/%{name}_%{version}.tar.gz
@@ -373,6 +373,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_sampleGlVertex.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/scriptEngines/libADM_script_qt.so
 
+%dir %{_datadir}/%{name}6
 %{_datadir}/%{name}6/help
 
 %dir %{_datadir}/%{name}6/i18n
