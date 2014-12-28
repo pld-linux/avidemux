@@ -40,7 +40,7 @@ BuildRequires:	cmake >= 2.6.2
 BuildRequires:	faac-devel
 BuildRequires:	faad2-devel
 BuildRequires:	freetype-devel >= 2.0.0
-BuildRequires:	gettext-devel
+BuildRequires:	gettext-tools
 %{?with_gtk:BuildRequires:	gtk+2-devel >= 1:2.6.0}
 BuildRequires:	jack-audio-connection-kit-devel
 #BuildRequires:	js-devel(threads)
