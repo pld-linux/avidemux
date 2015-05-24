@@ -3,7 +3,7 @@
 @@ -34,7 +34,7 @@
          mkdir $BUILDDIR || fail mkdir
          cd $BUILDDIR 
-         cmake $PKG $FAKEROOT -DCMAKE_EDIT_COMMAND=vim -DAVIDEMUX_SOURCE_DIR=$TOP -DCMAKE_INSTALL_PREFIX=/usr $EXTRA $DEBUG -G "$BUILDER" $SOURCEDIR || fail cmakeZ
+         cmake $PKG $FAKEROOT $QT_FLAVOR -DCMAKE_EDIT_COMMAND=vim -DAVIDEMUX_SOURCE_DIR=$TOP -DCMAKE_INSTALL_PREFIX=/usr $EXTRA $DEBUG -G "$BUILDER" $SOURCEDIR || fail cmakeZ
 -        make  $PARAL >& /tmp/log$BUILDDIR || fail "make, result in /tmp/log$BUILDDIR"
 +        make  $PARAL || fail "make, result in /tmp/log$BUILDDIR"
  	if  [ "x$PKG" != "x" ] ; then

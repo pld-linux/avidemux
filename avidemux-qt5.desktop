@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=Avidemux Video Editor (Qt5)
+GenericName=Video Editor
+Comment=Audio/video editing software - Qt5 interface
+Comment[pl]=Edytor audio/wideo - Qt5
+Exec=avidemux3_qt5
+MimeType=video/mpeg;video/quicktime;video/x-msvideo;video/x-anim;audio/x-mp3;audio/x-mp2;
+Icon=avidemux
+Terminal=false
+Type=Application
+Categories=Qt5;AudioVideo;AudioVideoEditing;
+# vi: encoding=utf-8
