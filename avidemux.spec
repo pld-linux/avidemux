@@ -2,9 +2,7 @@
 # - create aften.spec (aften.sf.net) and use it -D USE_AFTEN=1
 # - -ui-cli subpackage?
 # - use external spidermonkey (cmake fix needed): Checking for SpiderMonkey -- Skipping check and using bundled version.
-# - uses patched ffmpeg
-# - don't force -O3 optimization
-# - get rid of gcc-bug-mmx-x86 patch
+# - use patched ffmpeg
 #
 # Conditional build:
 %bcond_with	arts	# with arts audio output
