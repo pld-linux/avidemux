@@ -18,7 +18,7 @@ Summary:	A small audio/video editing software for Linux
 Summary(pl.UTF-8):	Mały edytor audio/wideo dla Linuksa
 Name:		avidemux
 Version:	2.6.9
-Release:	1
+Release:	2
 License:	GPL v2+
 Group:		X11/Applications/Multimedia
 Source0:	http://downloads.sourceforge.net/avidemux/%{name}_%{version}.tar.gz
@@ -463,6 +463,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libADM_UIGtk6.so
 %attr(755,root,root) %{_libdir}/libADM_render6_gtk.so
 %attr(755,root,root) %{_libdir}/libADM_toolkitGtk.so
+%dir %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/gtk
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/gtk/libADM_vf_asharpGtk.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/gtk/libADM_vf_chromaShiftGtk.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/gtk/libADM_vf_contrastGtk.so
@@ -481,8 +482,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_desktopdir}/%{name}-qt4.desktop
 %attr(755,root,root) %{_libdir}/libADM_UIQT46.so
 %attr(755,root,root) %{_libdir}/libADM_render6_QT4.so
+%dir %attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/qt4
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/qt4/libADM_ve_x264_QT4.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/qt4/libADM_ve_x265_QT4.so
+%dir %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt4
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt4/libADM_vf_asharpQT4.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt4/libADM_vf_chromaShiftQT4.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt4/libADM_vf_contrastQT4.so
@@ -496,6 +499,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt4/libADM_vf_rotateGlFrag2.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt4/libADM_vf_sampleGlFrag2.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt4/libADM_vf_sampleGlVertex.so
+%dir %attr(755,root,root) %{_libdir}/ADM_plugins6/scriptEngines/qt4
 %attr(755,root,root) %{_libdir}/ADM_plugins6/scriptEngines/qt4/libadm_script_QT4.so
 
 %{_datadir}/%{name}6/help/QtScriptQT4
@@ -529,8 +533,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_desktopdir}/%{name}-qt5.desktop
 %attr(755,root,root) %{_libdir}/libADM_UIQT56.so
 %attr(755,root,root) %{_libdir}/libADM_render6_QT5.so
+%dir %attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/qt5
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/qt5/libADM_ve_x264_QT5.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/qt5/libADM_ve_x265_QT5.so
+%dir %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt5
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt5/libADM_vf_asharpQT5.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt5/libADM_vf_chromaShiftQT5.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt5/libADM_vf_contrastQT5.so
@@ -539,6 +545,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt5/libADM_vf_HueQT5.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt5/libADM_vf_mpdelogoQT5.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt5/libADM_vf_swscaleResizeQT5.so
+%dir %attr(755,root,root) %{_libdir}/ADM_plugins6/scriptEngines/qt5
 %attr(755,root,root) %{_libdir}/ADM_plugins6/scriptEngines/qt5/libadm_script_QT5.so
 
 %{_datadir}/%{name}6/help/QtScriptQT5
