@@ -30,31 +30,44 @@ Patch0:		build.patch
 Patch1:		no-qt-in-gtk.patch
 Patch2:		gtk-build.patch
 URL:		http://fixounet.free.fr/avidemux/
-%{?with_qt4:BuildRequires:	QtGui-devel >= %{qt4_version}}
 %{?with_qt5:BuildRequires:	Qt5Gui-devel >= %{qt5_version}}
+%{?with_qt4:BuildRequires:	QtGui-devel >= %{qt4_version}}
 BuildRequires:	SDL-devel
 BuildRequires:	alsa-lib-devel >= 1.0
-BuildRequires:	bash
 %{?with_arts:BuildRequires:	artsc-devel}
+BuildRequires:	bash
 BuildRequires:	cmake >= 2.6.2
+BuildRequires:	doxygen
 BuildRequires:	faac-devel
 BuildRequires:	faad2-devel
 BuildRequires:	freetype-devel >= 2.0.0
-BuildRequires:	gettext-tools
+BuildRequires:	fribidi-devel
+BuildRequires:	gettext-devel
 %{?with_gtk:BuildRequires:	gtk+2-devel >= 1:2.6.0}
+BuildRequires:	gtk+3-devel
 BuildRequires:	jack-audio-connection-kit-devel
 BuildRequires:	lame-libs-devel
+BuildRequires:	libdts-devel
 BuildRequires:	libpng-devel
 BuildRequires:	libsamplerate-devel
 BuildRequires:	libstdc++-devel
+BuildRequires:	libva-devel
+BuildRequires:	libva-x11-devel
+BuildRequires:	libvdpau-devel
 BuildRequires:	libvorbis-devel
+BuildRequires:	libvpx-devel
 BuildRequires:	libx264-devel
 BuildRequires:	libx265-devel
 BuildRequires:	libxml2-devel
 %{?with_qt4:BuildRequires:	libxslt-progs}
-%ifarch %{ix86}
+BuildRequires:	rpm-pythonprov
+BuildRequires:	sqlite3-devel
+BuildRequires:	twolame-devel
+%ifarch %{ix86} %{x8664} x32
 BuildRequires:	nasm >= 0.98.32
+BuildRequires:	yasm
 %endif
+%{?with_qt4:BuildRequires:	QtScript-devel}
 %{?with_amr:BuildRequires:	opencore-amr-devel}
 BuildRequires:	pkgconfig
 BuildRequires:	pulseaudio-devel
