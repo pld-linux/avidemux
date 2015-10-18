@@ -1,15 +1,18 @@
 # TODO:
 # - create aften.spec (aften.sf.net) and use it -D USE_AFTEN=1
+# - dcaenc.h, DCAENC ?
 # - -ui-cli subpackage?
 # - use external spidermonkey (cmake fix needed): Checking for SpiderMonkey -- Skipping check and using bundled version.
 # - use patched ffmpeg
+# - nvenc (on bcond)?
 #
 # Conditional build:
-%bcond_with	arts	# with arts audio output
-%bcond_without	amr	# disable Adaptive Multi Rate (AMR) speech codec support
-%bcond_without	qt4	# build qt4 interface
-%bcond_without	qt5	# build qt5 interface
-%bcond_without	gtk	# build gtk interface
+%bcond_with	arts	# aRts audio output
+%bcond_with	esd	# EsounD audio output
+%bcond_without	amr	# Adaptive Multi Rate (AMR) speech codec support
+%bcond_without	qt4	# Qt 4 interface
+%bcond_without	qt5	# Qt 5 interface
+%bcond_without	gtk	# GTK+ interface
 
 %define		qt4_version	4.2
 %define		qt5_version	5.3
@@ -17,12 +20,12 @@
 Summary:	A small audio/video editing software for Linux
 Summary(pl.UTF-8):	Mały edytor audio/wideo dla Linuksa
 Name:		avidemux
-Version:	2.6.9
-Release:	5
+Version:	2.6.10
+Release:	1
 License:	GPL v2+
 Group:		X11/Applications/Multimedia
 Source0:	http://downloads.sourceforge.net/avidemux/%{name}_%{version}.tar.gz
-# Source0-md5:	660f781a4307681e0c0be4780123e7c0
+# Source0-md5:	61addac2a03720c070aa0b6932cfc2db
 Source1:	%{name}.desktop
 Source2:	%{name}-qt4.desktop
 Source3:	%{name}-qt5.desktop
@@ -31,23 +34,31 @@ Patch1:		no-qt-in-gtk.patch
 Patch2:		gtk-build.patch
 URL:		http://fixounet.free.fr/avidemux/
 %{?with_qt5:BuildRequires:	Qt5Gui-devel >= %{qt5_version}}
+# not used due to minor>=5 check incmake/admCheckOpenGl.cmake
+#%{?with_qt5:BuildRequires:	Qt5OpenGL-devel >= %{qt5_version}}
+%{?with_qt5:BuildRequires:	Qt5Script-devel >= %{qt5_version}}
+%{?with_qt5:BuildRequires:	Qt5Widgets-devel >= %{qt5_version}}
 %{?with_qt4:BuildRequires:	QtGui-devel >= %{qt4_version}}
+%{?with_qt4:BuildRequires:	QtOpenGL-devel >= %{qt4_version}}
+%{?with_qt4:BuildRequires:	QtScript-devel >= %{qt4_version}}
 BuildRequires:	SDL-devel
 BuildRequires:	alsa-lib-devel >= 1.0
 %{?with_arts:BuildRequires:	artsc-devel}
 BuildRequires:	bash
 BuildRequires:	cmake >= 2.6.2
 BuildRequires:	doxygen
+%{?with_esd:BuildRequires:	esound-devel}
 BuildRequires:	faac-devel
 BuildRequires:	faad2-devel
+BuildRequires:	fontconfig-devel
 BuildRequires:	freetype-devel >= 2.0.0
-BuildRequires:	fribidi-devel
-BuildRequires:	gettext-devel
+BuildRequires:	fribidi-devel >= 0.19
+BuildRequires:	gettext-tools
 %{?with_gtk:BuildRequires:	gtk+2-devel >= 1:2.6.0}
 BuildRequires:	gtk+3-devel
 BuildRequires:	jack-audio-connection-kit-devel
 BuildRequires:	lame-libs-devel
-BuildRequires:	libdts-devel
+BuildRequires:	libdts-devel >= 0.0.5
 BuildRequires:	libpng-devel
 BuildRequires:	libsamplerate-devel
 BuildRequires:	libstdc++-devel
@@ -56,26 +67,27 @@ BuildRequires:	libva-x11-devel
 BuildRequires:	libvdpau-devel
 BuildRequires:	libvorbis-devel
 BuildRequires:	libvpx-devel
+# ABI >= 67
 BuildRequires:	libx264-devel
+# ABI >= 9
 BuildRequires:	libx265-devel
 BuildRequires:	libxml2-devel
 %{?with_qt4:BuildRequires:	libxslt-progs}
 BuildRequires:	rpm-pythonprov
-BuildRequires:	sqlite3-devel
+BuildRequires:	sqlite3-devel >= 3
 BuildRequires:	twolame-devel
 %ifarch %{ix86} %{x8664} x32
 BuildRequires:	nasm >= 0.98.32
 BuildRequires:	yasm
 %endif
-%{?with_qt4:BuildRequires:	QtScript-devel}
 %{?with_amr:BuildRequires:	opencore-amr-devel}
 BuildRequires:	pkgconfig
 BuildRequires:	pulseaudio-devel
 %{?with_qt4:BuildRequires:	qt4-build >= %{qt4_version}}
-%{?with_qt4:BuildRequires:	qt4-linguist}
+%{?with_qt4:BuildRequires:	qt4-linguist >= %{qt4_version}}
 %{?with_qt4:BuildRequires:	qt4-qmake >= %{qt4_version}}
 %{?with_qt5:BuildRequires:	qt5-build >= %{qt5_version}}
-%{?with_qt5:BuildRequires:	qt5-linguist}
+%{?with_qt5:BuildRequires:	qt5-linguist >= %{qt5_version}}
 %{?with_qt5:BuildRequires:	qt5-qmake >= %{qt5_version}}
 BuildRequires:	rpmbuild(macros) >= 1.600
 BuildRequires:	sed >= 4.0
@@ -93,31 +105,43 @@ A small audio/video editing software for Linux.
 Mały edytor audio/wideo dla Linuksa.
 
 %package ui-gtk
-Summary:	GTK+2 UI for Avidemux
+Summary:	GTK+ 2 UI for Avidemux
+Summary(pl.UTF-8):	Interfejs użytkownika GTK+ 2 do edytora Avidemux
 Group:		X11/Applications/Multimedia
 Requires:	%{name} = %{version}-%{release}
 Requires:	desktop-file-utils
 
 %description ui-gtk
-GTK+2 UI for Avidemux
+GTK+ 2 UI for Avidemux.
+
+%description ui-gtk -l pl.UTF-8
+Interfejs użytkownika GTK+ 2 do edytora Avidemux.
 
 %package ui-qt4
-Summary:	Qt4 UI for Avidemux
+Summary:	Qt 4 UI for Avidemux
+Summary(pl.UTF-8):	Interfejs użytkownika Qt 4 do edytora Avidemux
 Group:		X11/Applications/Multimedia
 Requires:	%{name} = %{version}-%{release}
 Requires:	desktop-file-utils
 
 %description ui-qt4
-Qt4 UI for Avidemux
+Qt 4 UI for Avidemux.
+
+%description ui-qt4 -l pl.UTF-9
+Interfejs użytkownika Qt 4 do edytora Avidemux.
 
 %package ui-qt5
-Summary:	Qt5 UI for Avidemux
+Summary:	Qt 5 UI for Avidemux
+Summary(pl.UTF-8):	Interfejs użytkownika Qt 5 do edytora Avidemux
 Group:		X11/Applications/Multimedia
 Requires:	%{name} = %{version}-%{release}
 Requires:	desktop-file-utils
 
 %description ui-qt5
-Qt5 UI for Avidemux
+Qt 5 UI for Avidemux.
+
+%description ui-qt5 -l pl.UTF-8
+Interfejs użytkownika Qt 5 do edytora Avidemux.
 
 %prep
 %setup -q -n %{name}_%{version}
@@ -155,7 +179,9 @@ cd buildCli
 cd ..
 cd buildPluginsCommon
 %cmake \
+	%{!?with_arts:-DARTS=OFF} \
 	-DAVIDEMUX_SOURCE_DIR=$AVIDEMUX_SOURCE_DIR \
+	%{!?with_esd:-DESD=OFF} \
 	-DFAKEROOT=$FAKEROOT_DIR \
 	-DPLUGIN_UI=COMMON \
 	../avidemux_plugins
@@ -252,7 +278,7 @@ cp -a install/* $RPM_BUILD_ROOT
 
 chmod +x $RPM_BUILD_ROOT%{_libdir}/lib*.so*
 
-mv $RPM_BUILD_ROOT%{_bindir}/avidemux3{_cli,}
+%{__mv} $RPM_BUILD_ROOT%{_bindir}/avidemux3{_cli,}
 cp -a man/avidemux.1 $RPM_BUILD_ROOT%{_mandir}/man1
 cp -a %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}/%{name}-gtk.desktop
 cp -a %{SOURCE2} $RPM_BUILD_ROOT%{_desktopdir}/%{name}-qt4.desktop
@@ -275,7 +301,7 @@ rm -rf $RPM_BUILD_ROOT
 #files -f %{name}.lang
 %files
 %defattr(644,root,root,755)
-%doc AUTHORS
+%doc AUTHORS License.txt README
 %attr(755,root,root) %{_bindir}/avidemux3
 %attr(755,root,root) %{_libdir}/libADM6avcodec.so.56
 %attr(755,root,root) %{_libdir}/libADM6avformat.so.56
@@ -562,4 +588,24 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/ADM_plugins6/scriptEngines/qt5/libadm_script_QT5.so
 
 %{_datadir}/%{name}6/help/QtScriptQT5
+
+%dir %{_datadir}/%{name}6/qt5
+%dir %{_datadir}/%{name}6/qt5/i18n
+%lang(ca) %{_datadir}/%{name}6/qt5/i18n/*_ca.qm
+%lang(cs) %{_datadir}/%{name}6/qt5/i18n/*_cs.qm
+%lang(de) %{_datadir}/%{name}6/qt5/i18n/*_de.qm
+%lang(el) %{_datadir}/%{name}6/qt5/i18n/*_el.qm
+%{_datadir}/%{name}6/qt5/i18n/*_en.qm
+%lang(es) %{_datadir}/%{name}6/qt5/i18n/*_es.qm
+%lang(eu) %{_datadir}/%{name}6/qt5/i18n/*_eu.qm
+%lang(fr) %{_datadir}/%{name}6/qt5/i18n/*_fr.qm
+%lang(it) %{_datadir}/%{name}6/qt5/i18n/*_it.qm
+%lang(ja) %{_datadir}/%{name}6/qt5/i18n/*_ja.qm
+%lang(pl) %{_datadir}/%{name}6/qt5/i18n/*_pl.qm
+%lang(pt_BR) %{_datadir}/%{name}6/qt5/i18n/*_pt_BR.qm
+%lang(ru) %{_datadir}/%{name}6/qt5/i18n/*_ru.qm
+%lang(sr) %{_datadir}/%{name}6/qt5/i18n/*_sr.qm
+%lang(sr@latin) %{_datadir}/%{name}6/qt5/i18n/*_sr@latin.qm
+%lang(tr) %{_datadir}/%{name}6/qt5/i18n/*_tr.qm
+%lang(zh_TW) %{_datadir}/%{name}6/qt5/i18n/*_zh_TW.qm
 %endif
