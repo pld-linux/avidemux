@@ -31,6 +31,7 @@ Source3:	%{name}-qt5.desktop
 Patch0:		build.patch
 Patch1:		no-qt-in-gtk.patch
 Patch2:		gtk-build.patch
+Patch3:		%{name}-x32.patch
 URL:		http://fixounet.free.fr/avidemux/
 %{?with_qt5:BuildRequires:	Qt5Gui-devel >= %{qt5_version}}
 # not used due to minor>=5 check incmake/admCheckOpenGl.cmake
@@ -150,6 +151,7 @@ find '(' -name '*.js' -o -name '*.cpp' -o -name '*.h' -o -name '*.cmake' -o -nam
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 echo 'pt_BR' >> po/LINGUAS
 
@@ -166,6 +168,9 @@ cd buildCore
 %cmake \
 	-DAVIDEMUX_SOURCE_DIR=$AVIDEMUX_SOURCE_DIR \
 	-DFAKEROOT=$FAKEROOT_DIR \
+%ifarch x32
+	-DFF_FLAGS="--disable-asm" \
+%endif
 	../avidemux_core
 %{__make} -j1
 %{__make} install DESTDIR=$FAKEROOT_DIR
