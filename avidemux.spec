@@ -13,18 +13,18 @@
 %bcond_without	qt5	# Qt 5 interface
 %bcond_without	gtk	# GTK+ interface
 
-%define		qt4_version	4.2
+%define		qt4_version	4.6
 %define		qt5_version	5.3
 
 Summary:	A small audio/video editing software for Linux
 Summary(pl.UTF-8):	Mały edytor audio/wideo dla Linuksa
 Name:		avidemux
-Version:	2.6.10
-Release:	2
+Version:	2.6.11
+Release:	1
 License:	GPL v2+
 Group:		X11/Applications/Multimedia
 Source0:	http://downloads.sourceforge.net/avidemux/%{name}_%{version}.tar.gz
-# Source0-md5:	61addac2a03720c070aa0b6932cfc2db
+# Source0-md5:	e4c753a8a2c7884270318c1951e7c00e
 Source1:	%{name}.desktop
 Source2:	%{name}-qt4.desktop
 Source3:	%{name}-qt5.desktop
@@ -34,8 +34,7 @@ Patch2:		gtk-build.patch
 Patch3:		%{name}-x32.patch
 URL:		http://fixounet.free.fr/avidemux/
 %{?with_qt5:BuildRequires:	Qt5Gui-devel >= %{qt5_version}}
-# not used due to minor>=5 check incmake/admCheckOpenGl.cmake
-#%{?with_qt5:BuildRequires:	Qt5OpenGL-devel >= %{qt5_version}}
+%{?with_qt5:BuildRequires:	Qt5OpenGL-devel >= %{qt5_version}}
 %{?with_qt5:BuildRequires:	Qt5Script-devel >= %{qt5_version}}
 %{?with_qt5:BuildRequires:	Qt5Widgets-devel >= %{qt5_version}}
 %{?with_qt4:BuildRequires:	QtGui-devel >= %{qt4_version}}
@@ -75,6 +74,7 @@ BuildRequires:	libx264-devel
 BuildRequires:	libx265-devel
 BuildRequires:	libxml2-devel
 %{?with_qt4:BuildRequires:	libxslt-progs}
+BuildRequires:	opus-devel
 BuildRequires:	rpm-pythonprov
 BuildRequires:	sqlite3-devel >= 3
 BuildRequires:	twolame-devel
@@ -152,11 +152,6 @@ find '(' -name '*.js' -o -name '*.cpp' -o -name '*.h' -o -name '*.cmake' -o -nam
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
-
-echo 'pt_BR' >> po/LINGUAS
-
-# libdir fix
-%{__sed} -i -e's,"lib","%{_lib}",' avidemux/common/main.cpp avidemux_core/ADM_core/src/ADM_fileio.cpp
 
 %build
 install -d buildCore buildCli buildQt4 buildQt5 buildGtk buildPluginsCommon buildPluginsCLI buildPluginsSettings buildPluginsQt4 buildPluginsQt5 buildPluginsGtk
@@ -293,8 +288,6 @@ cp -a avidemux_icon.png $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
 
 %{__rm} -r $RPM_BUILD_ROOT%{_includedir}
 
-#find_lang %{name}
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -304,7 +297,6 @@ rm -rf $RPM_BUILD_ROOT
 %post ui-qt4
 %update_desktop_database
 
-#files -f %{name}.lang
 %files
 %defattr(644,root,root,755)
 %doc AUTHORS License.txt README
@@ -371,6 +363,8 @@ rm -rf $RPM_BUILD_ROOT
 # R: opencore-amr
 %attr(755,root,root) %{_libdir}/ADM_plugins6/audioDecoder/libADM_ad_opencore_amrwb.so
 %endif
+# R: opus
+%attr(755,root,root) %{_libdir}/ADM_plugins6/audioDecoder/libADM_ad_opus.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/audioDecoder/libADM_ad_ulaw.so
 # R: libvorbis
 %attr(755,root,root) %{_libdir}/ADM_plugins6/audioDecoder/libADM_ad_vorbis.so
@@ -429,12 +423,14 @@ rm -rf $RPM_BUILD_ROOT
 
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_addBorders.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_avsfilter.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_black.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_blackenBorders.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_DgBob.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_colorYuv.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_decimate.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_denoise3dhq.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_denoise3d.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_fadeTo.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_fadeToBlack.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_gauss.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_mean.so
@@ -551,6 +547,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/avidemux3_qt4
 %{_desktopdir}/%{name}-qt4.desktop
 %attr(755,root,root) %{_libdir}/libADM_UIQT46.so
+%attr(755,root,root) %{_libdir}/libADM_openGLQT46.so
 %attr(755,root,root) %{_libdir}/libADM_render6_QT4.so
 
 %dir %{_libdir}/ADM_plugins6/videoEncoders/qt4
@@ -607,6 +604,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/avidemux3_qt5
 %{_desktopdir}/%{name}-qt5.desktop
 %attr(755,root,root) %{_libdir}/libADM_UIQT56.so
+%attr(755,root,root) %{_libdir}/libADM_openGLQT56.so
 %attr(755,root,root) %{_libdir}/libADM_render6_QT5.so
 
 %dir %{_libdir}/ADM_plugins6/videoEncoders/qt5
@@ -616,13 +614,18 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/qt5/libADM_ve_x265_QT5.so
 
 %dir %{_libdir}/ADM_plugins6/videoFilters/qt5
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt5/libADM_vf_HueQT5.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt5/libADM_vf_asharpQT5.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt5/libADM_vf_chromaShiftQT5.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt5/libADM_vf_contrastQT5.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt5/libADM_vf_cropQT5.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt5/libADM_vf_eq2QT5.so
-%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt5/libADM_vf_HueQT5.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt5/libADM_vf_glBenchmark.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt5/libADM_vf_glResize.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt5/libADM_vf_mpdelogoQT5.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt5/libADM_vf_rotateGlFrag2.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt5/libADM_vf_sampleGlFrag2.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt5/libADM_vf_sampleGlVertex.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt5/libADM_vf_swscaleResizeQT5.so
 
 %dir %{_libdir}/ADM_plugins6/scriptEngines/qt5
