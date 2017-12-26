@@ -1,3 +1,14 @@
+--- avidemux_2.6.10/cmake/admFFmpegBuild_helpers.cmake.orig	2015-10-19 20:07:00.923333350 +0200
++++ avidemux_2.6.10/cmake/admFFmpegBuild_helpers.cmake	2015-10-19 20:34:06.114456242 +0200
+@@ -259,7 +259,7 @@
+ 
+     MESSAGE(STATUS "Configuring done, processing")
+ 
+-    if (ADM_CPU_X86)
++    if (ADM_CPU_X86_X32 OR (ADM_CPU_X86_64 AND ADM_CPU_64BIT))
+         file(READ ${FFMPEG_BINARY_DIR}/config.h FF_CONFIG_H)
+         string(REGEX MATCH "#define[ ]+HAVE_YASM[ ]+1" FF_YASM "${FF_CONFIG_H}")
+ 
 --- avidemux_2.6.10/cmake/admInstallDir.cmake.orig	2015-10-19 20:34:26.862201138 +0200
 +++ avidemux_2.6.10/cmake/admInstallDir.cmake	2015-10-19 21:15:45.397657233 +0200
 @@ -20,6 +20,8 @@
