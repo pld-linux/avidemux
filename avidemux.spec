@@ -6,12 +6,16 @@
 # - nvenc (on bcond)?
 #
 # Conditional build:
-%bcond_with	arts	# aRts audio output
-%bcond_with	esd	# EsounD audio output
-%bcond_without	amr	# Adaptive Multi Rate (AMR) speech codec support
-%bcond_without	qt4	# Qt 4 interface
-%bcond_without	qt5	# Qt 5 interface
-%bcond_with	gtk	# GTK+ interface
+%bcond_with	arts		# aRts audio output
+%bcond_with	esd		# EsounD audio output
+%bcond_without	amr		# Adaptive Multi Rate (AMR) speech codec support
+%bcond_without	qt4		# Qt 4 interface
+%bcond_without	qt5		# Qt 5 interface
+%bcond_without	system_liba52	# system liba52 library
+%bcond_without	system_libass	# system libass library
+%bcond_without	system_libmad	# system libmad library
+%bcond_without	system_mp4v2	# system mp4v2 library
+%bcond_with	gtk		# GTK+ interface
 
 %define		qt4_version	4.6
 %define		qt5_version	5.3
@@ -19,49 +23,57 @@
 Summary:	A small audio/video editing software for Linux
 Summary(pl.UTF-8):	Mały edytor audio/wideo dla Linuksa
 Name:		avidemux
-Version:	2.6.20
-Release:	2
+Version:	2.7.0
+Release:	1
 License:	GPL v2+
 Group:		X11/Applications/Multimedia
 Source0:	http://downloads.sourceforge.net/avidemux/%{name}_%{version}.tar.gz
-# Source0-md5:	52be64ae608c9195454b5393ba684fc0
+# Source0-md5:	dc4e74516dde4c71cae7abff8ed2bf9b
 Source1:	%{name}.desktop
 Source2:	%{name}-qt4.desktop
 Source3:	%{name}-qt5.desktop
 Patch0:		build.patch
 Patch1:		no-qt-in-gtk.patch
+Patch2:		%{name}-ffmpeg-make.patch
 Patch3:		%{name}-x32.patch
 URL:		http://fixounet.free.fr/avidemux/
+%{?with_qt5:BuildRequires:	Qt5Core-devel >= %{qt5_version}}
 %{?with_qt5:BuildRequires:	Qt5Gui-devel >= %{qt5_version}}
 %{?with_qt5:BuildRequires:	Qt5OpenGL-devel >= %{qt5_version}}
 %{?with_qt5:BuildRequires:	Qt5Script-devel >= %{qt5_version}}
 %{?with_qt5:BuildRequires:	Qt5Widgets-devel >= %{qt5_version}}
+%{?with_qt4:BuildRequires:	QtCore-devel >= %{qt4_version}}
 %{?with_qt4:BuildRequires:	QtGui-devel >= %{qt4_version}}
 %{?with_qt4:BuildRequires:	QtOpenGL-devel >= %{qt4_version}}
 %{?with_qt4:BuildRequires:	QtScript-devel >= %{qt4_version}}
-BuildRequires:	SDL-devel
-BuildRequires:	aften-devel
+BuildRequires:	SDL2-devel >= 2
+%{?with_system_liba52:BuildRequires:	a52dec-libs-devel}
+BuildRequires:	aften-devel >= 0.0.8
 BuildRequires:	alsa-lib-devel >= 1.0
 %{?with_arts:BuildRequires:	artsc-devel}
 BuildRequires:	bash
-BuildRequires:	cmake >= 2.6.2
+BuildRequires:	cmake >= 3.0
 BuildRequires:	dcaenc-devel
 BuildRequires:	doxygen
 %{?with_esd:BuildRequires:	esound-devel}
 BuildRequires:	faac-devel
-BuildRequires:	faad2-devel
+BuildRequires:	faad2-devel >= 2
+BuildRequires:	fdk-aac-devel
 BuildRequires:	fontconfig-devel
 BuildRequires:	freetype-devel >= 2.0.0
 BuildRequires:	fribidi-devel >= 0.19
+%{?with_gtk:BuildRequires:	gdk-pixbuf2-devel >= 2.0}
 BuildRequires:	gettext-tools
-%{?with_gtk:BuildRequires:	gtk+2-devel >= 1:2.6.0}
+%{?with_gtk:BuildRequires:	gtk+3-devel >= 3.0}
 BuildRequires:	gtk+3-devel
 BuildRequires:	jack-audio-connection-kit-devel
 BuildRequires:	lame-libs-devel
+%{?with_system_libass:BuildRequires:	libass-devel}
 BuildRequires:	libdts-devel >= 0.0.5
+%{?with_system_libmad:BuildRequires:	libmad-devel}
 BuildRequires:	libpng-devel
 BuildRequires:	libsamplerate-devel
-BuildRequires:	libstdc++-devel
+BuildRequires:	libstdc++-devel >= 6:4.7
 BuildRequires:	libva-devel
 BuildRequires:	libva-x11-devel
 BuildRequires:	libvdpau-devel
@@ -73,15 +85,13 @@ BuildRequires:	libx264-devel
 BuildRequires:	libx265-devel
 BuildRequires:	libxml2-devel
 %{?with_qt4:BuildRequires:	libxslt-progs}
-BuildRequires:	opus-devel
-BuildRequires:	rpm-pythonprov
-BuildRequires:	sqlite3-devel >= 3
-BuildRequires:	twolame-devel
+%{?with_system_mp4v2:BuildRequires:	mp4v2-devel}
 %ifarch %{ix86} %{x8664} x32
 BuildRequires:	nasm >= 0.98.32
 BuildRequires:	yasm
 %endif
 %{?with_amr:BuildRequires:	opencore-amr-devel}
+BuildRequires:	opus-devel
 BuildRequires:	pkgconfig
 BuildRequires:	pulseaudio-devel
 %{?with_qt4:BuildRequires:	qt4-build >= %{qt4_version}}
@@ -90,13 +100,17 @@ BuildRequires:	pulseaudio-devel
 %{?with_qt5:BuildRequires:	qt5-build >= %{qt5_version}}
 %{?with_qt5:BuildRequires:	qt5-linguist >= %{qt5_version}}
 %{?with_qt5:BuildRequires:	qt5-qmake >= %{qt5_version}}
+BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.600
 BuildRequires:	sed >= 4.0
+BuildRequires:	sqlite3-devel >= 3
+BuildRequires:	twolame-devel
 BuildRequires:	xorg-lib-libXv-devel
 BuildRequires:	xorg-proto-xextproto-devel
 BuildRequires:	xvid-devel >= 1:1.0
-BuildRequires:	xvidcore-devel
 BuildRequires:	zlib-devel
+# see cmake/admDetermineSystem.cmake
+ExclusiveArch:	%{ix86} %{x8664} x32 %{arm}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -150,6 +164,7 @@ find '(' -name '*.js' -o -name '*.cpp' -o -name '*.h' -o -name '*.cmake' -o -nam
 %patch0 -p1
 %patch1 -p1
 %patch3 -p1
+%patch2 -p1
 
 %build
 install -d buildCore buildCli buildQt4 buildQt5 buildGtk buildPluginsCommon buildPluginsCLI buildPluginsSettings buildPluginsQt4 buildPluginsQt5 buildPluginsGtk
@@ -174,7 +189,8 @@ cd buildCli
 	-DFAKEROOT=$FAKEROOT_DIR \
 	../avidemux/cli
 %{__make}
-%{__make} install DESTDIR=$FAKEROOT_DIR
+%{__make} install \
+	DESTDIR=$FAKEROOT_DIR
 cd ..
 cd buildPluginsCommon
 %cmake \
@@ -183,9 +199,14 @@ cd buildPluginsCommon
 	%{!?with_esd:-DESD=OFF} \
 	-DFAKEROOT=$FAKEROOT_DIR \
 	-DPLUGIN_UI=COMMON \
+	%{?with_system_liba52:-DUSE_EXTERNAL_LIBA52=ON} \
+	%{?with_system_libass:-DUSE_EXTERNAL_LIBASS=ON} \
+	%{?with_system_libmad:-DUSE_EXTERNAL_LIBMAD=ON} \
+	%{?with_system_mp4v2:-DUSE_EXTERNAL_MP4V2=ON} \
 	../avidemux_plugins
 %{__make}
-%{__make} install DESTDIR=$FAKEROOT_DIR
+%{__make} install \
+	DESTDIR=$FAKEROOT_DIR
 cd ..
 cd buildPluginsCLI
 %cmake \
@@ -203,7 +224,8 @@ cd buildPluginsSettings
 	-DPLUGIN_UI=SETTINGS \
 	../avidemux_plugins
 %{__make}
-%{__make} install DESTDIR=$FAKEROOT_DIR
+%{__make} install \
+	DESTDIR=$FAKEROOT_DIR
 cd ..
 
 %if %{with qt4}
@@ -213,7 +235,8 @@ cd buildQt4
 	-DFAKEROOT=$FAKEROOT_DIR \
 	../avidemux/qt4
 %{__make}
-%{__make} install DESTDIR=$FAKEROOT_DIR
+%{__make} install \
+	DESTDIR=$FAKEROOT_DIR
 cd ..
 cd buildPluginsQt4
 %cmake \
@@ -222,7 +245,8 @@ cd buildPluginsQt4
 	-DPLUGIN_UI=QT4 \
 	../avidemux_plugins
 %{__make}
-%{__make} install DESTDIR=$FAKEROOT_DIR
+%{__make} install \
+	DESTDIR=$FAKEROOT_DIR
 cd ..
 %endif
 
@@ -234,7 +258,8 @@ cd buildQt5
 	-DFAKEROOT=$FAKEROOT_DIR \
 	../avidemux/qt4
 %{__make}
-%{__make} install DESTDIR=$FAKEROOT_DIR
+%{__make} install \
+	DESTDIR=$FAKEROOT_DIR
 cd ..
 cd buildPluginsQt5
 %cmake \
@@ -244,7 +269,8 @@ cd buildPluginsQt5
 	-DPLUGIN_UI=QT4 \
 	../avidemux_plugins
 %{__make}
-%{__make} install DESTDIR=$FAKEROOT_DIR
+%{__make} install \
+	DESTDIR=$FAKEROOT_DIR
 cd ..
 %endif
 
@@ -255,7 +281,8 @@ cd buildGtk
 	-DFAKEROOT=$FAKEROOT_DIR \
 	../avidemux/gtk
 %{__make}
-%{__make} install DESTDIR=$FAKEROOT_DIR
+%{__make} install \
+	DESTDIR=$FAKEROOT_DIR
 cd ..
 cd buildPluginsGtk
 %cmake \
@@ -264,7 +291,8 @@ cd buildPluginsGtk
 	-DPLUGIN_UI=GTK \
 	../avidemux_plugins
 %{__make}
-%{__make} install DESTDIR=$FAKEROOT_DIR
+%{__make} install \
+	DESTDIR=$FAKEROOT_DIR
 cd ..
 %endif
 
@@ -279,9 +307,9 @@ chmod +x $RPM_BUILD_ROOT%{_libdir}/lib*.so*
 
 %{__mv} $RPM_BUILD_ROOT%{_bindir}/avidemux3{_cli,}
 cp -a man/avidemux.1 $RPM_BUILD_ROOT%{_mandir}/man1
-cp -a %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}/%{name}-gtk.desktop
-cp -a %{SOURCE2} $RPM_BUILD_ROOT%{_desktopdir}/%{name}-qt4.desktop
-cp -a %{SOURCE3} $RPM_BUILD_ROOT%{_desktopdir}/%{name}-qt5.desktop
+%{?with_gtk:cp -a %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}/%{name}-gtk.desktop}
+%{?with_qt4:cp -a %{SOURCE2} $RPM_BUILD_ROOT%{_desktopdir}/%{name}-qt4.desktop}
+%{?with_qt5:cp -a %{SOURCE3} $RPM_BUILD_ROOT%{_desktopdir}/%{name}-qt5.desktop}
 cp -a avidemux_icon.png $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
 
 %{__rm} -r $RPM_BUILD_ROOT%{_includedir}
@@ -331,21 +359,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libADM_coreVideoFilter6.so
 
 %dir %{_libdir}/ADM_plugins6
-%dir %{_libdir}/ADM_plugins6/audioDecoder
-%dir %{_libdir}/ADM_plugins6/audioDevices
-%dir %{_libdir}/ADM_plugins6/audioEncoders
-%dir %{_libdir}/ADM_plugins6/videoDecoders
-%dir %{_libdir}/ADM_plugins6/videoEncoders
-%dir %{_libdir}/ADM_plugins6/videoFilters
-%dir %{_libdir}/ADM_plugins6/autoScripts
-%dir %{_libdir}/ADM_plugins6/autoScripts/lib
-%dir %{_libdir}/ADM_plugins6/demuxers
-%dir %{_libdir}/ADM_plugins6/muxers
-%dir %{_libdir}/ADM_plugins6/pluginSettings
-%dir %{_libdir}/ADM_plugins6/pluginSettings/x264
-%dir %{_libdir}/ADM_plugins6/pluginSettings/x264/3
-%dir %{_libdir}/ADM_plugins6/scriptEngines
 
+%dir %{_libdir}/ADM_plugins6/audioDecoder
 %attr(755,root,root) %{_libdir}/ADM_plugins6/audioDecoder/libADM_ad_Mad.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/audioDecoder/libADM_ad_a52.so
 # R: libdts
@@ -367,6 +382,7 @@ rm -rf $RPM_BUILD_ROOT
 # R: libvorbis
 %attr(755,root,root) %{_libdir}/ADM_plugins6/audioDecoder/libADM_ad_vorbis.so
 
+%dir %{_libdir}/ADM_plugins6/audioDevices
 # R: alsa-lib
 %attr(755,root,root) %{_libdir}/ADM_plugins6/audioDevices/libADM_av_alsaDMix.so
 # R: alsa-lib
@@ -383,12 +399,15 @@ rm -rf $RPM_BUILD_ROOT
 # R: pulseaudio-libs
 %attr(755,root,root) %{_libdir}/ADM_plugins6/audioDevices/libADM_av_pulseAudioSimple.so
 
+%dir %{_libdir}/ADM_plugins6/audioEncoders
 # R: aften
 %attr(755,root,root) %{_libdir}/ADM_plugins6/audioEncoders/libADM_ae_aften.so
 # R: dcaenc
 %attr(755,root,root) %{_libdir}/ADM_plugins6/audioEncoders/libADM_ae_dcaenc.so
 # R: faac-libs
 %attr(755,root,root) %{_libdir}/ADM_plugins6/audioEncoders/libADM_ae_faac.so
+# R: fdk-aac
+%attr(755,root,root) %{_libdir}/ADM_plugins6/audioEncoders/libADM_ae_fdk_aac.so
 # R: lame-libs
 %attr(755,root,root) %{_libdir}/ADM_plugins6/audioEncoders/libADM_ae_lame.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/audioEncoders/libADM_ae_lav_aac.so
@@ -400,9 +419,11 @@ rm -rf $RPM_BUILD_ROOT
 # R: libvorbis
 %attr(755,root,root) %{_libdir}/ADM_plugins6/audioEncoders/libADM_ae_vorbis.so
 
-# R: libvpx
-%attr(755,root,root) %{_libdir}/ADM_plugins6/videoDecoders/libADM_vd_vpx.so
+#%dir %{_libdir}/ADM_plugins6/videoDecoders
+# R: libvpx [2.7.0: disabled in CMakeLists.txt]
+#%attr(755,root,root) %{_libdir}/ADM_plugins6/videoDecoders/libADM_vd_vpx.so
 
+%dir %{_libdir}/ADM_plugins6/videoEncoders
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/libADM_ve_ffDv.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/libADM_ve_ffFlv1.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/libADM_ve_ffMpeg2.so
@@ -419,7 +440,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/libADM_ve_xvid4.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/libADM_ve_yv12.so
 
+%dir %{_libdir}/ADM_plugins6/videoFilters
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_addBorders.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_admIvtc.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_ascii.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_avsfilter.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_black.so
@@ -471,15 +494,18 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/cli/libADM_vf_msharpenCli.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/cli/libADM_vf_swscaleResize_cli.so
 
+%dir %{_libdir}/ADM_plugins6/autoScripts
 %attr(755,root,root) %{_libdir}/ADM_plugins6/autoScripts/720p.py
 %attr(755,root,root) %{_libdir}/ADM_plugins6/autoScripts/PSP.py
 %attr(755,root,root) %{_libdir}/ADM_plugins6/autoScripts/check24fps.py
 %attr(755,root,root) %{_libdir}/ADM_plugins6/autoScripts/dvd.py
+%dir %{_libdir}/ADM_plugins6/autoScripts/lib
 %attr(755,root,root) %{_libdir}/ADM_plugins6/autoScripts/lib/ADM_image.py
 %attr(755,root,root) %{_libdir}/ADM_plugins6/autoScripts/lib/ADM_imageInfo.py
 %attr(755,root,root) %{_libdir}/ADM_plugins6/autoScripts/svcd.py
 %attr(755,root,root) %{_libdir}/ADM_plugins6/autoScripts/vcd.py
 
+%dir %{_libdir}/ADM_plugins6/demuxers
 %attr(755,root,root) %{_libdir}/ADM_plugins6/demuxers/libADM_dm_asf.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/demuxers/libADM_dm_avsproxy.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/demuxers/libADM_dm_flv.so
@@ -490,6 +516,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/ADM_plugins6/demuxers/libADM_dm_pic.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/demuxers/libADM_dm_ps.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/demuxers/libADM_dm_ts.so
+
+%dir %{_libdir}/ADM_plugins6/muxers
 %attr(755,root,root) %{_libdir}/ADM_plugins6/muxers/libADM_mx_Mkv.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/muxers/libADM_mx_Webm.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/muxers/libADM_mx_avi.so
@@ -500,11 +528,17 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/ADM_plugins6/muxers/libADM_mx_mp4.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/muxers/libADM_mx_mp4v2.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/muxers/libADM_mx_raw.so
+
+%dir %{_libdir}/ADM_plugins6/pluginSettings
+%dir %{_libdir}/ADM_plugins6/pluginSettings/x264
+%dir %{_libdir}/ADM_plugins6/pluginSettings/x264/3
 %{_libdir}/ADM_plugins6/pluginSettings/x264/3/PSP.json
 %{_libdir}/ADM_plugins6/pluginSettings/x264/3/fast.json
 %{_libdir}/ADM_plugins6/pluginSettings/x264/3/iPhone.json
 %{_libdir}/ADM_plugins6/pluginSettings/x264/3/ultraFast.json
 %{_libdir}/ADM_plugins6/pluginSettings/x264/3/veryFast.json
+
+%dir %{_libdir}/ADM_plugins6/scriptEngines
 %attr(755,root,root) %{_libdir}/ADM_plugins6/scriptEngines/libADM_script_tinyPy.so
 
 %dir %{_libdir}/ADM_plugins6/shaderDemo
@@ -595,6 +629,7 @@ rm -rf $RPM_BUILD_ROOT
 %lang(hu) %{_datadir}/%{name}6/qt4/i18n/*_hu.qm
 %lang(it) %{_datadir}/%{name}6/qt4/i18n/*_it.qm
 %lang(ja) %{_datadir}/%{name}6/qt4/i18n/*_ja.qm
+%lang(ko) %{_datadir}/%{name}6/qt4/i18n/*_ko.qm
 %lang(pl) %{_datadir}/%{name}6/qt4/i18n/*_pl.qm
 %lang(pt) %{_datadir}/%{name}6/qt4/i18n/*_pt.qm
 %lang(pt_BR) %{_datadir}/%{name}6/qt4/i18n/*_pt_BR.qm

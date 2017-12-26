@@ -1,25 +1,3 @@
---- avidemux_2.6.10/avidemux_core/ADM_core/src/ADM_cpuCap.cpp.orig	2015-10-19 19:08:06.986346394 +0200
-+++ avidemux_2.6.10/avidemux_core/ADM_core/src/ADM_cpuCap.cpp	2015-10-19 19:41:57.745216176 +0200
-@@ -61,7 +61,7 @@
-     int eax, ebx, ecx, edx;
-     int max_std_level, max_ext_level;
- 
--#if !defined(ADM_CPU_64BIT) // 64 bits CPU have all cpuid
-+#if !defined(ADM_CPU_X86_64) // x86_64 CPUs have all cpuid
-     long a, c;
- 
-     __asm__ __volatile__ (
---- avidemux_2.6.10/cmake/admFFmpegBuild_helpers.cmake.orig	2015-10-19 20:07:00.923333350 +0200
-+++ avidemux_2.6.10/cmake/admFFmpegBuild_helpers.cmake	2015-10-19 20:34:06.114456242 +0200
-@@ -259,7 +259,7 @@
- 
-     MESSAGE(STATUS "Configuring done, processing")
- 
--    if (ADM_CPU_X86)
-+    if (ADM_CPU_X86_X32 OR (ADM_CPU_X86_64 AND ADM_CPU_64BIT))
-         file(READ ${FFMPEG_BINARY_DIR}/config.h FF_CONFIG_H)
-         string(REGEX MATCH "#define[ ]+HAVE_YASM[ ]+1" FF_YASM "${FF_CONFIG_H}")
- 
 --- avidemux_2.6.10/cmake/admInstallDir.cmake.orig	2015-10-19 20:34:26.862201138 +0200
 +++ avidemux_2.6.10/cmake/admInstallDir.cmake	2015-10-19 21:15:45.397657233 +0200
 @@ -20,6 +20,8 @@
@@ -31,17 +9,18 @@
          ELSE(CMAKE_C_IMPLICIT_LINK_DIRECTORIES MATCHES "\\/lib64([; ]|$)")
                  SET(AVIDEMUX_RELATIVE_LIB_DIR lib)
          ENDIF(CMAKE_C_IMPLICIT_LINK_DIRECTORIES MATCHES "\\/lib64([; ]|$)")
---- avidemux_2.6.11/cmake/CMakeASM_YASMInformation.cmake.orig	2016-01-31 10:54:01.427419625 +0100
-+++ avidemux_2.6.11/cmake/CMakeASM_YASMInformation.cmake	2016-01-31 14:09:36.528371876 +0100
-@@ -10,7 +10,11 @@
-     if(APPLE)
-         set(ARGS -f macho64 -m amd64 -DPREFIX)
-     elseif(UNIX AND NOT CYGWIN)
-+      if(ADM_CPU_64BIT)
-         set(ARGS -f elf64 -m amd64)
-+      else(ADM_CPU_64BIT)
-+        set(ARGS -f elfx32 -m x32)
-+      endif(ADM_CPU_64BIT)
-     else()
-         set(ARGS -f win64 -m amd64)
-     endif()
+--- avidemux_2.7.0/cmake/admYasm_gcc.cmake.orig	2017-12-24 14:39:56.979737709 +0100
++++ avidemux_2.7.0/cmake/admYasm_gcc.cmake	2017-12-25 09:22:40.292301873 +0100
+@@ -39,7 +39,11 @@
+       
+      
+     IF( ADM_CPU_X86_64 )
+-        SET(ASM_ARGS_FORMAT "${ASM_ARGS_FORMAT} -m amd64 -DARCH_X86_64=1 -DARCH_X86_32=0")
++        IF( ADM_CPU_64BIT )
++            SET(ASM_ARGS_FORMAT "${ASM_ARGS_FORMAT} -m amd64 -DARCH_X86_64=1 -DARCH_X86_32=0")
++        ELSE( ADM_CPU_64BIT )
++            SET(ASM_ARGS_FORMAT "${ASM_ARGS_FORMAT} -m x32 -DARCH_X86_64=1 -DARCH_X86_32=0")
++        ENDIF( ADM_CPU_64BIT )
+     ELSE( ADM_CPU_X86_64 )
+         SET(ASM_ARGS_FORMAT "${ASM_ARGS_FORMAT}  -DARCH_X86_64=0 -DARCH_X86_32=1")
+     ENDIF( ADM_CPU_X86_64 )
