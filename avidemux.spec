@@ -23,12 +23,12 @@
 Summary:	A small audio/video editing software for Linux
 Summary(pl.UTF-8):	Mały edytor audio/wideo dla Linuksa
 Name:		avidemux
-Version:	2.7.0
-Release:	2
+Version:	2.7.1
+Release:	1
 License:	GPL v2+
 Group:		X11/Applications/Multimedia
 Source0:	http://downloads.sourceforge.net/avidemux/%{name}_%{version}.tar.gz
-# Source0-md5:	dc4e74516dde4c71cae7abff8ed2bf9b
+# Source0-md5:	e3510c858c9371283551b1b4b67d288b
 Source1:	%{name}.desktop
 Source2:	%{name}-qt4.desktop
 Source3:	%{name}-qt5.desktop
@@ -96,9 +96,11 @@ BuildRequires:	pkgconfig
 BuildRequires:	pulseaudio-devel
 %{?with_qt4:BuildRequires:	qt4-build >= %{qt4_version}}
 %{?with_qt4:BuildRequires:	qt4-linguist >= %{qt4_version}}
+%{?with_qt4:BuildRequires:	QtNetwork-devel >= %{qt4_version}}
 %{?with_qt4:BuildRequires:	qt4-qmake >= %{qt4_version}}
 %{?with_qt5:BuildRequires:	qt5-build >= %{qt5_version}}
 %{?with_qt5:BuildRequires:	qt5-linguist >= %{qt5_version}}
+%{?with_qt5:BuildRequires:	Qt5Network-devel >= %{qt5_version}}
 %{?with_qt5:BuildRequires:	qt5-qmake >= %{qt5_version}}
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.600
@@ -347,6 +349,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libADM_coreImageLoader6.so
 %attr(755,root,root) %{_libdir}/libADM_coreJobs.so
 %attr(755,root,root) %{_libdir}/libADM_coreLibVA6.so
+%attr(755,root,root) %{_libdir}/libADM_coreLibVAEnc6.so
 %attr(755,root,root) %{_libdir}/libADM_coreMuxer6.so
 %attr(755,root,root) %{_libdir}/libADM_coreScript.so
 %attr(755,root,root) %{_libdir}/libADM_coreSocket6.so
@@ -414,6 +417,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/ADM_plugins6/audioEncoders/libADM_ae_lav_ac3.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/audioEncoders/libADM_ae_lav_mp2.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/audioEncoders/libADM_ae_pcm.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/audioEncoders/libADM_ae_opus.so
 # R: twolame-libs
 %attr(755,root,root) %{_libdir}/ADM_plugins6/audioEncoders/libADM_ae_twolame.so
 # R: libvorbis
@@ -430,8 +434,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/libADM_ve_ffMpeg4.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/libADM_ve_huff.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/libADM_ve_jpeg.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/libADM_ve_libva.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/libADM_ve_null.so
-%attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/libADM_ve_png.so
 # R: libx264
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/libADM_ve_x264_other.so
 # R: libx265
@@ -474,6 +478,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_sharpen.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_ssa.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_stackField.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_stillimage.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_swapUV.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_telecide.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_unstackField.so
@@ -637,6 +642,7 @@ rm -rf $RPM_BUILD_ROOT
 %lang(sr) %{_datadir}/%{name}6/qt4/i18n/*_sr.qm
 %lang(sr@latin) %{_datadir}/%{name}6/qt4/i18n/*_sr@latin.qm
 %lang(tr) %{_datadir}/%{name}6/qt4/i18n/*_tr.qm
+%lang(zh_CN) %{_datadir}/%{name}6/qt4/i18n/*_zh_CN.qm
 %lang(zh_TW) %{_datadir}/%{name}6/qt4/i18n/*_zh_TW.qm
 %endif
 
@@ -701,5 +707,6 @@ rm -rf $RPM_BUILD_ROOT
 %lang(sr@latin) %{_datadir}/%{name}6/qt5/i18n/*_sr@latin.qm
 %lang(tr) %{_datadir}/%{name}6/qt5/i18n/*_tr.qm
 %lang(uk) %{_datadir}/%{name}6/qt5/i18n/*_uk.qm
+%lang(zh_CN) %{_datadir}/%{name}6/qt5/i18n/*_zh_CN.qm
 %lang(zh_TW) %{_datadir}/%{name}6/qt5/i18n/*_zh_TW.qm
 %endif
