@@ -23,12 +23,12 @@
 Summary:	A small audio/video editing software for Linux
 Summary(pl.UTF-8):	Mały edytor audio/wideo dla Linuksa
 Name:		avidemux
-Version:	2.7.1
-Release:	5
+Version:	2.7.4
+Release:	1
 License:	GPL v2+
 Group:		X11/Applications/Multimedia
 Source0:	http://downloads.sourceforge.net/avidemux/%{name}_%{version}.tar.gz
-# Source0-md5:	e3510c858c9371283551b1b4b67d288b
+# Source0-md5:	87b4dd1ef3a1f695b3d0f9971da8abde
 Source1:	%{name}.desktop
 Source2:	%{name}-qt4.desktop
 Source3:	%{name}-qt5.desktop
@@ -36,6 +36,7 @@ Patch0:		build.patch
 Patch1:		no-qt-in-gtk.patch
 Patch2:		%{name}-ffmpeg-make.patch
 Patch3:		%{name}-x32.patch
+Patch4:		qt4.patch
 URL:		http://fixounet.free.fr/avidemux/
 %{?with_qt5:BuildRequires:	Qt5Core-devel >= %{qt5_version}}
 %{?with_qt5:BuildRequires:	Qt5Gui-devel >= %{qt5_version}}
@@ -167,6 +168,7 @@ find '(' -name '*.js' -o -name '*.cpp' -o -name '*.h' -o -name '*.cmake' -o -nam
 %patch1 -p1
 %patch3 -p1
 %patch2 -p1
+%patch4 -p1
 
 %build
 install -d buildCore buildCli buildQt4 buildQt5 buildGtk buildPluginsCommon buildPluginsCLI buildPluginsSettings buildPluginsQt4 buildPluginsQt5 buildPluginsGtk
@@ -329,11 +331,12 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc AUTHORS License.txt README
 %attr(755,root,root) %{_bindir}/avidemux3
-%attr(755,root,root) %{_libdir}/libADM6avcodec.so.57
-%attr(755,root,root) %{_libdir}/libADM6avformat.so.57
-%attr(755,root,root) %{_libdir}/libADM6avutil.so.55
-%attr(755,root,root) %{_libdir}/libADM6postproc.so.54
-%attr(755,root,root) %{_libdir}/libADM6swscale.so.4
+%attr(755,root,root) %{_bindir}/vsProxy
+%attr(755,root,root) %{_libdir}/libADM6avcodec.so.58
+%attr(755,root,root) %{_libdir}/libADM6avformat.so.58
+%attr(755,root,root) %{_libdir}/libADM6avutil.so.56
+%attr(755,root,root) %{_libdir}/libADM6postproc.so.55
+%attr(755,root,root) %{_libdir}/libADM6swscale.so.5
 %attr(755,root,root) %{_libdir}/libADM_UI_Cli6.so
 %attr(755,root,root) %{_libdir}/libADM_core6.so
 %attr(755,root,root) %{_libdir}/libADM_coreAudio6.so
@@ -354,7 +357,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libADM_coreScript.so
 %attr(755,root,root) %{_libdir}/libADM_coreSocket6.so
 %attr(755,root,root) %{_libdir}/libADM_coreSqlLight3.so
-%attr(755,root,root) %{_libdir}/libADM_coreSubtitle.so
+%attr(755,root,root) %{_libdir}/libADM_coreSubtitles6.so
 %attr(755,root,root) %{_libdir}/libADM_coreUtils6.so
 %attr(755,root,root) %{_libdir}/libADM_coreVDPAU6.so
 %attr(755,root,root) %{_libdir}/libADM_coreVideoCodec6.so
@@ -444,6 +447,11 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/libADM_ve_xvid4.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/libADM_ve_yv12.so
 
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/libADM_ve_ffNvenc.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/libADM_ve_ffNvencHEVC.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/libADM_ve_ffVaEncH264.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/videoEncoders/libADM_ve_ffVaEncHEVC.so
+
 %dir %{_libdir}/ADM_plugins6/videoFilters
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_addBorders.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/libADM_vf_admIvtc.so
@@ -521,6 +529,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/ADM_plugins6/demuxers/libADM_dm_pic.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/demuxers/libADM_dm_ps.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/demuxers/libADM_dm_ts.so
+%attr(755,root,root) %{_libdir}/ADM_plugins6/demuxers/libADM_dm_vapoursynth.so
 
 %dir %{_libdir}/ADM_plugins6/muxers
 %attr(755,root,root) %{_libdir}/ADM_plugins6/muxers/libADM_mx_Mkv.so
@@ -560,6 +569,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %dir %{_datadir}/%{name}6
 
+%{_desktopdir}/org.avidemux.Avidemux.desktop
+%{_iconsdir}/hicolor/*x*/apps/org.avidemux.Avidemux.png
+%{_datadir}/metainfo/org.avidemux.Avidemux.appdata.xml
 %{_mandir}/man1/avidemux.1*
 %{_pixmapsdir}/*.png
 
@@ -590,9 +602,9 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/avidemux3_jobs_qt4
 %attr(755,root,root) %{_bindir}/avidemux3_qt4
+%attr(755,root,root) %{_bindir}/vsProxy_gui_qt4
 %{_desktopdir}/%{name}-qt4.desktop
 %attr(755,root,root) %{_libdir}/libADM_UIQT46.so
-%attr(755,root,root) %{_libdir}/libADM_openGLQT46.so
 %attr(755,root,root) %{_libdir}/libADM_render6_QT4.so
 
 %dir %{_libdir}/ADM_plugins6/videoEncoders/qt4
@@ -608,16 +620,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt4/libADM_vf_contrastQT4.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt4/libADM_vf_cropQT4.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt4/libADM_vf_eq2QT4.so
-%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt4/libADM_vf_glBenchmark.so
-%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt4/libADM_vf_glResize.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt4/libADM_vf_HueQT4.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt4/libADM_vf_logoQT4.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt4/libADM_vf_mpdelogoQT4.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt4/libADM_vf_msharpenQT4.so
-%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt4/libADM_vf_rotateGlFrag2.so
-%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt4/libADM_vf_sampleGlFrag2.so
-%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt4/libADM_vf_sampleGlVertex.so
-%attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt4/libADM_vf_shaderLoaderGl.so
 %attr(755,root,root) %{_libdir}/ADM_plugins6/videoFilters/qt4/libADM_vf_swscaleResizeQT4.so
 
 %dir %{_datadir}/%{name}6/qt4
@@ -651,6 +657,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/avidemux3_jobs_qt5
 %attr(755,root,root) %{_bindir}/avidemux3_qt5
+%attr(755,root,root) %{_bindir}/vsProxy_gui_qt5
 %{_desktopdir}/%{name}-qt5.desktop
 %attr(755,root,root) %{_libdir}/libADM_UIQT56.so
 %attr(755,root,root) %{_libdir}/libADM_openGLQT56.so

@@ -1,0 +1,11 @@
+--- avidemux_2.7.4/avidemux_plugins/ADM_demuxers/VapourSynth/qt4/vsProxy_qt4.cpp~	2019-11-02 13:39:41.000000000 +0100
++++ avidemux_2.7.4/avidemux_plugins/ADM_demuxers/VapourSynth/qt4/vsProxy_qt4.cpp	2019-11-02 14:20:51.169801021 +0100
+@@ -12,7 +12,7 @@
+  *   (at your option) any later version.                                   *
+  *                                                                         *
+  ***************************************************************************/
+-#include <QFile>
++#include <QtCore/QFile>
+ #include <QFileDialog>
+ 
+ #include "vsProxy_qt4.h"
