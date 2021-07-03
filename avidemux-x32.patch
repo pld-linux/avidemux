@@ -20,18 +20,18 @@
          ELSE(CMAKE_C_IMPLICIT_LINK_DIRECTORIES MATCHES "\\/lib64([; ]|$)")
                  SET(AVIDEMUX_RELATIVE_LIB_DIR lib)
          ENDIF(CMAKE_C_IMPLICIT_LINK_DIRECTORIES MATCHES "\\/lib64([; ]|$)")
---- avidemux_2.7.0/cmake/admYasm_gcc.cmake.orig	2017-12-24 14:39:56.979737709 +0100
-+++ avidemux_2.7.0/cmake/admYasm_gcc.cmake	2017-12-25 09:22:40.292301873 +0100
-@@ -39,7 +39,11 @@
+--- avidemux_2.7.8/cmake/admYasm_gcc.cmake.orig	2021-07-03 20:36:14.136607549 +0200
++++ avidemux_2.7.8/cmake/admYasm_gcc.cmake	2021-07-03 20:40:46.251800041 +0200
+@@ -34,7 +34,11 @@ IF(ADM_CPU_X86 )
        
       
      IF( ADM_CPU_X86_64 )
--        SET(ASM_ARGS_FORMAT "${ASM_ARGS_FORMAT} -m amd64 -DARCH_X86_64=1 -DARCH_X86_32=0")
+-        SET(ASM_ARGS_FORMAT ${ASM_ARGS_FORMAT} -m amd64 -DARCH_X86_64=1 -DARCH_X86_32=0)
 +        IF( ADM_CPU_64BIT )
 +            SET(ASM_ARGS_FORMAT "${ASM_ARGS_FORMAT} -m amd64 -DARCH_X86_64=1 -DARCH_X86_32=0")
 +        ELSE( ADM_CPU_64BIT )
 +            SET(ASM_ARGS_FORMAT "${ASM_ARGS_FORMAT} -m x32 -DARCH_X86_64=1 -DARCH_X86_32=0")
 +        ENDIF( ADM_CPU_64BIT )
      ELSE( ADM_CPU_X86_64 )
-         SET(ASM_ARGS_FORMAT "${ASM_ARGS_FORMAT}  -DARCH_X86_64=0 -DARCH_X86_32=1")
+         SET(ASM_ARGS_FORMAT ${ASM_ARGS_FORMAT}  -DARCH_X86_64=0 -DARCH_X86_32=1)
      ENDIF( ADM_CPU_X86_64 )
