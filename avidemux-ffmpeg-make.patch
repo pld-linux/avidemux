@@ -1,7 +1,7 @@
---- avidemux_2.7.0/cmake/admFFmpegBuild_helpers.cmake.orig	2017-12-25 10:11:38.555601657 +0100
-+++ avidemux_2.7.0/cmake/admFFmpegBuild_helpers.cmake	2017-12-25 14:01:39.232110743 +0100
-@@ -304,7 +304,7 @@
-        SET(PARRALLEL "-j4") 
+--- avidemux_2.7.8/cmake/admFFmpegBuild_helpers.cmake.orig	2021-07-04 06:51:39.736302112 +0200
++++ avidemux_2.7.8/cmake/admFFmpegBuild_helpers.cmake	2021-07-04 06:52:57.587005044 +0200
+@@ -324,7 +324,7 @@ MACRO(ADM_FF_ADD_DUMMY_TARGET)
+        endif(NOT NPROC EQUAL 0)
      endif(NOT MSVC)
      add_custom_target(         libavutil_dummy ALL
 -                                       COMMAND ${CMAKE_BUILD_TOOL}  ${PARRALLEL} # We assume make or gnumake when host is unix

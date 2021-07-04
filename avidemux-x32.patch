@@ -1,14 +1,22 @@
---- avidemux_2.6.10/cmake/admFFmpegBuild_helpers.cmake.orig	2015-10-19 20:07:00.923333350 +0200
-+++ avidemux_2.6.10/cmake/admFFmpegBuild_helpers.cmake	2015-10-19 20:34:06.114456242 +0200
-@@ -259,7 +259,7 @@
+--- avidemux_2.7.8/cmake/admFFmpegBuild_helpers.cmake.orig	2021-07-04 06:48:04.541811758 +0200
++++ avidemux_2.7.8/cmake/admFFmpegBuild_helpers.cmake	2021-07-04 06:50:47.746939993 +0200
+@@ -286,14 +286,14 @@ MACRO(ADM_FF_BUILD_UNIX_STYLE)
  
      MESSAGE(STATUS "Configuring done, processing")
  
 -    if (ADM_CPU_X86)
 +    if (ADM_CPU_X86_X32 OR (ADM_CPU_X86_64 AND ADM_CPU_64BIT))
          file(READ ${FFMPEG_BINARY_DIR}/config.h FF_CONFIG_H)
-         string(REGEX MATCH "#define[ ]+HAVE_YASM[ ]+1" FF_YASM "${FF_CONFIG_H}")
+         string(REGEX MATCH "#define[ ]+HAVE_X86ASM[ ]+1" FF_YASM "${FF_CONFIG_H}")
  
+         if (NOT FF_YASM)
+             message(FATAL_ERROR "Yasm was not found.")
+         endif (NOT FF_YASM)
+-    endif (ADM_CPU_X86)
++    endif ()
+ 
+     execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory "libavutil"
+                     WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/config")
 --- avidemux_2.6.10/cmake/admInstallDir.cmake.orig	2015-10-19 20:34:26.862201138 +0200
 +++ avidemux_2.6.10/cmake/admInstallDir.cmake	2015-10-19 21:15:45.397657233 +0200
 @@ -20,6 +20,8 @@
