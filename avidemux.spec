@@ -107,7 +107,7 @@ BuildRequires:	pulseaudio-devel
 %{?with_qt5:BuildRequires:	Qt5Network-devel >= %{qt5_version}}
 %{?with_qt5:BuildRequires:	qt5-qmake >= %{qt5_version}}
 BuildRequires:	rpm-pythonprov
-BuildRequires:	rpmbuild(macros) >= 1.600
+BuildRequires:	rpmbuild(macros) >= 1.605
 BuildRequires:	sed >= 4.0
 BuildRequires:	sqlite3-devel >= 3
 BuildRequires:	twolame-devel
