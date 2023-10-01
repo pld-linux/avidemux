@@ -37,6 +37,7 @@ Patch1:		no-qt-in-gtk.patch
 Patch2:		%{name}-ffmpeg-make.patch
 Patch3:		%{name}-x32.patch
 Patch4:		qt4.patch
+Patch5:		binutils2.41.patch
 URL:		http://fixounet.free.fr/avidemux/
 %{?with_qt5:BuildRequires:	Qt5Core-devel >= %{qt5_version}}
 %{?with_qt5:BuildRequires:	Qt5Gui-devel >= %{qt5_version}}
@@ -172,6 +173,8 @@ find '(' -name '*.js' -o -name '*.cpp' -o -name '*.h' -o -name '*.cmake' -o -nam
 %patch3 -p1
 %patch2 -p1
 %patch4 -p1
+
+cp -p %{PATCH5} avidemux_core/ffmpeg_package/patches
 
 %build
 install -d buildCore buildCli buildQt4 buildQt5 buildGtk buildPluginsCommon buildPluginsCLI buildPluginsSettings buildPluginsQt4 buildPluginsQt5 buildPluginsGtk
