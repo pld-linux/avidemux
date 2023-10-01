@@ -116,6 +116,8 @@ BuildRequires:	xorg-lib-libXv-devel
 BuildRequires:	xorg-proto-xextproto-devel
 BuildRequires:	xvid-devel >= 1:1.0
 BuildRequires:	zlib-devel
+Requires(post,postun):	gtk-update-icon-cache
+Requires:	hicolor-icon-theme
 # see cmake/admDetermineSystem.cmake
 ExclusiveArch:	%{ix86} %{x8664} x32 %{arm}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -326,6 +328,12 @@ cp -a avidemux_icon.png $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
 
 %clean
 rm -rf $RPM_BUILD_ROOT
+
+%post
+%update_icon_cache hicolor
+
+%postun
+%update_icon_cache hicolor
 
 %post ui-gtk
 %update_desktop_database
