@@ -1,0 +1,11 @@
+--- avidemux_2.8.1/avidemux/common/ADM_audioFilter/src/CMakeLists.txt.orig	2024-03-03 19:08:26.677919005 +0100
++++ avidemux_2.8.1/avidemux/common/ADM_audioFilter/src/CMakeLists.txt	2024-03-03 20:39:28.524996307 +0100
+@@ -44,6 +44,8 @@ YASMIFY(dolbyAsm audiofilter_dolby_asm)
+ ADD_DEFINITIONS(-DADM_LEGACY_PROGGY)
+ ADD_DEFINITIONS(-DCPU_CLIPS_POSITIVE=0 -DCPU_CLIPS_NEGATIVE=0)
+ ADD_DEFINITIONS(-I${CMAKE_CURRENT_SOURCE_DIR})
++set_source_files_properties(ADM_soundtouch/mmx_optimized.cpp PROPERTIES COMPILE_FLAGS "-mmmx")
++set_source_files_properties(ADM_soundtouch/sse_optimized.cpp PROPERTIES COMPILE_FLAGS "-msse")
+ 
+ if (MSVC)
+ 	remove_definitions(-W3)
