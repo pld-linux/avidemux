@@ -1,0 +1,52 @@
+--- avidemux_2.8.1/avidemux_plugins/ADM_videoEncoder/x265/ADM_x265.cpp.orig	2024-09-17 20:59:02.308986970 +0200
++++ avidemux_2.8.1/avidemux_plugins/ADM_videoEncoder/x265/ADM_x265.cpp	2024-09-17 21:16:25.483335609 +0200
+@@ -205,15 +205,28 @@ again:
+     //
+       x265_nal          *nal;
+       uint32_t          nbNal = 0;
++      x265_picture      *pic_outp;
++#if X265_BUILD >= 210
++      x265_picture      pic_outl[MAX_SCALABLE_LAYERS];
++      x265_picture      *pic_outlp[MAX_SCALABLE_LAYERS];
++      for (int i = 0; i < MAX_SCALABLE_LAYERS; i++) pic_outlp[i] = &pic_outl[i];
++      pic_outp = pic_outlp[0];
++#else
+       x265_picture      pic_out;
+       api->picture_init(&param,&pic_out);
++      pic_outp = &pic_out;
++#endif
+       out->flags = 0;
+       
+         int er;
+         if(false==gotFrame)     
+         {
+             ADM_info("Flushing delayed frames\n");
++#if X265_BUILD >= 210
++            er = api->encoder_encode(handle, &nal, &nbNal, NULL, pic_outlp);
++#else
+             er = api->encoder_encode(handle, &nal, &nbNal, NULL, &pic_out);
++#endif
+             if(er<=0)
+             {
+                 ADM_info ("End of flush\n");
+@@ -221,7 +234,11 @@ again:
+             }
+         }else 
+         {
++#if X265_BUILD >= 210
++            er = api->encoder_encode(handle, &nal, &nbNal, &pic, pic_outlp);
++#else
+             er = api->encoder_encode(handle, &nal, &nbNal, &pic, &pic_out);
++#endif
+             if(er<0)
+             {
+               ADM_error ("[x265] Error encoding %d\n",er);
+@@ -236,7 +253,7 @@ again:
+ 
+ 
+     // 3-encode
+-    if(false==postAmble(out,nbNal,nal,&pic_out))
++    if(false==postAmble(out,nbNal,nal,pic_outp))
+     {
+         ADM_warning("[x265] postAmble failed\n");
+         return false;     
