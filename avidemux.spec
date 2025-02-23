@@ -173,13 +173,13 @@ Interfejs użytkownika Qt 5 do edytora Avidemux.
 %prep
 %setup -q -n %{name}_%{version}
 find '(' -name '*.js' -o -name '*.cpp' -o -name '*.h' -o -name '*.cmake' -o -name '*.txt' ')' -print0 | xargs -0 %{__sed} -i -e 's,\r$,,'
-%patch0 -p1
-%patch1 -p1
-%patch3 -p1
-%patch2 -p1
-%patch4 -p1
-%patch6 -p1
-%patch7 -p1
+%patch -P 0 -p1
+%patch -P 1 -p1
+%patch -P 3 -p1
+%patch -P 2 -p1
+%patch -P 4 -p1
+%patch -P 6 -p1
+%patch -P 7 -p1
 
 cp -p %{PATCH5} avidemux_core/ffmpeg_package/patches
 
