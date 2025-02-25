@@ -50,3 +50,29 @@
      {
          ADM_warning("[x265] postAmble failed\n");
          return false;     
+--- avidemux_2.8.1/avidemux_plugins/ADM_videoEncoder/x265/ADM_x265Setup.cpp.orig	2025-02-25 21:51:58.825229570 +0100
++++ avidemux_2.8.1/avidemux_plugins/ADM_videoEncoder/x265/ADM_x265Setup.cpp	2025-02-25 21:52:02.351911140 +0100
+@@ -203,17 +203,21 @@ bool x265Encoder::setup(void)
+                         ADM_info("Using average bitrate of %d kb/s\n",(int)bitrate);
+                         param.rc.rateControlMode = X265_RC_ABR;
+                         param.rc.bitrate =  bitrate;
++#if X265_BUILD >= 215
++                        param.rc.statFileName[X265_MAX_STRING_SIZE-1] = 0;
++                        strncpy(param.rc.statFileName, logFile, X265_MAX_STRING_SIZE-1);
++#else
++                        param.rc.statFileName=strdup(logFile);
++#endif
+                         if(passNumber==1)
+                         {
+                              param.rc.bStatWrite=1;
+                              param.rc.bStatRead=0;
+-                             param.rc.statFileName=strdup(logFile);
+  
+                         }else
+                         {
+                              param.rc.bStatWrite=0;
+                              param.rc.bStatRead=1;
+-                             param.rc.statFileName=strdup(logFile);
+                              if(!ADM_fileExist(logFile))
+                              {
+                                    ADM_error("Logfile %s does not exist \n",logFile);
