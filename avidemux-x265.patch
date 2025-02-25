@@ -5,7 +5,7 @@
        x265_nal          *nal;
        uint32_t          nbNal = 0;
 +      x265_picture      *pic_outp;
-+#if X265_BUILD >= 210
++#if X265_BUILD >= 210 && X265_BUILD < 213
 +      x265_picture      pic_outl[MAX_SCALABLE_LAYERS];
 +      x265_picture      *pic_outlp[MAX_SCALABLE_LAYERS];
 +      for (int i = 0; i < MAX_SCALABLE_LAYERS; i++) pic_outlp[i] = &pic_outl[i];
@@ -21,7 +21,7 @@
          if(false==gotFrame)     
          {
              ADM_info("Flushing delayed frames\n");
-+#if X265_BUILD >= 210
++#if X265_BUILD >= 210 && X265_BUILD < 213
 +            er = api->encoder_encode(handle, &nal, &nbNal, NULL, pic_outlp);
 +#else
              er = api->encoder_encode(handle, &nal, &nbNal, NULL, &pic_out);
@@ -33,7 +33,7 @@
              }
          }else 
          {
-+#if X265_BUILD >= 210
++#if X265_BUILD >= 210 && X265_BUILD < 213
 +            er = api->encoder_encode(handle, &nal, &nbNal, &pic, pic_outlp);
 +#else
              er = api->encoder_encode(handle, &nal, &nbNal, &pic, &pic_out);
